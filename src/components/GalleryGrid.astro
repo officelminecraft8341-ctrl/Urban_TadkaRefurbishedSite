@@ -1,0 +1,325 @@
+---
+/**
+ * GalleryGrid
+ *
+ * Responsive gallery plus an accessible lightbox built on the native <dialog>
+ * element, which gives us focus trapping, Esc-to-close and inert background
+ * content from the platform rather than from hand-written JavaScript.
+ *
+ * Keyboard: every tile is a real <button>; inside the viewer, Left/Right move
+ * between items, Esc closes, and focus returns to the tile that opened it.
+ *
+ * All slides are rendered server-side and toggled here, so dropping in real
+ * photography later means replacing the PhotoPlaceholder inside each slide
+ * with an <img> — the viewer logic does not change.
+ */
+
+import PhotoPlaceholder from './PhotoPlaceholder.astro';
+import Icon from './Icon.astro';
+
+interface GalleryItem {
+  /** Shot description. Doubles as the photography brief. */
+  caption: string;
+  /** Any key from PhotoPlaceholder's RATIOS map. */
+  ratio?: string;
+}
+
+interface Props {
+  items: GalleryItem[];
+  /** Base for the dialog id, so two galleries can coexist on one page. */
+  id?: string;
+}
+
+const { items, id = 'gallery' } = Astro.props;
+const dialogId = `${id}-dialog`;
+---
+
+<ul class="gallery" data-gallery>
+  {
+    items.map((item, index) => (
+      <li class="gallery__item">
+        <button
+          type="button"
+          class="gallery__trigger"
+          data-gallery-open={index}
+          aria-label={`Open larger view: ${item.caption}`}
+        >
+          <PhotoPlaceholder
+            caption={item.caption}
+            ratio={item.ratio ?? '4/3'}
+            compact
+          />
+          <span class="gallery__hint" aria-hidden="true">View</span>
+        </button>
+      </li>
+    ))
+  }
+</ul>
+
+<dialog id={dialogId} class="lightbox" data-gallery-dialog aria-label="Gallery viewer">
+  <div class="lightbox__bar">
+    <p class="lightbox__counter" data-gallery-counter aria-live="polite"></p>
+    <button type="button" class="lightbox__close" data-gallery-close>
+      Close
+      <Icon name="close" size={18} />
+    </button>
+  </div>
+
+  <div class="lightbox__stage">
+    {
+      items.map((item, index) => (
+        <div class="lightbox__slide" data-gallery-slide={index} hidden={index !== 0}>
+          <PhotoPlaceholder caption={item.caption} ratio="3/2" tone="night" />
+          <p class="lightbox__caption">{item.caption}</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="lightbox__nav">
+    <button type="button" class="lightbox__button" data-gallery-prev>
+      <Icon name="arrowRight" size={18} class="flip" />
+      Previous
+    </button>
+    <button type="button" class="lightbox__button" data-gallery-next>
+      Next
+      <Icon name="arrowRight" size={18} />
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 34rem) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .gallery {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-5);
+    }
+  }
+
+  .gallery__item {
+    margin: 0;
+  }
+
+  .gallery__trigger {
+    display: block;
+    position: relative;
+    width: 100%;
+    padding: 0;
+    border-radius: var(--r-md);
+    text-align: left;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .gallery__trigger:hover {
+      transform: translateY(-3px);
+    }
+  }
+
+  .gallery__hint {
+    position: absolute;
+    right: var(--sp-3);
+    bottom: var(--sp-3);
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--r-xs);
+    background: var(--night);
+    color: var(--paper);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+  }
+
+  /* --- lightbox --------------------------------------------------------- */
+  .lightbox {
+    width: min(60rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    padding: var(--sp-4);
+    border: 1px solid rgba(251, 248, 243, 0.16);
+    border-radius: var(--r-lg);
+    background: var(--night);
+    color: var(--ink-invert);
+  }
+
+  .lightbox::backdrop {
+    background: rgba(15, 13, 12, 0.78);
+  }
+
+  .lightbox__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-4);
+  }
+
+  .lightbox__counter {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--brand-gold);
+  }
+
+  .lightbox__close,
+  .lightbox__button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    /* 50% over the night surface measures ~4.9:1 - comfortably past the 3:1 a
+       control boundary needs, unlike the 35% it started at (~2.6:1). */
+    border: 1.5px solid rgba(251, 248, 243, 0.5);
+    border-radius: var(--r-sm);
+    color: var(--ink-invert);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+
+  .lightbox__close:hover,
+  .lightbox__button:hover {
+    background: rgba(251, 248, 243, 0.12);
+    border-color: var(--ink-invert);
+  }
+
+  .lightbox__stage {
+    display: grid;
+  }
+
+  .lightbox__caption {
+    margin-top: var(--sp-3);
+    font-size: var(--fs-sm);
+    color: #d8d1c6;
+  }
+
+  .lightbox__nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    margin-top: var(--sp-4);
+  }
+
+  .lightbox__nav :global(.flip) {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: 33.99rem) {
+    .lightbox {
+      padding: var(--sp-3);
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Lightbox behaviour. Written as a single delegated controller so multiple
+   * galleries on one page keep working, and so it degrades safely: if the
+   * <dialog> API is unavailable, tiles simply stay static and no broken UI
+   * appears.
+   */
+  type Gallery = {
+    root: HTMLElement;
+    dialog: HTMLDialogElement;
+    slides: HTMLElement[];
+    counter: HTMLElement | null;
+    openers: HTMLButtonElement[];
+    index: number;
+    lastFocus: HTMLElement | null;
+  };
+
+  const galleries: Gallery[] = [];
+
+  function setup(root: HTMLElement) {
+    const dialog = root.querySelector<HTMLDialogElement>('[data-gallery-dialog]');
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-gallery-slide]'));
+    const openers = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-gallery-open]'));
+    const counter = root.querySelector<HTMLElement>('[data-gallery-counter]');
+
+    if (!dialog || typeof dialog.showModal !== 'function' || slides.length === 0) return;
+
+    galleries.push({ root, dialog, slides, counter, openers, index: 0, lastFocus: null });
+  }
+
+  function show(gallery: Gallery, nextIndex: number) {
+    const total = gallery.slides.length;
+    gallery.index = (nextIndex + total) % total;
+
+    gallery.slides.forEach((slide, i) => {
+      slide.hidden = i !== gallery.index;
+    });
+
+    if (gallery.counter) {
+      gallery.counter.textContent = `Image ${gallery.index + 1} of ${total}`;
+    }
+  }
+
+  function open(gallery: Gallery, index: number, trigger: HTMLElement | null) {
+    gallery.lastFocus = trigger;
+    show(gallery, index);
+    gallery.dialog.showModal();
+    gallery.dialog.querySelector<HTMLButtonElement>('[data-gallery-close]')?.focus();
+  }
+
+  function close(gallery: Gallery) {
+    gallery.dialog.close();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach(setup);
+
+  galleries.forEach((gallery) => {
+    gallery.openers.forEach((opener) => {
+      opener.addEventListener('click', () => {
+        open(gallery, Number(opener.dataset.galleryOpen ?? 0), opener);
+      });
+    });
+
+    gallery.dialog
+      .querySelector('[data-gallery-close]')
+      ?.addEventListener('click', () => close(gallery));
+
+    gallery.dialog
+      .querySelector('[data-gallery-prev]')
+      ?.addEventListener('click', () => show(gallery, gallery.index - 1));
+
+    gallery.dialog
+      .querySelector('[data-gallery-next]')
+      ?.addEventListener('click', () => show(gallery, gallery.index + 1));
+
+    // Native <dialog> fires 'cancel' for Esc; keep state consistent and restore focus.
+    gallery.dialog.addEventListener('close', () => {
+      gallery.lastFocus?.focus();
+    });
+
+    gallery.dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(gallery, gallery.index + 1);
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        show(gallery, gallery.index - 1);
+      }
+    });
+
+    // Clicking the backdrop (outside the dialog box) closes the viewer.
+    gallery.dialog.addEventListener('click', (event) => {
+      if (event.target === gallery.dialog) close(gallery);
+    });
+  });
+</script>

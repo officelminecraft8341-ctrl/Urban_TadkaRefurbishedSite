@@ -1,0 +1,88 @@
+---
+/**
+ * ActionBar
+ *
+ * A fixed bottom bar on small screens carrying the two actions that actually
+ * convert on a restaurant site: call, and directions. Both are verified working
+ * destinations (a tel: URI and a Google Maps directions link that returns 200).
+ *
+ * Hidden from 48rem up, where the header's Call and Order controls are already
+ * visible. Only rendered when a phone number exists, so it can never show a
+ * button that goes nowhere.
+ */
+
+import Icon from './Icon.astro';
+import { siteConfig, telHref, directionsUrl } from '../config/site.js';
+
+const hasPhone = Boolean(siteConfig.business.phoneE164);
+---
+
+{
+  hasPhone && (
+    <div class="action-bar no-print" role="group" aria-label="Quick actions">
+      <a class="action-bar__btn action-bar__btn--primary" href={telHref}>
+        <Icon name="phone" size={18} />
+        Call
+      </a>
+      <a
+        class="action-bar__btn"
+        href={directionsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="navigation" size={18} />
+        Directions
+        <span class="visually-hidden">(opens in a new tab)</span>
+      </a>
+    </div>
+  )
+}
+
+<style>
+  .action-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (min-width: 48rem) {
+    .action-bar {
+      display: none;
+    }
+  }
+
+  .action-bar__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-height: var(--actionbar-h);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .action-bar__btn--primary {
+    background: var(--cta);
+    color: #fff;
+  }
+
+  .action-bar__btn--primary:hover {
+    background: var(--cta-hover);
+    color: #fff;
+  }
+
+  .action-bar__btn:hover {
+    color: var(--ink);
+  }
+</style>

@@ -1,0 +1,118 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { siteConfig, telHref, directionsUrl } from '../config/site.js';
+
+const links = [
+  { href: '/menu/', label: 'The menu', hint: '157 dishes across 13 categories' },
+  { href: '/visit/', label: 'Visit & order', hint: 'Hours, address and directions' },
+  { href: '/catering/', label: 'Catering', hint: 'Feeding a group' },
+  { href: '/gallery/', label: 'Gallery', hint: 'The room and the food' },
+];
+---
+
+<MainLayout
+  title="Page not found"
+  description="That page does not exist. Here are the useful ones."
+  canonicalPath="/404"
+>
+  <section class="section">
+    <div class="container notfound">
+      <p class="eyebrow">Error 404</p>
+      <h1>That page isn’t on the menu</h1>
+      <p class="notfound__lede">
+        The page you asked for does not exist. Nothing is broken — it just is not here. These
+        are the pages worth your time.
+      </p>
+
+      <div class="btn-row notfound__actions">
+        <Button href={telHref} variant="primary" size="lg" icon="phone">
+          Call {siteConfig.business.phoneDisplay}
+        </Button>
+        <Button href={directionsUrl} variant="secondary" size="lg" icon="navigation" external>
+          Get directions
+        </Button>
+      </div>
+
+      <ul class="notfound__list">
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href}>
+                <span class="notfound__label">
+                  {link.label}
+                  <Icon name="arrowRight" size={16} />
+                </span>
+                <span class="notfound__hint">{link.hint}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .notfound {
+    max-width: 52rem;
+  }
+
+  .notfound__lede {
+    margin-top: var(--sp-4);
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+    max-width: 46ch;
+  }
+
+  .notfound__actions {
+    margin-top: var(--sp-6);
+  }
+
+  .notfound__list {
+    display: grid;
+    gap: var(--sp-3);
+    margin-top: var(--sp-7);
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .notfound__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .notfound__list a {
+    display: block;
+    padding: var(--sp-5);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper-warm);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .notfound__list a:hover {
+    border-color: var(--brand-gold);
+  }
+
+  .notfound__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+  }
+
+  .notfound__hint {
+    display: block;
+    margin-top: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+  }
+</style>

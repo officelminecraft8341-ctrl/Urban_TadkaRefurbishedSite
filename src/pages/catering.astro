@@ -1,0 +1,327 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import { siteConfig, telHref } from '../config/site.js';
+
+const { business } = siteConfig;
+
+/**
+ * Catering is advertised by the restaurant itself — its homepage hero reads
+ * "LUNCH . DINNER . CATERING" and it carries a "Catering Services" card — so the
+ * service is real enough to build for.
+ *
+ * What we do NOT do here is invent packages, prices, minimums or lead times.
+ * The checklist below is what a customer should have ready when they call,
+ * which is genuinely useful and claims nothing about the restaurant.
+ */
+
+const checklist = [
+  { label: 'Headcount', hint: 'Roughly how many people you are feeding.' },
+  { label: 'Date and time', hint: 'Including when you need it delivered or collected.' },
+  { label: 'Delivery or pickup', hint: 'Whether you need it brought to you.' },
+  { label: 'Address', hint: 'If it is being delivered — and parking or access notes.' },
+  { label: 'Dishes in mind', hint: 'Anything from the menu you already know you want.' },
+  { label: 'Dietary needs', hint: 'The restaurant can answer ingredient questions directly.' },
+];
+
+const whatWeKnow = [
+  'Urban Tadka lists catering alongside lunch and dinner on its own website.',
+  'Its menu — the same one on this site — currently runs to 157 dishes across 13 categories.',
+  'The restaurant takes enquiries by telephone.',
+];
+
+const whatWeNeed = [
+  'Minimum and maximum headcount for a catering order.',
+  'Notice required, and how far ahead you should book.',
+  'Delivery radius, or whether catering is pickup-only.',
+  'Whether catering is priced per head, per tray, or from a separate catering menu.',
+  'Who should receive catering enquiries, and by which channel.',
+  'Which dishes are available for large orders, and whether lead times differ.',
+];
+---
+
+<MainLayout
+  title="Catering"
+  description="Urban Tadka lists catering alongside lunch and dinner in Irving, TX. Call (469) 420-9920 to discuss a catering order."
+  canonicalPath="/catering/"
+>
+  <section class="section">
+    <div class="container catering-head">
+      <div>
+        <p class="eyebrow">Catering</p>
+        <h1>Feeding a room full of people</h1>
+        <p class="catering-head__lede">
+          Urban Tadka lists catering alongside lunch and dinner. It is arranged by telephone —
+          call and the restaurant will talk you through it.
+        </p>
+
+        <div class="btn-row catering-head__actions">
+          <Button href={telHref} variant="primary" size="lg" icon="phone">
+            Call {business.phoneDisplay}
+          </Button>
+          <Button href="/menu/" variant="secondary" size="lg" iconAfter="arrowRight">
+            Browse the menu
+          </Button>
+        </div>
+      </div>
+
+      <div class="catering-head__card">
+        <span class="catering-head__icon" aria-hidden="true">
+          <Icon name="users" size={26} />
+        </span>
+        <p class="catering-head__card-title">Before you call</p>
+        <p class="catering-head__card-text">
+          Having the six details below to hand will make the call quicker and get you an answer
+          the first time.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--warm" aria-labelledby="checklist-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="How to enquire"
+        id="checklist-heading"
+        title="What to have ready"
+        lede="No form required — just the details the restaurant will ask you for."
+      />
+
+      <ul class="checklist">
+        {
+          checklist.map((item, index) => (
+            <li class="checklist__item">
+              <span class="checklist__num" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3 class="checklist__label">{item.label}</h3>
+                <p class="checklist__hint">{item.hint}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="catering-status-heading">
+    <div class="container status-grid">
+      <div>
+        <SectionHeading eyebrow="Status" id="catering-status-heading" title="What is confirmed" />
+        <ul class="status-list status-list--done">
+          {whatWeKnow.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div>
+        <SectionHeading eyebrow="Open questions" title="What we still need" level={3} />
+        <ul class="status-list">
+          {whatWeNeed.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="container catering-note">
+      <ConceptNote title="For the owner" icon="alert">
+        This page only states what Urban Tadka already publishes about catering. No packages,
+        minimums, prices, lead times or delivery areas have been invented. Send us the answers
+        above and the page can carry real catering information — including a catering menu and a
+        working enquiry form, if you want one.
+      </ConceptNote>
+    </div>
+  </section>
+
+  <section class="section section--night">
+    <div class="container catering-cta">
+      <div>
+        <h2>Talk about your event</h2>
+        <p class="catering-cta__lede">
+          {business.phoneDisplay} · {business.addressOneLine}
+        </p>
+      </div>
+      <div class="btn-row">
+        <Button href={telHref} variant="on-night" size="lg" icon="phone">
+          Call the restaurant
+        </Button>
+        <Button href="/visit/" variant="outline-night" size="lg" iconAfter="arrowRight">
+          Visit &amp; order
+        </Button>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .catering-head {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .catering-head {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .catering-head__lede {
+    margin-top: var(--sp-4);
+    max-width: 48ch;
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+  }
+
+  .catering-head__actions {
+    margin-top: var(--sp-6);
+  }
+
+  .catering-head__card {
+    padding: var(--sp-6);
+    background: var(--paper-warm);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+
+  .catering-head__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--cta);
+    margin-bottom: var(--sp-4);
+  }
+
+  .catering-head__card-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+  }
+
+  .catering-head__card-text {
+    margin-top: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  /* -------------------------- checklist ---------------------------- */
+  .checklist {
+    display: grid;
+    gap: var(--sp-4);
+    margin-top: var(--sp-6);
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .checklist {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .checklist {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-5);
+    }
+  }
+
+  .checklist__item {
+    display: flex;
+    gap: var(--sp-4);
+    padding: var(--sp-5);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+
+  .checklist__num {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cta);
+    line-height: 1.4;
+  }
+
+  .checklist__label {
+    font-size: var(--fs-h3);
+  }
+
+  .checklist__hint {
+    margin-top: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  /* --------------------------- status ----------------------------- */
+  .status-grid {
+    display: grid;
+    gap: var(--sp-7);
+  }
+
+  @media (min-width: 64rem) {
+    .status-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .status-list {
+    margin-top: var(--sp-5);
+    display: grid;
+    gap: var(--sp-3);
+    list-style: none;
+    padding: 0;
+    max-width: var(--measure);
+  }
+
+  .status-list li {
+    position: relative;
+    padding-left: var(--sp-5);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .status-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.6rem;
+    height: 2px;
+    background: var(--line-strong);
+  }
+
+  .status-list--done li::before {
+    background: var(--brand-gold);
+  }
+
+  .catering-note {
+    margin-top: var(--sp-7);
+    max-width: 62rem;
+  }
+
+  .catering-cta {
+    display: grid;
+    gap: var(--sp-5);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .catering-cta {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .catering-cta__lede {
+    margin-top: var(--sp-2);
+    color: #ded7cc;
+  }
+</style>

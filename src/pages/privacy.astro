@@ -1,0 +1,289 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import Icon from '../components/Icon.astro';
+import Button from '../components/Button.astro';
+import { siteConfig, telHref, directionsUrl } from '../config/site.js';
+
+/**
+ * This page is an inventory of what the site actually does, not a copied legal
+ * policy. Copying another business's privacy policy and presenting it as
+ * customised legal advice would be both useless and misleading.
+ *
+ * Everything below was verified against the built output rather than asserted:
+ * no analytics, no advertising pixels, no cookies set by this site, fonts
+ * self-hosted, and the only third-party request is the map, which requires an
+ * explicit click.
+ */
+
+const collected = [
+  {
+    what: 'Personal information',
+    detail: 'None. This site has no forms, no accounts, no newsletter and no checkout, so there is nothing to submit and nothing stored.',
+  },
+  {
+    what: 'Analytics or advertising',
+    detail: 'None. No Google Analytics, no advertising pixels, no session recording and no A/B testing scripts are present.',
+  },
+  {
+    what: 'Cookies set by this site',
+    detail: 'None. No cookie is written by any code on this site.',
+  },
+  {
+    what: 'Fonts',
+    detail: 'Self-hosted. Fraunces and Inter ship as files inside this project, so no request goes to Google Fonts and no visitor IP is shared with it.',
+  },
+  {
+    what: 'Embedded map',
+    detail: 'Loaded only when you click “Load interactive map”. Until then, no request is made to Google. Once loaded, Google may set cookies on its own terms.',
+  },
+  {
+    what: 'Links to other services',
+    detail: 'Ordering links and the directions link go to third-party sites (Grubhub, Uber Eats, Google Maps, Facebook). Those sites have their own privacy policies once you arrive.',
+  },
+];
+
+const willChange = [
+  'Adding an enquiry form would mean collecting names, email addresses and message contents, and would require a documented retention period and a deletion route.',
+  'Adding analytics would require a lawful basis, and in some jurisdictions a consent banner, before any script runs.',
+  'Adding online payments would trigger far more, and should be handled by the platform taking the payment rather than by this site.',
+  'If the restaurant later wants marketing email, that needs a separate, explicit consent step — never a pre-ticked box.',
+];
+---
+
+<MainLayout
+  title="Privacy & data"
+  description="What this website does and does not collect: no analytics, no advertising trackers, no cookies set by the site, and a map that loads only on request."
+  canonicalPath="/privacy/"
+>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Privacy, data &amp; licensing</p>
+      <h1>What this site does with your data</h1>
+      <p class="privacy-lede">
+        Short version: this website collects nothing about you. Here is the full inventory, so you
+        can check that claim rather than take our word for it.
+      </p>
+
+      <div class="privacy-status">
+        <span class="privacy-status__badge">
+          <Icon name="shield" size={18} />
+          0 trackers · 0 cookies · 0 forms
+        </span>
+      </div>
+
+      <dl class="inventory">
+        {
+          collected.map((item) => (
+            <div class="inventory__row">
+              <dt class="inventory__term">{item.what}</dt>
+              <dd class="inventory__detail">{item.detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="section section--warm" aria-labelledby="future-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="If that changes"
+        id="future-heading"
+        title="What would trigger obligations"
+        lede="These are the things that would turn a no-data site into one with real privacy duties. None of them are in place today."
+      />
+
+      <ul class="future-list">
+        {willChange.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <div class="privacy-note">
+        <ConceptNote title="Not legal advice" icon="alert">
+          This page describes what the website technically does. It is not a privacy policy, and
+          it is not legal advice. Before launch, a policy should be written for the features that
+          actually exist at that point — and reviewed by someone qualified to do so if the
+          restaurant collects anything at all.
+        </ConceptNote>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="licensing-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Licensing &amp; permissions"
+        id="licensing-heading"
+        title="What is in this build, and whose it is"
+      />
+
+      <dl class="inventory">
+        <div class="inventory__row">
+          <dt class="inventory__term">Typefaces</dt>
+          <dd class="inventory__detail">
+            Fraunces and Inter, both under the SIL Open Font License 1.1, which permits commercial
+            use and self-hosting. Their licence files ship with the packages.
+          </dd>
+        </div>
+        <div class="inventory__row">
+          <dt class="inventory__term">Icons</dt>
+          <dd class="inventory__detail">
+            Hand-authored for this project. No third-party icon library is bundled, so there is no
+            external icon licence to track.
+          </dd>
+        </div>
+        <div class="inventory__row">
+          <dt class="inventory__term">Photographs</dt>
+          <dd class="inventory__detail">
+            None are included. Every image position is a labelled placeholder awaiting
+            authorised photography from the restaurant.
+          </dd>
+        </div>
+        <div class="inventory__row">
+          <dt class="inventory__term">Logo</dt>
+          <dd class="inventory__detail">
+            Not reproduced. The header uses a typographic wordmark because we hold no written
+            permission to redistribute Urban Tadka’s artwork. The site is ready to accept an
+            authorised SVG.
+          </dd>
+        </div>
+        <div class="inventory__row">
+          <dt class="inventory__term">Menu content</dt>
+          <dd class="inventory__detail">
+            Dish names, descriptions and prices are Urban Tadka’s own, transcribed from its
+            published menu page. They remain the restaurant’s property.
+          </dd>
+        </div>
+        <div class="inventory__row">
+          <dt class="inventory__term">This concept</dt>
+          <dd class="inventory__detail">
+            Prepared for review. It is not published, not indexed, and not presented as approved
+            by Urban Tadka. A page-level <code>noindex, nofollow</code> tag and a disallowing
+            robots file are in place until the owner approves publication.
+          </dd>
+        </div>
+      </dl>
+
+      <div class="privacy-actions">
+        <Button href={telHref} variant="primary" icon="phone">
+          Call the restaurant
+        </Button>
+        <Button href={directionsUrl} variant="secondary" icon="navigation" external>
+          Directions
+        </Button>
+      </div>
+
+      <p class="privacy-meta">
+        Concept prepared for {siteConfig.brand.name}. Business details on this site are the
+        restaurant’s own; anything unconfirmed is flagged in place.
+      </p>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .privacy-lede {
+    margin-top: var(--sp-4);
+    max-width: var(--measure);
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+  }
+
+  .privacy-status {
+    margin-top: var(--sp-6);
+  }
+
+  .privacy-status__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--r-sm);
+    background: var(--night);
+    color: var(--brand-gold);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+
+  .inventory {
+    margin-top: var(--sp-6);
+    display: grid;
+    gap: 0;
+    max-width: 66rem;
+  }
+
+  .inventory__row {
+    display: grid;
+    gap: var(--sp-1);
+    padding-block: var(--sp-5);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .inventory__row:first-child {
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 48rem) {
+    .inventory__row {
+      grid-template-columns: 14rem 1fr;
+      gap: var(--sp-5);
+      align-items: baseline;
+    }
+  }
+
+  .inventory__term {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+  }
+
+  .inventory__detail {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .future-list {
+    margin-top: var(--sp-6);
+    display: grid;
+    gap: var(--sp-4);
+    list-style: none;
+    padding: 0;
+    max-width: var(--measure);
+  }
+
+  .future-list li {
+    position: relative;
+    padding-left: var(--sp-5);
+    color: var(--ink-2);
+  }
+
+  .future-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 0.6rem;
+    height: 2px;
+    background: var(--brand-gold);
+  }
+
+  .privacy-note {
+    margin-top: var(--sp-7);
+    max-width: 62rem;
+  }
+
+  .privacy-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-7);
+  }
+
+  .privacy-meta {
+    margin-top: var(--sp-6);
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+</style>

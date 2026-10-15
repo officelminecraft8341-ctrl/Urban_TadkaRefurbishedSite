@@ -1,0 +1,7 @@
+{
+  // Astro's strict preset: catches untyped props and null handling, which is
+  // what `npm run typecheck` enforces. See astro/tsconfigs for the presets.
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules", "audit"]
+}

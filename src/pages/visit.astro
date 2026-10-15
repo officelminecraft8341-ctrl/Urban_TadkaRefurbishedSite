@@ -1,0 +1,405 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import { siteConfig, telHref, directionsUrl, mapsPlaceUrl } from '../config/site.js';
+
+const { business, hours, ordering } = siteConfig;
+
+const quickActions = [
+  { label: 'Call the restaurant', href: telHref, icon: 'phone', variant: 'primary', external: false },
+  {
+    label: 'Get directions',
+    href: directionsUrl,
+    icon: 'navigation',
+    variant: 'secondary',
+    external: true,
+  },
+  { label: 'View on the map', href: mapsPlaceUrl, icon: 'mapPin', variant: 'secondary', external: true },
+];
+---
+
+<MainLayout
+  title="Visit & order"
+  description="Urban Tadka, 1800 Market Place Blvd, Suite #190, Irving, TX 75063. Telephone (469) 420-9920. Opening hours, directions and ordering options."
+  canonicalPath="/visit/"
+>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Visit</p>
+      <h1>Find us, call us, or order</h1>
+      <p class="visit-lede">
+        {business.streetAddress}, {business.addressLocality}, {business.addressRegion}
+        {' '}{business.postalCode}. Telephone {business.phoneDisplay}.
+      </p>
+
+      <div class="btn-row visit-actions">
+        {
+          quickActions.map((action) => (
+            <Button
+              href={action.href}
+              variant={action.variant}
+              size="lg"
+              icon={action.icon}
+              external={action.external}
+            >
+              {action.label}
+            </Button>
+          ))
+        }
+      </div>
+
+      <div class="visit-layout">
+        <div class="visit-map">
+          <MapEmbed />
+        </div>
+
+        <!-- ========================= HOURS ======================== -->
+        <div class="visit-hours">
+          <h2 id="hours-heading">Opening hours</h2>
+
+          <table class="hours-table">
+            <caption class="visually-hidden">
+              Urban Tadka opening hours by day
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Day</th>
+                <th scope="col">Lunch</th>
+                <th scope="col">Dinner</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                hours.schedule.map((row) => (
+                  <tr class={row.closed ? 'is-closed' : undefined}>
+                    <th scope="row">{row.day}</th>
+                    <td>{row.closed ? <span class="closed">Closed</span> : row.lunch}</td>
+                    <td>{row.closed ? <span class="closed">Closed</span> : row.dinner}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+
+          <ConceptNote title="Confirm before launch" icon="alert">
+            {hours.note}
+          </ConceptNote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== ORDER ============================= -->
+  <section class="section section--warm" id="order" aria-labelledby="order-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Order"
+        id="order-heading"
+        title="Ways to order"
+        lede="Urban Tadka takes orders by phone, and is listed on third-party delivery platforms. Pick whichever suits you."
+      />
+
+      <div class="order-grid">
+        <article class="order-card">
+          <span class="order-card__icon" aria-hidden="true">
+            <Icon name="phone" size={22} />
+          </span>
+          <h3>Call the restaurant</h3>
+          <p class="order-card__text">
+            The simplest route, and the only one where you can ask about ingredients directly.
+          </p>
+          <Button href={telHref} variant="primary" icon="phone" block>
+            {business.phoneDisplay}
+          </Button>
+        </article>
+
+        {
+          ordering.options.map((option) => (
+            <article class="order-card">
+              <span class="order-card__icon" aria-hidden="true">
+                <Icon name="truck" size={22} />
+              </span>
+              <h3>{option.label}</h3>
+              <p class="order-card__text">{option.kind}</p>
+              <Button href={option.url} variant="secondary" iconAfter="external" external block>
+                Order on {option.label}
+              </Button>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="order-note">
+        <ConceptNote title="Platform links need confirming">
+          {ordering.note} The restaurant’s own website links to an ezCater page that, when
+          requested, redirects to ezCater’s homepage rather than any Urban Tadka page — so that
+          link has deliberately <strong>not</strong> been given a button here. If catering is
+          ordered through ezCater, we need the correct URL from the restaurant.
+        </ConceptNote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= ENQUIRIES ========================== -->
+  <section class="section" id="enquiries" aria-labelledby="enquiries-heading">
+    <div class="container enquiries">
+      <div>
+        <SectionHeading
+          eyebrow="Enquiries"
+          id="enquiries-heading"
+          title="Questions, catering and large tables"
+        />
+
+        <div class="prose">
+          <p>
+            Urban Tadka publishes no public email address, so this page does not offer an email
+            link that would go nowhere. The fastest way to reach the restaurant is the telephone.
+          </p>
+          <p>
+            Once the restaurant gives us an address to use and approves the wording, a short
+            enquiry form can be added here for catering and group bookings.
+          </p>
+        </div>
+
+        <div class="btn-row enquiries__actions">
+          <Button href={telHref} variant="primary" size="lg" icon="phone">
+            Call {business.phoneDisplay}
+          </Button>
+          <Button href="/catering/" variant="secondary" size="lg" iconAfter="arrowRight">
+            Catering
+          </Button>
+        </div>
+      </div>
+
+      <div class="enquiries__side">
+        <ConceptNote title="Why there is no form here yet" icon="alert">
+          A form that appears to send a message but does not is worse than no form. This site is
+          static, so a working form needs either an approved email address and a form-handling
+          service, or a small serverless endpoint. Both need the owner’s sign-off, and collecting
+          anyone’s details then triggers the privacy obligations in
+          <a href="/privacy/">Privacy &amp; data</a>. Send us a destination address and this takes
+          about half an hour to wire up properly.
+        </ConceptNote>
+
+        <dl class="fact-list enquiries__facts">
+          <div class="fact-list__row">
+            <dt class="fact-list__term">Address</dt>
+            <dd class="fact-list__value">
+              {business.streetAddress}
+              <br />
+              {business.addressLocality}, {business.addressRegion} {business.postalCode}
+            </dd>
+          </div>
+          <div class="fact-list__row">
+            <dt class="fact-list__term">Telephone</dt>
+            <dd class="fact-list__value">
+              <a href={telHref}>{business.phoneDisplay}</a>
+            </dd>
+          </div>
+          <div class="fact-list__row">
+            <dt class="fact-list__term">Parking &amp; access</dt>
+            <dd class="fact-list__value fact-list__value--plain">
+              Not published by the restaurant. Please call to ask about parking, step-free access
+              or large tables.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--night">
+    <div class="container visit-cta">
+      <div>
+        <h2>Lunch, dinner, catering</h2>
+        <p class="visit-cta__lede">Open six days a week. Closed Tuesdays.</p>
+      </div>
+      <div class="btn-row">
+        <Button href="/menu/" variant="on-night" size="lg" iconAfter="arrowRight">
+          See the menu
+        </Button>
+        <Button href={directionsUrl} variant="outline-night" size="lg" icon="navigation" external>
+          Directions
+        </Button>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .visit-lede {
+    margin-top: var(--sp-4);
+    max-width: var(--measure);
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+  }
+
+  .visit-actions {
+    margin-top: var(--sp-6);
+  }
+
+  .visit-layout {
+    display: grid;
+    gap: var(--sp-7);
+    margin-top: var(--sp-7);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .visit-layout {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .visit-hours h2 {
+    font-size: var(--fs-h3);
+    margin-bottom: var(--sp-4);
+  }
+
+  /* ------------------------- hours table --------------------------- */
+  .hours-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+  }
+
+  .hours-table th,
+  .hours-table td {
+    text-align: left;
+    padding: 0.55rem 0.6rem 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .hours-table thead th {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .hours-table tbody th {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .hours-table .is-closed th,
+  .hours-table .is-closed td {
+    color: var(--ink-soft);
+  }
+
+  .closed {
+    font-weight: 600;
+    color: var(--cta);
+  }
+
+  .visit-hours :global(.concept-note) {
+    margin-top: var(--sp-5);
+  }
+
+  /* ---------------------------- order ----------------------------- */
+  .order-grid {
+    display: grid;
+    gap: var(--sp-5);
+    margin-top: var(--sp-6);
+  }
+
+  @media (min-width: 40rem) {
+    .order-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .order-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .order-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+
+  .order-card h3 {
+    font-size: var(--fs-h3);
+  }
+
+  .order-card__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--paper-warm);
+    border: 1px solid var(--line);
+    color: var(--cta);
+  }
+
+  .order-card__text {
+    flex: 1;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .order-note {
+    margin-top: var(--sp-6);
+    max-width: 62rem;
+  }
+
+  /* -------------------------- enquiries --------------------------- */
+  .enquiries {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .enquiries {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .enquiries__actions {
+    margin-top: var(--sp-6);
+  }
+
+  .enquiries__side {
+    display: grid;
+    gap: var(--sp-6);
+  }
+
+  .fact-list__value--plain {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .visit-cta {
+    display: grid;
+    gap: var(--sp-5);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .visit-cta {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .visit-cta__lede {
+    margin-top: var(--sp-2);
+    color: #ded7cc;
+  }
+</style>

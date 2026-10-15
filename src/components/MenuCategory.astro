@@ -1,0 +1,203 @@
+---
+/**
+ * MenuCategory
+ *
+ * One category band on the menu page. Uses a definition list (`<dl>`) rather
+ * than cards because 157 dishes need vertical scanning, not tiles: a diner
+ * looking for one dish reads down a single column of names-and-prices.
+ *
+ * Every row carries `data-dish` so the menu page's search field can filter
+ * without a page reload. With JavaScript disabled the whole menu is still
+ * present and readable — filtering is an enhancement, never a requirement.
+ */
+
+import Icon from './Icon.astro';
+import { formatPrice, categoryLabel, categorySummary } from '../lib/menu.js';
+
+interface MenuItem {
+  name: string;
+  price: number | null;
+  description: string | null;
+}
+
+interface Props {
+  category: {
+    slug: string;
+    sourceTitle: string;
+    items: MenuItem[];
+  };
+}
+
+const { category } = Astro.props;
+const label = categoryLabel(category.slug);
+const summary = categorySummary(category.slug);
+const headingId = `${category.slug}-heading`;
+---
+
+<section class="menu-cat" id={category.slug} aria-labelledby={headingId} data-menu-section>
+  <header class="menu-cat__head">
+    <h2 id={headingId} class="menu-cat__title">{label}</h2>
+    <p class="menu-cat__count">
+      {category.items.length}
+      {category.items.length === 1 ? 'dish' : 'dishes'}
+    </p>
+  </header>
+
+  {summary && <p class="menu-cat__summary">{summary}</p>}
+
+  <dl class="menu-list">
+    {
+      category.items.map((dish) => {
+        const price = formatPrice(dish.price);
+        return (
+          <div class="menu-list__row" data-menu-row>
+            <dt class="menu-list__name">
+              <span class="menu-list__label">{dish.name}</span>
+              <span class="menu-list__leader" aria-hidden="true" />
+              <span class="menu-list__price">
+                {price ?? <span class="menu-list__ask">Ask us</span>}
+              </span>
+            </dt>
+            {dish.description && <dd class="menu-list__desc">{dish.description}</dd>}
+          </div>
+        );
+      })
+    }
+  </dl>
+
+  <p class="menu-cat__empty" data-menu-empty hidden>
+    <Icon name="search" size={16} />
+    No dishes in this category match your search.
+  </p>
+
+  <p class="menu-cat__back">
+    <a href="#menu-top">
+      Back to top
+      <Icon name="arrowUp" size={14} />
+    </a>
+  </p>
+</section>
+
+<style>
+  .menu-cat {
+    padding-block: var(--sp-7);
+    border-top: 1px solid var(--line);
+  }
+
+  .menu-cat:first-of-type {
+    border-top: 0;
+    padding-block-start: var(--sp-4);
+  }
+
+  .menu-cat__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-3);
+  }
+
+  .menu-cat__title {
+    font-size: var(--fs-h2);
+    margin: 0;
+  }
+
+  .menu-cat__count {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .menu-cat__summary {
+    margin-top: var(--sp-2);
+    max-width: var(--measure);
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+  }
+
+  .menu-list {
+    margin-top: var(--sp-5);
+    padding: 0;
+  }
+
+  .menu-list__row {
+    padding-block: var(--sp-4);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .menu-list__row:last-child {
+    border-bottom: 0;
+  }
+
+  /* Name … price on one baseline, description wrapped underneath. */
+  .menu-list__name {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+  }
+
+  .menu-list__label {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: var(--lh-snug);
+  }
+
+  .menu-list__leader {
+    flex: 1;
+    min-width: var(--sp-4);
+    border-bottom: 1px dotted var(--line-strong);
+    transform: translateY(-0.25rem);
+  }
+
+  .menu-list__price {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .menu-list__ask {
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .menu-list__desc {
+    margin-top: var(--sp-1);
+    max-width: var(--measure);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .menu-cat__empty {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-4);
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+  }
+
+  .menu-cat__back {
+    margin-top: var(--sp-5);
+    font-size: var(--fs-xs);
+  }
+
+  .menu-cat__back a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .menu-cat__back a:hover {
+    color: var(--cta);
+    text-decoration: underline;
+  }
+</style>

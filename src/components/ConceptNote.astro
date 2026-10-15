@@ -1,0 +1,33 @@
+---
+/**
+ * ConceptNote
+ *
+ * A visible, honest annotation used wherever a fact cannot be confirmed yet.
+ * It is the mechanism that keeps this concept from presenting unverified
+ * business details as settled truth.
+ *
+ * Used for: opening hours that conflict with third-party listings, prices
+ * frozen in 2019, platform link ownership, photography, and the enquiry form.
+ * Once the owner confirms a detail, delete the note that covered it.
+ */
+
+import Icon from './Icon.astro';
+
+interface Props {
+  /** Short label naming what is unconfirmed. */
+  title?: string;
+  /** Any key from the Icon set. */
+  icon?: string;
+  class?: string;
+}
+
+const { title = 'Not yet confirmed', icon = 'info', class: className = '' } = Astro.props;
+---
+
+<div class={`concept-note ${className}`.trim()} role="note">
+  <Icon name={icon} size={18} />
+  <div>
+    <span class="concept-note__label">{title}</span>
+    <slot />
+  </div>
+</div>

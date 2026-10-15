@@ -1,0 +1,33 @@
+# --- dependencies & build output -----------------------------------------
+node_modules/
+dist/
+.astro/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- environment & secrets -------------------------------------------------
+# Never commit credentials. This project needs none today; if a form
+# handler or analytics is added, its keys go here and into Sites → Secrets.
+.env
+.env.*
+!.env.example
+
+# --- mirrored third-party assets ------------------------------------------
+# audit/ holds a local mirror of the restaurant's existing website (page HTML,
+# CSS and logo files) captured during the Phase 1 audit. Those assets belong to
+# Urban Tadka and are kept purely as internal evidence. They must not be
+# redistributed, so they are deliberately not committed. Regenerate with the
+# commands recorded in docs/01-website-audit.md if the evidence is needed.
+audit/
+
+# --- local tooling state ---------------------------------------------------
+# Per-machine run instructions and platform preview state. Useful locally,
+# but it records hostnames that differ per environment, so it is not committed.
+.freebuff/
+
+# --- editors & OS ----------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

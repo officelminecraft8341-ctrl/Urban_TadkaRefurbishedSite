@@ -1,0 +1,161 @@
+---
+/**
+ * MapEmbed — click-to-load
+ *
+ * A Google Maps iframe is a third-party request that can set cookies, and this
+ * site carries no cookie banner because it carries no tracking. Rather than
+ * either embedding unconditionally or dropping the map, the map is loaded only
+ * when the visitor explicitly asks for it.
+ *
+ * Result: visitors who never open the map are never tracked, and the map still
+ * works for the people who want it — including a no-JavaScript fallback link
+ * straight to Google Maps.
+ */
+
+import Icon from './Icon.astro';
+import { mapEmbedUrl, directionsUrl, siteConfig } from '../config/site.js';
+
+const { business } = siteConfig;
+---
+
+<div class="map" data-map data-src={mapEmbedUrl}>
+  <div class="map__placeholder" data-map-placeholder>
+    <span class="map__pin" aria-hidden="true">
+      <Icon name="mapPin" size={26} />
+    </span>
+    <p class="map__address">
+      {business.streetAddress}
+      <br />
+      {business.addressLocality}, {business.addressRegion} {business.postalCode}
+    </p>
+    <button type="button" class="map__load" data-map-load>
+      <Icon name="mapPin" size={18} />
+      Load interactive map
+    </button>
+    <p class="map__privacy">
+      The map is provided by Google and loads only when you ask for it. Opening it
+      may set Google cookies.
+    </p>
+    <p class="map__fallback">
+      <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+        Open in Google Maps
+        <span class="visually-hidden">(opens in a new tab)</span>
+      </a>
+    </p>
+  </div>
+
+  <div class="map__frame" data-map-frame hidden></div>
+</div>
+
+<script>
+  // Load the embed on demand, once. Re-entrant clicks are ignored.
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((map) => {
+    const button = map.querySelector<HTMLButtonElement>('[data-map-load]');
+    const placeholder = map.querySelector<HTMLElement>('[data-map-placeholder]');
+    const frame = map.querySelector<HTMLElement>('[data-map-frame]');
+    const src = map.dataset.src;
+
+    if (!button || !placeholder || !frame || !src) return;
+
+    button.addEventListener('click', () => {
+      if (frame.querySelector('iframe')) return;
+
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.title = `Map showing the location of Urban Tadka`;
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      iframe.setAttribute('allowfullscreen', '');
+      frame.append(iframe);
+
+      frame.hidden = false;
+      placeholder.hidden = true;
+    });
+  });
+</script>
+
+<style>
+  .map {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper-warm);
+    overflow: hidden;
+    min-height: 20rem;
+  }
+
+  .map__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-3);
+    padding: var(--sp-6) var(--sp-5);
+    min-height: 20rem;
+    text-align: center;
+  }
+
+  .map__pin {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--cta);
+  }
+
+  .map__address {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    line-height: 1.4;
+  }
+
+  .map__load {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 2.75rem;
+    padding: 0.6rem 1.25rem;
+    border: 1.5px solid var(--cta);
+    border-radius: var(--r-sm);
+    color: var(--cta);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+
+  .map__load:hover {
+    background: rgba(191, 56, 62, 0.08);
+  }
+
+  .map__privacy {
+    max-width: 42ch;
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+  }
+
+  .map__fallback {
+    font-size: var(--fs-sm);
+  }
+
+  .map__frame {
+    min-height: 20rem;
+  }
+
+  .map__frame :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 20rem;
+    border: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .map,
+    .map__placeholder,
+    .map__frame,
+    .map__frame :global(iframe) {
+      min-height: 26rem;
+      height: 26rem;
+    }
+  }
+</style>

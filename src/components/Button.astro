@@ -1,0 +1,68 @@
+---
+/**
+ * Button
+ *
+ * Renders an <a> when given `href` and a real <button> otherwise, so semantics
+ * always match behaviour. There is no "looks like a button but does nothing"
+ * path: if you pass href="#", you have a bug.
+ *
+ * Variants map to the design system; tertiary exists so a page with two real
+ * actions does not grow a third and fourth competing button.
+ */
+
+import Icon from './Icon.astro';
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconAfter,
+  external = false,
+  block = false,
+  type = 'button',
+  ariaLabel,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const classes = [
+  'btn',
+  `btn--${variant}`,
+  size === 'lg' ? 'btn--lg' : '',
+  block ? 'btn--block' : '',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+
+// External links are marked in the accessible name, not only by an icon.
+const isExternal = Boolean(href && /^https?:\/\//.test(href));
+
+const externalAttrs = isExternal
+  ? { target: '_blank', rel: 'noopener noreferrer' }
+  : {};
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class={classes}
+      aria-label={ariaLabel}
+      {...externalAttrs}
+      {...rest}
+    >
+      {icon && <Icon name={icon} size={18} />}
+      <span><slot /></span>
+      {iconAfter && <Icon name={iconAfter} size={18} />}
+      {isExternal && <span class="visually-hidden"> (opens in a new tab)</span>}
+    </a>
+  ) : (
+    <button type={type} class={classes} aria-label={ariaLabel} {...rest}>
+      {icon && <Icon name={icon} size={18} />}
+      <span><slot /></span>
+      {iconAfter && <Icon name={iconAfter} size={18} />}
+    </button>
+  )
+}

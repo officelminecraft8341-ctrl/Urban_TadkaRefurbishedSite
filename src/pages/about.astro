@@ -1,0 +1,244 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import Button from '../components/Button.astro';
+import { siteConfig, directionsUrl } from '../config/site.js';
+
+/**
+ * The region list below is the restaurant's own: its About page names exactly
+ * these cities as the "urbanised melting posts" behind the menu.
+ */
+const regions = [
+  'Lahore',
+  'Peshawar',
+  'Rawalpindi',
+  'Kabul',
+  'Amritsar',
+  'Multan',
+  'Patiala',
+];
+
+const spices = [
+  'Cumin seed',
+  'Cloves',
+  'Cinnamon',
+  'Green cardamom',
+  'Black cardamom',
+  'Saffron',
+  'Bay leaves',
+  'Mustard seeds',
+];
+---
+
+<MainLayout
+  title="About"
+  description="About Urban Tadka — a North Indian restaurant in Irving, Texas, serving the food of the undivided Punjab and the wider North Indian kitchen."
+  canonicalPath="/about/"
+>
+  <section class="section">
+    <div class="container about-head">
+      <div>
+        <p class="eyebrow">About</p>
+        <h1>A tradition from India</h1>
+        <p class="about-head__lede">
+          Urban Tadka serves North Indian food in Irving, Texas. What follows is drawn from the
+          restaurant’s own description of its cooking.
+        </p>
+      </div>
+
+      <div class="about-head__media">
+        <PhotoPlaceholder
+          caption="Photograph: hands adding whole spices to a hot pan — the tadka technique"
+          ratio="4/3"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--warm" aria-labelledby="kitchen-heading">
+    <div class="container about-grid">
+      <div class="prose">
+        <SectionHeading
+          eyebrow="The menu"
+          id="kitchen-heading"
+          title="Food from the undivided Punjab"
+        />
+
+        <p>
+          Urban Tadka describes its menu as the food of the undivided region of Punjab. It names
+          the cities whose kitchens, in its own words, formed the “urbanised melting posts of
+          different cultures” that the menu draws on:
+        </p>
+
+        <ul class="region-list">
+          {regions.map((region) => <li>{region}</li>)}
+        </ul>
+
+        <p>
+          It is from that mix, the restaurant says, that the everyday combination of
+          <strong>sarson da saag</strong> and <strong>makki di roti</strong> sits alongside recipes
+          it associates with the royal kitchens.
+        </p>
+      </div>
+
+      <div class="about-grid__media">
+        <PhotoPlaceholder
+          caption="Photograph: a steel bowl of whole spices — cumin, cardamom, cinnamon, saffron"
+          ratio="4/5"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="tadka-heading">
+    <div class="container about-grid about-grid--reverse">
+      <div class="about-grid__media">
+        <PhotoPlaceholder
+          caption="Photograph: naan being lifted out of the tandoor with a hook"
+          ratio="4/5"
+        />
+      </div>
+
+      <div class="prose">
+        <SectionHeading eyebrow="The name" id="tadka-heading" title="What “tadka” means" />
+
+        <p>
+          The restaurant explains its own name: <strong>tadka</strong> is the North Indian
+          technique of blooming whole spices in hot oil or ghee to bring flavour to a dish.
+        </p>
+
+        <p>The spices it names as part of that technique are:</p>
+
+        <ul class="spice-list">
+          {spices.map((spice) => <li>{spice}</li>)}
+        </ul>
+
+        <div class="about-note">
+          <ConceptNote title="Nothing here was invented">
+            Urban Tadka does not publish a founding date, an owner biography or an awards list,
+            so none appears on this page. If the restaurant wants its history told, we need the
+            facts from them first — including any press coverage they want quoted.
+          </ConceptNote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--night" aria-labelledby="about-cta">
+    <div class="container about-cta">
+      <div>
+        <h2 id="about-cta">Come and eat</h2>
+        <p class="about-cta__lede">
+          {siteConfig.business.addressOneLine} · {siteConfig.business.phoneDisplay}
+        </p>
+      </div>
+      <div class="btn-row">
+        <Button href="/menu/" variant="on-night" size="lg" iconAfter="arrowRight">
+          See the menu
+        </Button>
+        <Button href={directionsUrl} variant="outline-night" size="lg" icon="navigation" external>
+          Directions
+        </Button>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .about-head {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .about-head {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .about-head__lede {
+    margin-top: var(--sp-4);
+    max-width: 48ch;
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+  }
+
+  .about-head__media {
+    max-width: 32rem;
+  }
+
+  .about-grid {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .about-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: var(--sp-8);
+    }
+
+    .about-grid--reverse {
+      grid-template-columns: 0.8fr 1.2fr;
+    }
+  }
+
+  .about-grid__media {
+    max-width: 26rem;
+  }
+
+  .region-list,
+  .spice-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    list-style: none;
+    padding: 0;
+    margin-top: var(--sp-4);
+  }
+
+  .region-list li,
+  .spice-list li {
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--r-xs);
+    font-size: var(--fs-sm);
+  }
+
+  .region-list li {
+    background: var(--brand-gold);
+    color: var(--night);
+    font-weight: 600;
+  }
+
+  .spice-list li {
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    background: var(--paper);
+  }
+
+  .about-note {
+    margin-top: var(--sp-6);
+  }
+
+  .about-cta {
+    display: grid;
+    gap: var(--sp-5);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .about-cta {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+
+  .about-cta__lede {
+    margin-top: var(--sp-2);
+    color: #ded7cc;
+  }
+</style>

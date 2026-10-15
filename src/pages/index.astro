@@ -1,0 +1,619 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import DishCard from '../components/DishCard.astro';
+import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import {
+  categories,
+  findDish,
+  totalItems,
+  categoryLabel,
+  categoryHref,
+  categorySummary,
+} from '../lib/menu.js';
+import { siteConfig, telHref, directionsUrl } from '../config/site.js';
+
+// Featured dishes resolve against the real menu data. A typo in the config
+// becomes a build failure rather than a silently missing dish.
+const featured = siteConfig.featured.map((entry) => {
+  const dish = findDish(entry.name, entry.category);
+  if (!dish) {
+    throw new Error(
+      `Featured dish "${entry.name}" was not found in category "${entry.category}" in src/data/menu.json.`,
+    );
+  }
+  return { ...dish, photoCaption: `Photograph: ${dish.name}, close-up on a plate` };
+});
+
+const dishCount = totalItems();
+const categoryCount = categories.length;
+
+const galleryPreview = [
+  { caption: 'Photograph: the dining room during a busy dinner service', ratio: '4/3' },
+  { caption: 'Photograph: a tandoori platter arriving at the table', ratio: '4/3' },
+  { caption: 'Photograph: naan being lifted from the tandoor', ratio: '4/3' },
+  { caption: 'Photograph: a biryani served in its handi', ratio: '4/3' },
+];
+
+const visitFacts = [
+  { term: 'Address', value: siteConfig.business.streetAddress },
+  { term: 'Phone', value: siteConfig.business.phoneDisplay },
+  { term: 'Lunch', value: 'Daily from 11:00 am · Sat & Sun from 11:30 am' },
+  { term: 'Dinner', value: 'Daily from 5:30 pm' },
+  { term: 'Closed', value: 'Tuesdays' },
+];
+---
+
+<MainLayout
+  title="North Indian cooking in Irving, TX"
+  description="Urban Tadka serves North Indian curries, tandoori breads and biryani in Irving, Texas — lunch, dinner and catering. 1800 Market Place Blvd, Suite #190. Call (469) 420-9920."
+  canonicalPath="/"
+>
+  <!-- ============================= HERO ============================= -->
+  <section class="hero surface-night">
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">Irving, Texas</p>
+        <h1 class="hero__title">
+          North Indian cooking, <em>lunch and dinner</em>
+        </h1>
+        <p class="hero__lede">
+          Curries, tandoori breads and biryani, served at 1800 Market Place Blvd.
+          Catering available for larger gatherings.
+        </p>
+
+        <div class="btn-row hero__actions">
+          <Button href="/menu/" variant="primary" size="lg" iconAfter="arrowRight">
+            View the menu
+          </Button>
+          <Button
+            href={directionsUrl}
+            variant="secondary"
+            size="lg"
+            icon="navigation"
+            external
+          >
+            Get directions
+          </Button>
+        </div>
+
+        <ul class="hero__facts">
+          <li>
+            <Icon name="clock" size={18} />
+            <span>Open for lunch &amp; dinner · closed Tuesdays</span>
+          </li>
+          <li>
+            <Icon name="phone" size={18} />
+            <a href={telHref}>{siteConfig.business.phoneDisplay}</a>
+          </li>
+          <li>
+            <Icon name="mapPin" size={18} />
+            <span>1800 Market Place Blvd, Suite #190, Irving</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="hero__media">
+        <PhotoPlaceholder
+          caption="Hero photograph: a spread of Urban Tadka dishes on the table, shot from above in warm light"
+          ratio="4/5"
+          tone="night"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= FEATURED DISHES ====================== -->
+  <section class="section" aria-labelledby="featured-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="From the menu"
+        id="featured-heading"
+        title="Four dishes worth asking about"
+        lede={`Urban Tadka's menu runs to ${dishCount} dishes across ${categoryCount} categories. These are a few of them, with the descriptions and prices exactly as the restaurant publishes them.`}
+      />
+
+      <div class="grid grid--dishes">
+        {
+          featured.map((dish) => (
+            <DishCard dish={dish} photoCaption={dish.photoCaption} />
+          ))
+        }
+      </div>
+
+      <div class="featured__note">
+        <ConceptNote title="Prices need confirming" icon="alert">
+          Prices are the restaurant’s own, as published on its current website, which was last
+          updated in 2019. They need re-confirming against the kitchen’s live menu before this
+          site goes live.
+        </ConceptNote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== MENU PREVIEW ======================== -->
+  <section class="section section--warm" aria-labelledby="menu-preview-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="The full menu"
+        id="menu-preview-heading"
+        title="Browse by category"
+        lede="Every dish the restaurant publishes, grouped so you can find what you are looking for without reading a wall of text."
+      />
+
+      <ul class="cat-grid">
+        {
+          categories.map((category) => (
+            <li class="cat-tile">
+              <a class="cat-tile__link" href={categoryHref(category.slug)}>
+                <span class="cat-tile__name">{categoryLabel(category.slug)}</span>
+                <span class="cat-tile__count">
+                  {category.items.length} {category.items.length === 1 ? 'dish' : 'dishes'}
+                </span>
+                {categorySummary(category.slug) && (
+                  <span class="cat-tile__summary">{categorySummary(category.slug)}</span>
+                )}
+                <span class="cat-tile__samples">
+                  {category.items
+                    .slice(0, 3)
+                    .map((item) => item.name)
+                    .join(' · ')}
+                </span>
+                <span class="cat-tile__cta">
+                  View category
+                  <Icon name="arrowRight" size={15} />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="menu-preview__actions">
+        <Button href="/menu/" variant="primary" size="lg" iconAfter="arrowRight">
+          Open the full menu
+        </Button>
+        <Button href={telHref} variant="secondary" size="lg" icon="phone">
+          Call {siteConfig.business.phoneDisplay}
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= INTRODUCTION ========================= -->
+  <section class="section" aria-labelledby="intro-heading">
+    <div class="container intro">
+      <div class="intro__media">
+        <PhotoPlaceholder
+          caption="Photograph: whole spices — cumin, cardamom, cinnamon and saffron — in a steel bowl"
+          ratio="4/5"
+        />
+      </div>
+
+      <div class="intro__copy">
+        <SectionHeading
+          eyebrow="About Urban Tadka"
+          id="intro-heading"
+          title="A tradition from India"
+        />
+
+        <div class="prose intro__prose">
+          <p>
+            The menu draws on the food of the undivided Punjab — the region the restaurant
+            describes as the meeting point of Lahore, Peshawar, Rawalpindi, Kabul, Amritsar,
+            Multan and Patiala — alongside dishes from the wider North Indian kitchen.
+          </p>
+          <p>
+            <strong>Tadka</strong> is the restaurant’s own explanation of its name: the
+            North Indian technique of blooming whole spices — cumin, cloves, cinnamon,
+            cardamom, saffron, bay leaves — in hot oil or ghee to build a dish’s flavour.
+          </p>
+        </div>
+
+        <div class="btn-row intro__actions">
+          <Button href="/about/" variant="secondary" iconAfter="arrowRight">
+            More about the restaurant
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ GALLERY =========================== -->
+  <section class="section section--warm" aria-labelledby="gallery-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Gallery"
+        id="gallery-heading"
+        title="What it looks like inside"
+        lede="Photographs of the room and the food will go here."
+      />
+
+      <ul class="gallery-preview">
+        {
+          galleryPreview.map((item) => (
+            <li>
+              <PhotoPlaceholder caption={item.caption} ratio={item.ratio} compact />
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="gallery-preview__actions">
+        <Button href="/gallery/" variant="secondary" iconAfter="arrowRight">
+          Open the gallery
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= CATERING ========================= -->
+  <section class="section section--night catering-band" aria-labelledby="catering-heading">
+    <div class="container catering-band__inner">
+      <div>
+        <p class="eyebrow">Catering</p>
+        <h2 id="catering-heading">Feeding a group?</h2>
+        <p class="catering-band__lede">
+          Urban Tadka lists catering alongside lunch and dinner. Headcounts, lead times
+          and delivery range need confirming with the restaurant.
+        </p>
+      </div>
+      <div class="btn-row">
+        <Button href="/catering/" variant="on-night" size="lg" iconAfter="arrowRight">
+          Catering details
+        </Button>
+        <Button href={telHref} variant="outline-night" size="lg" icon="phone">
+          Call to ask
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== VISIT =========================== -->
+  <section class="section" id="visit" aria-labelledby="visit-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Visit"
+        id="visit-heading"
+        title="Find us in Irving"
+        lede="On Market Place Blvd, off the President George Bush Turnpike."
+      />
+
+      <div class="visit">
+        <MapEmbed heading="Map" />
+
+        <div class="visit__panel">
+          <dl class="fact-list">
+            {
+              visitFacts.map((fact) => (
+                <div class="fact-list__row">
+                  <dt class="fact-list__term">{fact.term}</dt>
+                  <dd class="fact-list__value">{fact.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <div class="btn-row visit__actions">
+            <Button href={telHref} variant="primary" icon="phone">
+              Call the restaurant
+            </Button>
+            <Button href={directionsUrl} variant="secondary" icon="navigation" external>
+              Directions
+            </Button>
+          </div>
+
+          <Button href="/visit/" variant="tertiary" iconAfter="arrowRight">
+            Opening hours and ordering
+          </Button>
+
+          <ConceptNote title="Hours need confirming" icon="alert">
+            These hours are the restaurant’s own published hours. Public listings show shorter
+            service windows, so they must be confirmed before launch.
+          </ConceptNote>
+        </div>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  /* ------------------------------ hero ------------------------------ */
+  .hero {
+    background: var(--night);
+    color: var(--ink-invert);
+    padding-block: var(--sp-7) var(--sp-8);
+  }
+
+  @media (min-width: 64rem) {
+    .hero {
+      padding-block: var(--sp-9);
+    }
+  }
+
+  .hero__inner {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .hero__inner {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .hero__title {
+    font-size: var(--fs-hero);
+    color: var(--ink-invert);
+    margin-top: var(--sp-2);
+  }
+
+  .hero__title em {
+    font-style: italic;
+    color: var(--brand-gold);
+  }
+
+  .hero__lede {
+    margin-top: var(--sp-4);
+    max-width: 46ch;
+    font-size: var(--fs-lg);
+    color: #ded7cc;
+  }
+
+  .hero__actions {
+    margin-top: var(--sp-6);
+  }
+
+  .hero__facts {
+    display: grid;
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
+    padding-top: var(--sp-5);
+    border-top: 1px solid rgba(251, 248, 243, 0.16);
+    list-style: none;
+  }
+
+  .hero__facts li {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    font-size: var(--fs-sm);
+    color: #ded7cc;
+  }
+
+  .hero__facts :global(svg) {
+    color: var(--brand-gold);
+  }
+
+  .hero__facts a {
+    color: var(--brand-gold);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .hero__facts a:hover {
+    text-decoration: underline;
+  }
+
+  .hero__media {
+    max-width: 30rem;
+  }
+
+  @media (min-width: 64rem) {
+    .hero__media {
+      max-width: none;
+    }
+  }
+
+  /* --------------------------- featured ---------------------------- */
+  .grid {
+    display: grid;
+    gap: var(--sp-5);
+    margin-top: var(--sp-6);
+  }
+
+  .grid--dishes {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 34rem) {
+    .grid--dishes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .grid--dishes {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .featured__note {
+    margin-top: var(--sp-6);
+    max-width: var(--measure);
+  }
+
+  /* ------------------------- menu preview -------------------------- */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-4);
+    margin-top: var(--sp-6);
+    list-style: none;
+  }
+
+  @media (min-width: 34rem) {
+    .cat-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .cat-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .cat-tile {
+    margin: 0;
+  }
+
+  .cat-tile__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    height: 100%;
+    padding: var(--sp-5);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .cat-tile__link:hover {
+      border-color: var(--brand-gold);
+      transform: translateY(-2px);
+    }
+  }
+
+  .cat-tile__name {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+  }
+
+  .cat-tile__count {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .cat-tile__summary {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .cat-tile__samples {
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: var(--sp-3);
+    margin-top: auto;
+  }
+
+  .cat-tile__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--cta);
+  }
+
+  .menu-preview__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
+  }
+
+  /* --------------------------- intro ------------------------------- */
+  .intro {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .intro {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .intro__media {
+    max-width: 26rem;
+  }
+
+  .intro__prose {
+    margin-top: var(--sp-4);
+  }
+
+  .intro__actions {
+    margin-top: var(--sp-6);
+  }
+
+  /* -------------------------- gallery ----------------------------- */
+  .gallery-preview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-4);
+    margin-top: var(--sp-6);
+    list-style: none;
+  }
+
+  @media (min-width: 64rem) {
+    .gallery-preview {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .gallery-preview__actions {
+    margin-top: var(--sp-6);
+  }
+
+  /* -------------------------- catering ---------------------------- */
+  .catering-band__inner {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .catering-band__inner {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+
+  .catering-band__lede {
+    margin-top: var(--sp-3);
+    max-width: 52ch;
+    color: #ded7cc;
+  }
+
+  /* --------------------------- visit ------------------------------ */
+  .visit {
+    display: grid;
+    gap: var(--sp-6);
+    margin-top: var(--sp-6);
+  }
+
+  @media (min-width: 64rem) {
+    .visit {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--sp-8);
+      align-items: start;
+    }
+  }
+
+  .visit__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+  }
+
+  .visit__actions {
+    margin-top: 0;
+  }
+</style>

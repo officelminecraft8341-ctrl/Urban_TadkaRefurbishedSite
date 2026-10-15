@@ -1,0 +1,974 @@
+{
+  "_meta": {
+    "source": "http://www.urbantadkadallas.com/menu.html",
+    "note": "Extracted verbatim from the restaurant's own published menu page. Dish names, descriptions and prices are the restaurant's, not ours. Prices were published in 2019 and MUST be re-confirmed by the owner before this site goes live.",
+    "confidence": "verbatim-from-owner-site",
+    "unverified": [
+      "All prices are as published on the legacy site (last modified 2019-10-22).",
+      "No dish is marked vegetarian, vegan, halal, gluten-free or nut-free - no dietary data exists in the source, and none has been invented.",
+      "Allergen information is not available and is deliberately absent.",
+      "Spice levels are not available.",
+      "Category names are taken from the legacy headings; duplicates were merged."
+    ],
+    "mergeNotes": {
+      "duplicateHeadingsInSource": [
+        "Biryani / Rice",
+        "Drinks"
+      ],
+      "mergedCategories": {
+        "Biryani / Rice + Biryani + Chawal": "rice-biryani",
+        "Subzian / Veggies": "vegetables"
+      },
+      "noteOnLegacyBug": "On the legacy page four headings (Biryani / Rice x2, Biryani, Chawal) share href=\"#collapse7\", so they all opened the same panel. This file reflects the dishes actually present in the source markup."
+    },
+    "stats": {
+      "categories": 13,
+      "items": 157,
+      "itemsWithoutPrice": 0,
+      "itemsWithoutDescription": 3,
+      "priceStringsInSource": 157,
+      "unmatchedPriceRows": 0,
+      "namesAppearingInMultipleCategories": {
+        "chicken biryani": [
+          "rice-biryani @ 12.99",
+          "rice-biryani @ 15.99"
+        ],
+        "chilli paneer": [
+          "appetizers @ 13.99",
+          "paneer @ 18.49"
+        ],
+        "kadai paneer": [
+          "paneer @ 18.49",
+          "vegetables @ 10.99"
+        ],
+        "lamb biryani": [
+          "rice-biryani @ 13.99",
+          "rice-biryani @ 18.99"
+        ],
+        "lassi punjabi": [
+          "drinks @ 3.99",
+          "drinks @ 1.99"
+        ],
+        "mango lassi": [
+          "drinks @ 4.99",
+          "drinks @ 2.99"
+        ],
+        "masala chai": [
+          "drinks @ 2.99",
+          "drinks @ 1.99"
+        ],
+        "masala gucchi": [
+          "vegetables @ 17.49",
+          "vegetables @ 10.99"
+        ],
+        "patiala lassi": [
+          "drinks @ 5.99",
+          "drinks @ 2.99"
+        ],
+        "saag paneer": [
+          "paneer @ 18.49",
+          "vegetables @ 10.99"
+        ],
+        "shrimp biryani": [
+          "rice-biryani @ 14.95",
+          "rice-biryani @ 18.99"
+        ],
+        "smokey baigan": [
+          "vegetables @ 17.99",
+          "vegetables @ 10.99"
+        ],
+        "soft drinks": [
+          "drinks @ 2.5",
+          "drinks @ 0.99"
+        ],
+        "vegetable biryani": [
+          "rice-biryani @ 10.99",
+          "rice-biryani @ 14.99"
+        ]
+      }
+    },
+    "warnings": {
+      "itemsWithoutPrice": [],
+      "unmatchedPriceRows": []
+    }
+  },
+  "currency": "USD",
+  "categories": [
+    {
+      "slug": "appetizers",
+      "sourceTitle": "Appetizer",
+      "items": [
+        {
+          "name": "Samosa",
+          "price": 7.99,
+          "description": "Crispy outer layer filled with seasoned potatoes inside"
+        },
+        {
+          "name": "Harabara Kebob",
+          "price": 12.99,
+          "description": "Made with spinach, potatoes, peas, spices & herbs"
+        },
+        {
+          "name": "Pakora",
+          "price": 8.99,
+          "description": "Spinach, potatoes, onions mixed with seasoned chickpea flour & deep fried"
+        },
+        {
+          "name": "Paneer Pakora",
+          "price": 9.99,
+          "description": "Indian cheese coated with seasoned chickpea flour and deep fried"
+        },
+        {
+          "name": "Mirch Pakora",
+          "price": 8.99,
+          "description": "Sliced jalapenos coated with chickpea flour batter & deep fried"
+        },
+        {
+          "name": "Chicken Pakora",
+          "price": 9.99,
+          "description": "Boneless chicken pcs. Marinated in chickpeas batter & deep fried"
+        },
+        {
+          "name": "Ambarsari Fish Pakora",
+          "price": 13.99,
+          "description": "Tilapia fish marinated in garlic & turmeric mix and deep fried"
+        },
+        {
+          "name": "Shrimp Spicy",
+          "price": 13.99,
+          "description": "Seasoned with chickpea flour & deep fried"
+        },
+        {
+          "name": "Aloo Tikki",
+          "price": 8.99,
+          "description": "Potatoes and spices mashed together shaped & deep fried"
+        },
+        {
+          "name": "Ambarsari Veg Kebob",
+          "price": 12.99,
+          "description": "Mixer of spinach, paneer, onion and poha"
+        },
+        {
+          "name": "Gobi Pakora",
+          "price": 8.99,
+          "description": "Cauliflower florets dipped in seasoned gram flour batter & deep fried"
+        },
+        {
+          "name": "Spinach Pakora",
+          "price": 8.99,
+          "description": "Spinach dipped in gram flour batter"
+        },
+        {
+          "name": "Onion Pakora",
+          "price": 8.99,
+          "description": "Sliced onions dipped in seasoned gram flour batter"
+        },
+        {
+          "name": "Desi Fries",
+          "price": 7.49,
+          "description": "Potato fingers coated with seasoned batter & deep fried"
+        },
+        {
+          "name": "Chilli Paneer",
+          "price": 13.99,
+          "description": "Cheese cubes stir fried with capsicum, onions chilli & soy sauce"
+        },
+        {
+          "name": "Chilli Chicken",
+          "price": 13.99,
+          "description": "Chicken cubes stir fried with capsicum, onions chilli & soy sauce"
+        },
+        {
+          "name": "Chicken 65",
+          "price": 13.99,
+          "description": "Marinated with spices, yogurt, egg, & curry leaves"
+        },
+        {
+          "name": "Chicken Lollipops",
+          "price": 13.99,
+          "description": "Marinated in a spicy yogurt mixture & coated in a mixture of spices"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "breads",
+      "sourceTitle": "Naan / Bread",
+      "items": [
+        {
+          "name": "Naan",
+          "price": 2.99,
+          "description": null
+        },
+        {
+          "name": "Missi Roti",
+          "price": 4.49,
+          "description": "Combination of whole wheat, chickpea flour, fenugreek leaves, cilantro"
+        },
+        {
+          "name": "Rumali Roti",
+          "price": 5.99,
+          "description": "Thin flatbread made from all purpose flour and whole wheat"
+        },
+        {
+          "name": "Whole Wheat Tandoori Roti",
+          "price": 3.99,
+          "description": null
+        },
+        {
+          "name": "Lachha Paratha",
+          "price": 5.99,
+          "description": "Crispy & layered whole wheat bread"
+        },
+        {
+          "name": "Aloo Paratha",
+          "price": 5.49,
+          "description": "Naan stuffed with mashed potatoes & spices"
+        },
+        {
+          "name": "Onion Kulcha",
+          "price": 5.49,
+          "description": "Naan stuffed with finely chopped red onions"
+        },
+        {
+          "name": "Gobhi Paratha",
+          "price": 5.49,
+          "description": "Naan stuffed with grated cauliflower & spices"
+        },
+        {
+          "name": "Paneer Naan",
+          "price": 5.99,
+          "description": "Naan stuffed with grated paneer & spices"
+        },
+        {
+          "name": "Garlic Naan",
+          "price": 3.99,
+          "description": "Naan topped with crushed fresh garlic"
+        },
+        {
+          "name": "Bullet Naan",
+          "price": 3.99,
+          "description": "Naan seasoned with jalapenos"
+        },
+        {
+          "name": "Masala Paratha",
+          "price": 4.99,
+          "description": "Whole wheat flat bread seasoned with dry ground spices. Whole wheat roti seasoned with dry mint"
+        },
+        {
+          "name": "Naan Basket",
+          "price": 10.49,
+          "description": "Mix of butter, garlic & bullet naan"
+        },
+        {
+          "name": "Masala Kulcha",
+          "price": 5.99,
+          "description": "Naan stuffed with mashed potatoes, onions and spices"
+        },
+        {
+          "name": "Chilli Cheese Naan",
+          "price": 6.99,
+          "description": "Naan stuffed with a mix of cheddar cheese & green chillies"
+        },
+        {
+          "name": "Spicy Naan",
+          "price": 5.49,
+          "description": "Naan seasoned with jalapenos & Chilli Flakes"
+        },
+        {
+          "name": "Mix Naan",
+          "price": 4.99,
+          "description": "Naan topped with crushed fresh garlic & jalapenos"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "paneer",
+      "sourceTitle": "Paneer",
+      "items": [
+        {
+          "name": "Saag Paneer",
+          "price": 18.49,
+          "description": "Combination of pureed spinach & mustard greens cooked with cheese cubes"
+        },
+        {
+          "name": "Mutter Paneer",
+          "price": 18.49,
+          "description": "Peas & cheese cooked in rich gravy made of tomatoes & onions"
+        },
+        {
+          "name": "Kadai Paneer",
+          "price": 18.49,
+          "description": "Paneer squares cooked with onions, capsicum, tomato & kadai masala"
+        },
+        {
+          "name": "Chilli Paneer",
+          "price": 18.49,
+          "description": "Cheese cubes, green peppers, onions sauteed with chilli sauce & soy sauce"
+        },
+        {
+          "name": "Paneer Achaari",
+          "price": 18.49,
+          "description": "Pickled spices in tomato & onion sauce adds a edge to the cheese"
+        },
+        {
+          "name": "Dhaba Paneer",
+          "price": 18.99,
+          "description": "Rustic punjabi curry from dhabas"
+        },
+        {
+          "name": "Paneer Butter Masala",
+          "price": 18.49,
+          "description": "Cheese cubes cooked with tomato, chilli sauce"
+        },
+        {
+          "name": "Shahi Paneer",
+          "price": 18.49,
+          "description": "Grated cheese & cheese cubes cooked in tomato gravy with cream & yogurt"
+        },
+        {
+          "name": "Paneer Kali Mirch",
+          "price": 18.49,
+          "description": "Paneer cubes cooked in rich creamy gravy and kalimirch sauce & black peppercorn powder"
+        },
+        {
+          "name": "Paneer Bhurji",
+          "price": 18.49,
+          "description": "Mashed & grated cheese cooked with peas & tomatoes"
+        },
+        {
+          "name": "Paneer Makhni",
+          "price": 18.49,
+          "description": "Kids favorite creamy gravy prepared with tomatoes, butter, cream and paneer cubes"
+        },
+        {
+          "name": "Paneer Tikka Masala",
+          "price": 19.49,
+          "description": "Bright flavors from spiced tomato onion gravy & marinated grilled paneer"
+        },
+        {
+          "name": "Paneer Mirch Masala",
+          "price": 18.99,
+          "description": "Chillies and capsicum gives the rich masala gravy a unique flavor"
+        },
+        {
+          "name": "Methi Mutter Malai Paneer",
+          "price": 18.99,
+          "description": "Rich & creamy cottage cheese gravy recipe prepared with fenugreek leaves & cream"
+        },
+        {
+          "name": "Paneer Rogan Josh",
+          "price": 18.49,
+          "description": "Paneer cooked in an aromatic, tomato & onions, a signature dish of kashmir valley"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "vegetables",
+      "sourceTitle": "Subzian / Veggies",
+      "items": [
+        {
+          "name": "Korma",
+          "price": 17.99,
+          "description": "Combination of vegetables cooked together in rich creamy sauce"
+        },
+        {
+          "name": "Bhindi Masaledar",
+          "price": 17.99,
+          "description": "Okra sauteed with onions & green chilies"
+        },
+        {
+          "name": "Kofta Lajawab",
+          "price": 18.49,
+          "description": "Blend of grated veggies & cheese balls cooked with rich creamy sauce"
+        },
+        {
+          "name": "Methi Malai Kofta",
+          "price": 18.99,
+          "description": "Methi malai kofta is a classic, rich, creamy & delicious north indian dish"
+        },
+        {
+          "name": "Smokey Baigan",
+          "price": 17.99,
+          "description": "Eggplant grilled and then cooked with onions & tomatoes"
+        },
+        {
+          "name": "Veg Tikka Masala",
+          "price": 18.49,
+          "description": "Rich and creamy sauce full of mix vegetables"
+        },
+        {
+          "name": "Dum Aloo",
+          "price": 17.49,
+          "description": "Potatoes cooked in a semi gravy of spices, onion & tomatoes"
+        },
+        {
+          "name": "Aloo Saag",
+          "price": 17.49,
+          "description": "Potatoes cooked in a gravy of saag, spices, onion & tomatoes"
+        },
+        {
+          "name": "Aloo Gobhi",
+          "price": 17.49,
+          "description": "Fried cauliflower & potatoes cooked with onions, tomatoes & ground spices"
+        },
+        {
+          "name": "Gobhi Mussallam",
+          "price": 17.99,
+          "description": "Fried cauliflower cooked with onions, tomatoes & ground spices"
+        },
+        {
+          "name": "Masala Gucchi",
+          "price": 17.49,
+          "description": "Mushrooms cooked in gravy made of onions & tomatoes"
+        },
+        {
+          "name": "Aloo Ki Launji",
+          "price": 17.49,
+          "description": "Potatoes cooked with whole spices & tomato gravy"
+        },
+        {
+          "name": "Achaari / Jeera Aloo",
+          "price": 16.99,
+          "description": "Potatoes cooked with dry spices"
+        },
+        {
+          "name": "Mix Veg.",
+          "price": 17.49,
+          "description": "Mix of peas, potatoes, carrot, capsicum, cauliflower cooked with onion based sauce"
+        },
+        {
+          "name": "Egg Bhurji",
+          "price": 17.99,
+          "description": "Eggs scrambled with onions, tomatoes, green chili, fresh cilantro"
+        },
+        {
+          "name": "Egg Curry or Egg Korma",
+          "price": 17.99,
+          "description": "Hard boiled eggs cooked in red gravy or cream based gravy"
+        },
+        {
+          "name": "Kaju Curry",
+          "price": 19.99,
+          "description": "Rich creamy gravy cooked with cashew nuts and cashew paste"
+        },
+        {
+          "name": "Saag Paneer",
+          "price": 10.99,
+          "description": "Pureed spinach cooked with cheese"
+        },
+        {
+          "name": "Smokey Baigan",
+          "price": 10.99,
+          "description": "Broiled eggplant cooked with onions, ginger and tomatoes"
+        },
+        {
+          "name": "Gobhi Mussalam",
+          "price": 10.99,
+          "description": "Fried cauliflower cooked with onions & spices"
+        },
+        {
+          "name": "Masala Gucchi",
+          "price": 10.99,
+          "description": "Mushrooms cooked with a twist"
+        },
+        {
+          "name": "Kadai Paneer",
+          "price": 10.99,
+          "description": "Paneer squares cooked with onions capsicum and tomatoes -->"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "chicken",
+      "sourceTitle": "Chicken Specialties",
+      "items": [
+        {
+          "name": "Chicken Curry",
+          "price": 18.99,
+          "description": "Boneless chicken cooked in spiced gravy of onion, ginger and garlic"
+        },
+        {
+          "name": "Chicken Tikka Masala (Tikka Masala)",
+          "price": 18.99,
+          "description": "Marinated and grilled chicken cubes cooked in rich creamy sauce"
+        },
+        {
+          "name": "Kashmiri Chicken",
+          "price": 18.99,
+          "description": "Chicken pieces sauteed with onions, bell peppers & tomatoes"
+        },
+        {
+          "name": "Chicken Shahi Korma",
+          "price": 18.99,
+          "description": "Boneless chicken cooked in korma sauce"
+        },
+        {
+          "name": "Butter Chicken",
+          "price": 18.99,
+          "description": "Pulled meat cooked in butter tomato base sauce"
+        },
+        {
+          "name": "Chicken Saagwala",
+          "price": 18.99,
+          "description": "Chicken cooked with pureed mustard greens & spinach"
+        },
+        {
+          "name": "Chicken Vindaloo",
+          "price": 18.99,
+          "description": "Chicken cooked in curry sauce with the addition of vinegar, potatoes & chilli"
+        },
+        {
+          "name": "Chicken Dhansak",
+          "price": 18.99,
+          "description": "Chicken slow cooked with onions and spices along with lentils"
+        },
+        {
+          "name": "Aachari Chicken",
+          "price": 18.99,
+          "description": "Chicken cooked with pickling spices, tomato, cilantro"
+        },
+        {
+          "name": "Methi Chicken",
+          "price": 18.99,
+          "description": "Chicken cooked with onion, tomatoes, curry sauce and methi (fenugreek) leaves"
+        },
+        {
+          "name": "Dhaba Murgh",
+          "price": 18.99,
+          "description": "Bone in chicken in a rustic recipe of dhabas"
+        },
+        {
+          "name": "Chicken 2 Pyazza",
+          "price": 18.99,
+          "description": "Chicken chunks cooked in a variety of spices and cube of onions"
+        },
+        {
+          "name": "Chicken Kali Mirch",
+          "price": 18.99,
+          "description": "Chicken cooked in rich creamy gravy and kalimirch sauce & black peppercorn powder"
+        },
+        {
+          "name": "Malai Chicken",
+          "price": 19.99,
+          "description": "Chicken cooked with cashew paste and rich creamy gravy"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "lamb-goat",
+      "sourceTitle": "Lamb / Goat Specialties",
+      "items": [
+        {
+          "name": "Lamb Curry",
+          "price": 20.49,
+          "description": "Boneless lamb cooked in spiced gravy of onion, ginger & garlic"
+        },
+        {
+          "name": "Lamb Kashmiri",
+          "price": 20.49,
+          "description": "Lamb pieces sauteed with onions, bell peppers & tomato"
+        },
+        {
+          "name": "Lamb Shahi Korma",
+          "price": 20.49,
+          "description": "Boneless lamb cooked in korma sauce"
+        },
+        {
+          "name": "Lamb Vindaloo",
+          "price": 20.49,
+          "description": "Lamb cooked in curry sauce with the addition of vinegar, potatoes & chilli"
+        },
+        {
+          "name": "Lamb Saagwala",
+          "price": 20.49,
+          "description": "Lamb cooked with pureed mustard greens & spinach"
+        },
+        {
+          "name": "Lamb Dhansak",
+          "price": 20.49,
+          "description": "Lamb slow cooked with onions & spices along with lentils"
+        },
+        {
+          "name": "Lamb Rogan Josh",
+          "price": 20.49,
+          "description": "Lamb cooked in gravy flavored with garlic, ginger, aromatic spices onions & yogurt"
+        },
+        {
+          "name": "Goat Saagwala",
+          "price": 20.49,
+          "description": "Goat cooked with pureed mustard greens and spinach"
+        },
+        {
+          "name": "Goat Curry",
+          "price": 20.49,
+          "description": "Goat cooked with spiced curry sauce & onion ginger garlic"
+        },
+        {
+          "name": "Goat Rogan Josh",
+          "price": 20.49,
+          "description": "Goat cooked in gravy flavored with garlic, ginger, aromatic spices onions & yogurt"
+        },
+        {
+          "name": "Laal Maas",
+          "price": 20.99,
+          "description": "Prepared in a sauce of yogurt and red mathania chillies, hot & rich in garlic"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "rice-biryani",
+      "sourceTitle": "Biryani / Rice",
+      "items": [
+        {
+          "name": "Vegetable Biryani",
+          "price": 10.99,
+          "description": "Cooked with curry sauce made with vegetables and nuts"
+        },
+        {
+          "name": "Chicken Biryani",
+          "price": 12.99,
+          "description": "Cooked with curry sauce made with nuts and raisins"
+        },
+        {
+          "name": "Shrimp Biryani",
+          "price": 14.95,
+          "description": "Cooked with rice and curry sauce made with nuts and raisins"
+        },
+        {
+          "name": "Lamb Biryani",
+          "price": 13.99,
+          "description": "Cooked with rice and curry sauce made with nuts and raisins -->"
+        },
+        {
+          "name": "Vegetable Biryani",
+          "price": 14.99,
+          "description": "Rice cooked with layers of curry sauce made with vegetables"
+        },
+        {
+          "name": "Paneer Shahi Biryani",
+          "price": 17.49,
+          "description": "Biryani rice cooked with cheese and creamy sauce"
+        },
+        {
+          "name": "Chicken Biryani",
+          "price": 15.99,
+          "description": "Rice layered with chicken, sauce and dum at low heat"
+        },
+        {
+          "name": "Shrimp Biryani",
+          "price": 18.99,
+          "description": "Shrimp cooked with whole spices, onions & biryani rice"
+        },
+        {
+          "name": "Lamb Biryani",
+          "price": 18.99,
+          "description": "Lamb cooked with biryani rice & curry sauce"
+        },
+        {
+          "name": "Chicken Shahi Biryani",
+          "price": 17.99,
+          "description": "Biryani rice cooked with cheese and creamy sauce"
+        },
+        {
+          "name": "Goat Biryani",
+          "price": 18.99,
+          "description": "Goat cooked with biryani rice"
+        },
+        {
+          "name": "Vegetable Pulao",
+          "price": 14.49,
+          "description": "White basmati rice seasoned with onions, capsicum, tomatoes & spices"
+        },
+        {
+          "name": "Plain Rice",
+          "price": 4.99,
+          "description": "Boiled basmati rice"
+        },
+        {
+          "name": "Jeera Rice",
+          "price": 6.49,
+          "description": "Basmati rice seasoned with cumin seeds and fresh cilantro"
+        },
+        {
+          "name": "Khichdi",
+          "price": 14.99,
+          "description": "A dish prepared by cooking lentils & rice together with onions, ginger, garlic & fresh cilantro"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "seafood",
+      "sourceTitle": "Fish Specialties",
+      "items": [
+        {
+          "name": "Fish Curry",
+          "price": 18.99,
+          "description": "Marinated in garlic. Tilapia cooked with onions and tomato sauce"
+        },
+        {
+          "name": "Shrimp Curry",
+          "price": 18.99,
+          "description": "Cooked with onions and tomato sauce"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "tandoor",
+      "sourceTitle": "From our Tandoor",
+      "items": [
+        {
+          "name": "Paneer Tikka",
+          "price": 19.49,
+          "description": "Marinated paneer grilled in tandoor"
+        },
+        {
+          "name": "Chicken Tikka",
+          "price": 19.49,
+          "description": "Marinated chunks of boneless chicken, cooked on a skewer"
+        },
+        {
+          "name": "Tandoori Chicken",
+          "price": 19.49,
+          "description": "Chicken marinated in yogurt, garlic, ginger & mild spices"
+        },
+        {
+          "name": "Seekh Kebab",
+          "price": 19.49,
+          "description": "Freshly ground chicken, flavored with mint, cilantro, dry spices & skewed"
+        },
+        {
+          "name": "Reshmi Chicken",
+          "price": 19.49,
+          "description": "Marinated chicken in cream, cashew paste, mint & ground spices"
+        },
+        {
+          "name": "Malai Paneer Tikka",
+          "price": 19.49,
+          "description": "Marinated paneer in cream, cashew paste, mint & ground spices"
+        },
+        {
+          "name": "Amritsari Chicken Tikkka",
+          "price": 19.99,
+          "description": "Marinated chunks of boneless chicken, cooked on a skewer"
+        },
+        {
+          "name": "Amritsari Paneer Tikka",
+          "price": 19.99,
+          "description": "Marinated Paneer grilled in Tandoor"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "lentils",
+      "sourceTitle": "Daal / Lentils",
+      "items": [
+        {
+          "name": "Dal Makhni",
+          "price": 17.49,
+          "description": "Black lentils simmer cooked with garlic, ginger tomatoes"
+        },
+        {
+          "name": "Chana Masala",
+          "price": 17.49,
+          "description": "Chickpeas cooked with spicy onion, tomato, ginger & garlic base gravy"
+        },
+        {
+          "name": "Daal Lassuni",
+          "price": 17.49,
+          "description": "Yellow lentils cooked with garlic"
+        },
+        {
+          "name": "Rajma",
+          "price": 17.49,
+          "description": "Kidney beans cooked with ginger, garlic & special blend of spices"
+        },
+        {
+          "name": "Daal Panjratni",
+          "price": 17.49,
+          "description": "Combination of five different lentils cooked with onions, ginger, garlic, chillies & tomatoes"
+        },
+        {
+          "name": "Kadhi Pakora",
+          "price": 17.49,
+          "description": "Perfect blend of yogurt & besan mix and garnished with pakora"
+        },
+        {
+          "name": "Dal Tadka",
+          "price": 17.49,
+          "description": "Yellow dal cooked with onion, tomatoes, ginger & garlic"
+        },
+        {
+          "name": "Dal Bukhara",
+          "price": 17.99,
+          "description": "Slow cooked whole black grams in creamy tomato sauce"
+        },
+        {
+          "name": "Mughlai Chana",
+          "price": 17.99,
+          "description": "A perfect blend of chickpea and cream with a hint of spices"
+        },
+        {
+          "name": "Dhaba Dal",
+          "price": 17.99,
+          "description": "Combination of three lentils cooked with garlic, onions and black pepper"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "sides",
+      "sourceTitle": "Sides",
+      "items": [
+        {
+          "name": "Papad",
+          "price": 2.5,
+          "description": "Roasted papad served with mint chutney"
+        },
+        {
+          "name": "Masala Papad",
+          "price": 3.99,
+          "description": "Roasted papads topped with onions, tomatoes, cilantro & chutney"
+        },
+        {
+          "name": "Raita",
+          "price": 2.49,
+          "description": "Yogurt seasoned with boondi, salt, pepper & mint"
+        },
+        {
+          "name": "Yogurt",
+          "price": 2.99,
+          "description": "Homemade plain yogurt"
+        },
+        {
+          "name": "Onions",
+          "price": 0.99,
+          "description": "Sliced onions"
+        },
+        {
+          "name": "Side of Rice",
+          "price": 2.99,
+          "description": "Small serving of plain rice"
+        },
+        {
+          "name": "Fried Chillies",
+          "price": 2.99,
+          "description": "Green chillies seasoned and pan fried"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "desserts",
+      "sourceTitle": "Meetha / Desserts",
+      "items": [
+        {
+          "name": "Badami Kheer",
+          "price": 4.99,
+          "description": "Rice pudding made by boiling rice with milk, sugar, cardamom & almonds"
+        },
+        {
+          "name": "Gulab Jamun",
+          "price": 4.99,
+          "description": "Deep fried donuts made of milk solids & soaked in cardamom flavored sugar syrup"
+        },
+        {
+          "name": "Rasmalai",
+          "price": 5.99,
+          "description": "Milk solids flattened balls flavored with cardamom andserved with milk syrup"
+        },
+        {
+          "name": "Gajrella (Carrot Halwa)",
+          "price": 5.99,
+          "description": "Grated carrots cooked to perfection with milk, sugar, cashew, almonds & raisins"
+        },
+        {
+          "name": "Whole Wheat Halwa",
+          "price": 5.99,
+          "description": "Whole wheat flour roasted on slow heat with butter (ghee) & sugar"
+        },
+        {
+          "name": "Rabdi",
+          "price": 5.99,
+          "description": "Thickened milk flavored with crushed nuts, cardamom & sugar, spices & nuts are added to it to give it flavor"
+        }
+      ],
+      "_unmatchedRows": []
+    },
+    {
+      "slug": "drinks",
+      "sourceTitle": "Drinks",
+      "items": [
+        {
+          "name": "Patiala Lassi",
+          "price": 5.99,
+          "description": "Yogurt blended with almonds, pistachio, cardamom"
+        },
+        {
+          "name": "Mango Lassi",
+          "price": 4.99,
+          "description": "Yogurt flavored with mango pulp & sugar"
+        },
+        {
+          "name": "Lassi Punjabi",
+          "price": 3.99,
+          "description": "Yogurt flavored with a hint of salt & mint"
+        },
+        {
+          "name": "Soft Drinks",
+          "price": 2.5,
+          "description": "Coke, Diet Coke, Sprite, Pepsi, Limca, Thums up"
+        },
+        {
+          "name": "Masala Chai",
+          "price": 2.99,
+          "description": "Tea flavored with ginger, cloves, green cardamom"
+        },
+        {
+          "name": "Soda",
+          "price": 1.99,
+          "description": null
+        },
+        {
+          "name": "Patiala Lassi",
+          "price": 2.99,
+          "description": "Mixer of yogurt and crushed spices with sugar"
+        },
+        {
+          "name": "Mango Lassi",
+          "price": 2.99,
+          "description": "Yogurt blended with mango pulp and sugar"
+        },
+        {
+          "name": "Lassi Punjabi",
+          "price": 1.99,
+          "description": "Yogurt with a hint of salt"
+        },
+        {
+          "name": "Dudh Soda",
+          "price": 2.99,
+          "description": "Milk combined with soda and flavor"
+        },
+        {
+          "name": "Soft Drinks",
+          "price": 0.99,
+          "description": "Coke, Diet Coke, Sprite, Pepsi"
+        },
+        {
+          "name": "Masala Chai",
+          "price": 1.99,
+          "description": "Tea flavored with ginger, cloves and green cardamom --> Copyright © 2016 Urban Tadka Site design & maintained by Micropix ( 817-684-0423 ) FRIEND US ON FACEBOOK FOLLOW US ON TWITTER! -->"
+        }
+      ],
+      "_unmatchedRows": []
+    }
+  ]
+}

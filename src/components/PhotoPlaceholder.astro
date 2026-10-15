@@ -1,0 +1,152 @@
+---
+/**
+ * PhotoPlaceholder
+ *
+ * Every image position on this site renders one of these until the restaurant
+ * supplies authorised photography.
+ *
+ * Why a placeholder rather than a picture: the brief forbids AI-generated
+ * imagery presented as real food, and we hold no licensed photographs of this
+ * restaurant. The two photographs on the restaurant's current site appear to be
+ * generic stock images, so reusing them would misrepresent the food. An honest,
+ * clearly-labelled slot is better than a plausible fake.
+ *
+ * `caption` should state the shot we are asking for, so the page doubles as a
+ * photography brief. Dropping in a real image later means replacing this
+ * component with an <img> at the same position: the aspect ratio and framing
+ * are already defined here.
+ */
+
+interface Props {
+  /** The shot we are asking for. Shown in the placeholder, so it is a brief. */
+  caption?: string;
+  /** Any key of RATIOS; anything else falls back to 4/3. */
+  ratio?: string;
+  tone?: 'warm' | 'night';
+  compact?: boolean;
+  class?: string;
+}
+
+const {
+  caption,
+  ratio = '4/3',
+  tone = 'warm',
+  compact = false,
+  class: className = '',
+} = Astro.props;
+
+const RATIOS: Record<string, string> = {
+  '16/9': '16 / 9',
+  '3/2': '3 / 2',
+  '4/3': '4 / 3',
+  '1/1': '1 / 1',
+  '4/5': '4 / 5',
+  '3/4': '3 / 4',
+};
+
+const ratioValue = RATIOS[ratio] ?? RATIOS['4/3'];
+
+import Icon from './Icon.astro';
+---
+
+<figure class={`photo photo--${tone} ${compact ? 'photo--compact' : ''} ${className}`.trim()}>
+  <div class="photo__frame" style={`--ratio: ${ratioValue}`}>
+    <span class="photo__tag">Placeholder</span>
+    <span class="photo__mark" aria-hidden="true">
+      <Icon name="image" size={compact ? 22 : 30} />
+    </span>
+    {caption && <figcaption class="photo__caption">{caption}</figcaption>}
+  </div>
+</figure>
+
+<style>
+  .photo {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .photo__frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-3);
+    aspect-ratio: var(--ratio);
+    width: 100%;
+    padding: var(--sp-4);
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--brand-gold) 55%, var(--line-strong));
+    border-radius: var(--r-md);
+    background-image: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--brand-gold) 12%, var(--paper-warm)) 0%,
+      var(--paper-warm) 55%,
+      var(--paper-deep) 100%
+    );
+    overflow: hidden;
+  }
+
+  .photo__tag {
+    position: absolute;
+    top: var(--sp-3);
+    left: var(--sp-3);
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--r-xs);
+    background: rgba(28, 25, 23, 0.08);
+    color: var(--ink-soft);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+  }
+
+  .photo__mark {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .photo__caption {
+    max-width: 30ch;
+    font-size: var(--fs-xs);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .photo--compact .photo__frame {
+    padding: var(--sp-3);
+    gap: var(--sp-2);
+  }
+
+  .photo--compact .photo__mark {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .photo--night .photo__frame {
+    border-color: rgba(255, 204, 41, 0.4);
+    background-image: linear-gradient(160deg, #2b2622 0%, var(--night) 100%);
+  }
+
+  .photo--night .photo__tag {
+    background: rgba(255, 204, 41, 0.16);
+    color: var(--brand-gold);
+  }
+
+  .photo--night .photo__mark {
+    background: rgba(251, 248, 243, 0.08);
+    border-color: rgba(251, 248, 243, 0.2);
+    color: #d8d1c6;
+  }
+
+  .photo--night .photo__caption {
+    color: #d8d1c6;
+  }
+</style>

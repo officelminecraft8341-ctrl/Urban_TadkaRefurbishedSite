@@ -1,0 +1,69 @@
+---
+/**
+ * BaseHead
+ *
+ * Per-page metadata. The restaurant's existing site has no meta description at
+ * all and titles its homepage "Index"; every page here gets a unique, factual
+ * title and description.
+ *
+ * Indexing gate: while siteConfig.deployment.allowIndexing is false this emits
+ * noindex,nofollow. A concept must never compete with the client's live site in
+ * search results, and this is the switch that prevents it.
+ */
+
+import { siteConfig } from '../config/site.js';
+
+const {
+  title,
+  description = siteConfig.seo.defaultDescription,
+  canonicalPath,
+  ogType = 'website',
+} = Astro.props;
+
+const brandName = siteConfig.brand.name;
+const fullTitle = title ? `${title} | ${brandName}` : `${brandName} — North Indian restaurant in Irving, TX`;
+
+const origin = siteConfig.deployment.siteUrl.replace(/\/$/, '');
+const path = canonicalPath ?? Astro.url.pathname;
+const canonical = `${origin}${path === '/' ? '/' : path.replace(/\/$/, '/')}`;
+
+const ogImage = siteConfig.seo.ogImage;
+const indexable = siteConfig.deployment.allowIndexing;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+
+{
+  indexable ? (
+    <meta name="robots" content="index, follow" />
+  ) : (
+    <meta name="robots" content="noindex, nofollow" />
+  )
+}
+
+<link rel="canonical" href={canonical} />
+
+<meta name="theme-color" content={siteConfig.brand.colors.night} />
+<meta name="format-detection" content="telephone=yes" />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/favicon.svg" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={brandName} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={siteConfig.seo.locale} />
+{ogImage && <meta property="og:image" content={`${origin}${ogImage}`} />}
+
+<!-- Twitter -->
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={`${origin}${ogImage}`} />}

@@ -1,0 +1,106 @@
+---
+/**
+ * Icon — a small, hand-authored stroke icon set.
+ *
+ * Deliberately dependency-free: no icon library is installed, so there is no
+ * third-party licence to track and no unused code shipped. Every path is
+ * original artwork drawn on a 24x24 grid with a 1.75 stroke.
+ *
+ * Each icon is ONE <svg> containing one or more <path> elements (the source
+ * strings are pipe-separated). Icons are decorative by default because they
+ * always sit beside a text label; pass `label` only for a genuinely icon-only
+ * control, which then gets role="img" and an accessible name.
+ */
+
+interface Props {
+  /** Key into the icon set below. Throws at build time if it does not exist. */
+  name: string;
+  size?: number;
+  stroke?: number;
+  /** Only for a genuinely icon-only control; otherwise leave unset. */
+  label?: string;
+  class?: string;
+}
+
+const PATHS: Record<string, string> = {
+  phone:
+    'M6.6 3.5h2.2l1.3 3.4-1.7 1.3a11.6 11.6 0 0 0 5.4 5.4l1.3-1.7 3.4 1.3v2.2a2 2 0 0 1-2.2 2A16.4 16.4 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z',
+  mapPin:
+    'M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z|M12 13a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
+  clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z|M12 7.5V12l3.2 2',
+  menu: 'M4 7h16|M4 12h16|M4 17h16',
+  close: 'M6.5 6.5l11 11|M17.5 6.5l-11 11',
+  arrowRight: 'M4.5 12h14|M13 6l6 6-6 6',
+  arrowUp: 'M12 19.5V5|M6 11l6-6 6 6',
+  arrowDown: 'M12 4.5V19|M6 13l6 6 6-6',
+  external:
+    'M14 4.5h5.5V10|M19.5 4.5L11 13|M18 14.5v4a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2V8.5a2 2 0 0 1 2-2h4',
+  image:
+    'M4 5.5h16v13H4z|M4 15.5l4.5-4.5 3.5 3.5 2.5-2.5 5.5 5.5|M15.5 9.75a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z',
+  chevronDown: 'M6 9.5l6 6 6-6',
+  chevronRight: 'M9.5 6l6 6-6 6',
+  search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z|M16.2 16.2L21 21',
+  check: 'M5 12.5l4.5 4.5L19 7.5',
+  info: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z|M12 11v5.5|M12 7.75h.01',
+  alert: 'M12 4.5l8.5 15h-17z|M12 10.5v4|M12 17.2h.01',
+  users:
+    'M9.2 11.5a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z|M2.75 20c0-3.3 2.9-5.6 6.45-5.6S15.65 16.7 15.65 20|M16 5.4a3.4 3.4 0 0 1 0 6.7|M17.4 14.9c2.2.6 3.85 2.4 3.85 5.1',
+  utensils: 'M7.5 3v7a2.5 2.5 0 0 0 5 0V3|M10 12.5V21|M16.5 21V3c2.2 1.2 3.2 2.9 3.2 5.2 0 2.4-1.1 4-3.2 4.6',
+  navigation: 'M21 3L3.2 10.6l7.5 2.9 2.9 7.5L21 3Z',
+  calendar: 'M4.5 6.5h15v14h-15z|M4.5 11h15|M8.5 4v4|M15.5 4v4',
+  leaf: 'M4.5 19.5c0-8 5-14 15-14 0 10-6 14-13.5 14h-1.5Z|M8 16c2.5-3.5 5.5-5.5 9-6.5',
+  coffee: 'M4.5 8h12v6a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8Z|M16.5 9.5h1.5a2.5 2.5 0 0 1 0 5h-1.5|M7.5 3.5v2|M11.5 3.5v2',
+  shield: 'M12 3l7 3v6c0 4.4-3 8-7 9-4-1-7-4.6-7-9V6l7-3Z|M9 12l2.2 2.2L15.5 10',
+  sparkle: 'M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9L12 3.5Z',
+  calendarCheck: 'M4.5 6.5h15v14h-15z|M4.5 11h15|M8.5 4v4|M15.5 4v4|M9 15.5l2 2 4-4',
+  truck:
+    'M2.5 7.5h10v9h-10z|M12.5 10.5h4l3 3v3h-7z|M7 20a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5Z|M17 20a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5Z',
+  bowl: 'M3.5 10.5h17c0 4.7-3.8 8.5-8.5 8.5S3.5 15.2 3.5 10.5Z|M8 7.5c0-1.5 1.8-1.8 1.8-3.5|M13.5 7.5c0-1.5 1.8-1.8 1.8-3.5',
+};
+
+const {
+  name,
+  size = 20,
+  stroke = 1.75,
+  label,
+  class: className = '',
+} = Astro.props;
+
+const raw: string | undefined = PATHS[name];
+
+if (!raw) {
+  throw new Error(
+    `Icon "${name}" does not exist. Available: ${Object.keys(PATHS).join(', ')}`,
+  );
+}
+
+const paths: string[] = raw.split('|');
+---
+
+<svg
+  class={`icon ${className}`.trim()}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={stroke}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={label ? 'img' : undefined}
+  aria-label={label || undefined}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+  data-icon={name}
+>
+  {label && <title>{label}</title>}
+  {paths.map((d) => <path d={d} />)}
+</svg>
+
+<style>
+  .icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex: none;
+  }
+</style>

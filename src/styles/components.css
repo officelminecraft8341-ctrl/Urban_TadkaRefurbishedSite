@@ -1,0 +1,457 @@
+/* ==========================================================================
+   Shared component primitives
+   --------------------------------------------------------------------------
+   Only things used in more than one place live here: layout containers,
+   section rhythm, headings, buttons, cards, chips, concept notes and prose.
+   Component-specific layout stays scoped inside its own .astro file.
+   ========================================================================== */
+
+/* --- layout -------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: 48rem;
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section--warm {
+  background-color: var(--paper-warm);
+}
+
+.section--deep {
+  background-color: var(--paper-deep);
+}
+
+.section--night {
+  background-color: var(--night);
+  color: var(--ink-invert);
+}
+
+.section--tight {
+  padding-block: var(--sp-7);
+}
+
+.section--flushtop {
+  padding-block-start: var(--sp-6);
+}
+
+.stack > * + * {
+  margin-top: var(--sp-4);
+}
+
+/* --- section headings ---------------------------------------------------- */
+.eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: var(--sp-3);
+}
+
+.section--night .eyebrow {
+  color: var(--brand-gold);
+}
+
+.section-head {
+  max-width: var(--measure);
+}
+
+.section-head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.lede {
+  font-size: var(--fs-lg);
+  color: var(--ink-2);
+  max-width: var(--measure);
+  margin-top: var(--sp-4);
+}
+
+.section--night .lede {
+  color: #d8d1c6;
+}
+
+/* Gold hairline used to separate editorial blocks. */
+.rule {
+  border: 0;
+  height: 2px;
+  width: 3.5rem;
+  background: var(--brand-gold);
+  margin-block: var(--sp-5);
+}
+
+.rule--center {
+  margin-inline: auto;
+}
+
+/* --- buttons ------------------------------------------------------------- */
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  --btn-border: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 2.75rem; /* 44px minimum touch target */
+  padding: 0.6rem 1.25rem;
+  border: 1.5px solid var(--btn-border);
+  border-radius: var(--r-sm);
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.btn svg {
+  flex: none;
+}
+
+/* Primary: crimson fill, verified 5.45:1 with white text. */
+.btn--primary {
+  --btn-bg: var(--cta);
+  --btn-fg: #fff;
+  --btn-border: var(--cta);
+  padding-inline: 1.5rem;
+}
+
+.btn--primary:hover {
+  --btn-bg: var(--cta-hover);
+  --btn-border: var(--cta-hover);
+  color: #fff;
+}
+
+.btn--primary:active {
+  --btn-bg: var(--cta-active);
+  --btn-border: var(--cta-active);
+}
+
+/* Secondary: outline. */
+.btn--secondary {
+  --btn-fg: var(--cta);
+  --btn-border: var(--cta);
+}
+
+.btn--secondary:hover {
+  --btn-bg: rgba(191, 56, 62, 0.08);
+  --btn-fg: var(--cta-hover);
+  --btn-border: var(--cta-hover);
+}
+
+.btn--secondary:active {
+  --btn-bg: rgba(191, 56, 62, 0.16);
+}
+
+/* Tertiary: text-only, used where a third action would be noise. */
+.btn--tertiary {
+  --btn-fg: var(--ink);
+  min-height: 2.75rem;
+  padding-inline: 0.25rem;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.btn--tertiary:hover {
+  --btn-fg: var(--cta);
+}
+
+/* On dark surfaces. Gold on charcoal is 8.16:1. */
+.btn--on-night {
+  --btn-bg: var(--brand-gold);
+  --btn-fg: var(--night);
+  --btn-border: var(--brand-gold);
+}
+
+.btn--on-night:hover {
+  --btn-bg: #ffd854;
+  --btn-border: #ffd854;
+  color: var(--night);
+}
+
+.btn--outline-night {
+  --btn-fg: var(--ink-invert);
+  --btn-border: rgba(251, 248, 243, 0.5);
+}
+
+.btn--outline-night:hover {
+  --btn-bg: rgba(251, 248, 243, 0.12);
+  --btn-border: var(--ink-invert);
+  color: #fff;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--lg {
+  min-height: 3.125rem;
+  padding-inline: 1.75rem;
+  font-size: var(--fs-body);
+}
+
+.btn[aria-disabled="true"],
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+/* --- cards --------------------------------------------------------------- */
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+  flex: 1;
+}
+
+.card__title {
+  font-size: var(--fs-h3);
+  margin: 0;
+}
+
+.card__text {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+@media (hover: hover) {
+  .card--interactive:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-1);
+  }
+}
+
+/* --- chips --------------------------------------------------------------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xs);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+  background: var(--paper);
+}
+
+.chip--gold {
+  background: var(--brand-gold);
+  border-color: var(--brand-gold);
+  color: var(--night);
+}
+
+/* --- price --------------------------------------------------------------- */
+.price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* --- concept note (agency annotation for unverified details) ------------- */
+.concept-note {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  border: 1px dashed color-mix(in srgb, var(--brand-gold) 70%, var(--line));
+  background: color-mix(in srgb, var(--brand-gold) 8%, transparent);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-xs);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.concept-note__label {
+  display: block;
+  font-weight: 700;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: var(--sp-1);
+}
+
+.concept-note svg {
+  flex: none;
+  margin-top: 0.15rem;
+  color: var(--ink-soft);
+}
+
+.section--night .concept-note {
+  border-color: rgba(255, 204, 41, 0.4);
+  background: rgba(255, 204, 41, 0.08);
+  color: #d8d1c6;
+}
+
+.section--night .concept-note__label {
+  color: var(--brand-gold);
+}
+
+/* --- prose --------------------------------------------------------------- */
+.prose {
+  max-width: var(--measure);
+}
+
+.prose > * + * {
+  margin-top: var(--sp-4);
+}
+
+.prose p {
+  color: var(--ink-2);
+}
+
+.prose h3 {
+  margin-top: var(--sp-6);
+}
+
+.prose ul {
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+
+.prose li + li {
+  margin-top: var(--sp-2);
+}
+
+.prose li {
+  color: var(--ink-2);
+}
+
+/* --- definition lists used for facts, hours, details -------------------- */
+.fact-list {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.fact-list__row {
+  display: grid;
+  gap: var(--sp-1);
+}
+
+.fact-list__term {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.fact-list__value {
+  font-size: var(--fs-lg);
+  color: var(--ink);
+  margin: 0;
+}
+
+/* --- forms --------------------------------------------------------------- */
+.field {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.field__label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.field__hint {
+  font-size: var(--fs-xs);
+  color: var(--ink-soft);
+}
+
+.field__input,
+.field__textarea,
+.field__select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  /* Control boundary, not decoration: 3:1 per WCAG 1.4.11. */
+  border: 1.5px solid var(--line-control);
+  border-radius: var(--r-sm);
+  background: #fff;
+  color: var(--ink);
+}
+
+.field__textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.field__input:focus-visible,
+.field__textarea:focus-visible,
+.field__select:focus-visible {
+  border-color: var(--cta);
+}
+
+.field__error {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: #a3222a;
+}
+
+/* --- misc ---------------------------------------------------------------- */
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: -100%;
+  z-index: 200;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--night);
+  color: #fff;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: var(--sp-4);
+  color: #fff;
+}
+
+.external-icon {
+  width: 0.85em;
+  height: 0.85em;
+  display: inline-block;
+  vertical-align: -0.05em;
+  margin-left: 0.3em;
+}

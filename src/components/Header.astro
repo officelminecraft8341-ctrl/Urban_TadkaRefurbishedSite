@@ -1,0 +1,364 @@
+---
+/**
+ * Header
+ *
+ * Sticky on every page. The wordmark is typographic because we hold no written
+ * permission to redistribute the restaurant's logo artwork — swap in an
+ * authorised SVG via siteConfig.brand.logo and this falls back automatically.
+ *
+ * Mobile navigation is a labelled toggle (not a bare icon) controlling a panel
+ * with correct aria-expanded / aria-controls, Esc to close, focus moved into the
+ * panel on open and returned to the toggle on close, and background scroll lock.
+ */
+
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+import { siteConfig, telHref, directionsUrl } from '../config/site.js';
+
+const { pathname } = Astro.url;
+const logo = siteConfig.brand.logo;
+const panelId = 'site-nav-panel';
+
+const isActive = (href: string) =>
+  href === '/' ? pathname === '/' : pathname.startsWith(href);
+---
+
+<header class="site-header" data-site-header>
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label={`${siteConfig.brand.name} — home`}>
+      {
+        logo.src ? (
+          <img src={logo.src} alt={logo.alt} width="200" height="56" />
+        ) : (
+          <span class="brand__name">
+            Urban <em>Tadka</em>
+          </span>
+        )
+      }
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul class="site-nav__list">
+        {
+          siteConfig.nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="site-nav__link"
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="header-call" href={telHref}>
+        <Icon name="phone" size={18} />
+        <span class="header-call__text">{siteConfig.business.phoneDisplay}</span>
+      </a>
+      <Button href="/visit/#order" variant="primary" class="header-order">Order online</Button>
+    </div>
+
+    <button
+      type="button"
+      class="nav-toggle"
+      aria-expanded="false"
+      aria-controls={panelId}
+      data-nav-toggle
+    >
+      <span data-nav-toggle-label>Menu</span>
+      <Icon name="menu" size={22} />
+    </button>
+  </div>
+
+  <div class="mobile-nav" id={panelId} hidden data-nav-panel>
+    <div class="container mobile-nav__inner">
+      <nav aria-label="Mobile">
+        <ul class="mobile-nav__list">
+          <li>
+            <a href="/" aria-current={isActive('/') ? 'page' : undefined}>Home</a>
+          </li>
+          {
+            siteConfig.nav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="mobile-nav__actions">
+        <Button href={telHref} variant="primary" icon="phone" block>
+          Call {siteConfig.business.phoneDisplay}
+        </Button>
+        <Button href={directionsUrl} variant="secondary" icon="navigation" external block>
+          Get directions
+        </Button>
+        <Button href="/visit/#order" variant="tertiary" iconAfter="arrowRight" block>
+          Order online
+        </Button>
+      </div>
+
+      <p class="mobile-nav__fact">
+        {siteConfig.business.addressOneLine}
+      </p>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+  }
+
+  .site-header.is-stuck {
+    border-bottom-color: var(--line);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    min-height: var(--header-h);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--ink);
+    margin-right: auto;
+  }
+
+  .brand__name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .brand__name em {
+    font-style: italic;
+    color: var(--cta);
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  @media (min-width: 60rem) {
+    .site-nav {
+      display: block;
+    }
+  }
+
+  .site-nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .site-nav__link {
+    position: relative;
+    display: inline-block;
+    padding-block: var(--sp-3);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .site-nav__link:hover {
+    color: var(--cta);
+  }
+
+  /* Active page marked with a gold rule AND aria-current, never colour alone. */
+  .site-nav__link[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.35rem;
+    height: 2px;
+    background: var(--brand-gold);
+    border-radius: 2px;
+  }
+
+  .site-header__actions {
+    display: none;
+    align-items: center;
+    gap: var(--sp-4);
+  }
+
+  @media (min-width: 60rem) {
+    .site-header__actions {
+      display: flex;
+    }
+  }
+
+  .header-call {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .header-call:hover {
+    color: var(--cta);
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 2.75rem;
+    padding: 0.5rem 0.85rem;
+    /* A control boundary, so it uses the 3:1 colour rather than the decorative line. */
+    border: 1.5px solid var(--line-control);
+    border-radius: var(--r-sm);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  @media (min-width: 60rem) {
+    .nav-toggle {
+      display: none;
+    }
+  }
+
+  .nav-toggle:hover {
+    border-color: var(--ink-soft);
+  }
+
+  /* --- mobile panel ----------------------------------------------------- */
+  .mobile-nav {
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    max-height: calc(100vh - var(--header-h));
+    overflow-y: auto;
+  }
+
+  .mobile-nav__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+    padding-block: var(--sp-5) var(--sp-7);
+  }
+
+  .mobile-nav__list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .mobile-nav__list a {
+    display: flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding-inline: var(--sp-1);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .mobile-nav__list a[aria-current="page"] {
+    color: var(--cta);
+    box-shadow: inset 3px 0 0 var(--brand-gold);
+    padding-inline-start: var(--sp-4);
+  }
+
+  .mobile-nav__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+
+  .mobile-nav__fact {
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-nav-panel]');
+  const toggleLabel = document.querySelector<HTMLElement>('[data-nav-toggle-label]');
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+
+  function setOpen(open: boolean) {
+    if (!toggle || !panel) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (toggleLabel) toggleLabel.textContent = open ? 'Close' : 'Menu';
+
+    if (open) {
+      panel.querySelector<HTMLAnchorElement>('a')?.focus();
+    } else {
+      toggle.focus();
+    }
+  }
+
+  toggle?.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // Esc closes the panel from anywhere inside it.
+  panel?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      setOpen(false);
+    }
+  });
+
+  // Following a link navigates away; make sure the panel state is reset.
+  panel?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setOpen(false));
+  });
+
+  // Tidy up if the viewport grows past the mobile breakpoint while open.
+  window.matchMedia('(min-width: 60rem)').addEventListener('change', (event) => {
+    if (event.matches && panel && !panel.hidden) {
+      panel.hidden = true;
+      toggle?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      if (toggleLabel) toggleLabel.textContent = 'Menu';
+    }
+  });
+
+  // Add the hairline rule only once the page has scrolled.
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-stuck', window.scrollY > 4);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>

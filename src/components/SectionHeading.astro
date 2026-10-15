@@ -1,0 +1,50 @@
+---
+/**
+ * SectionHeading
+ *
+ * Keeps heading levels consistent across pages: the page owns its single <h1>,
+ * every band after that uses this component at level 2, and headings nested
+ * inside a band use level 3. That ordering is what makes the document outline
+ * valid — and it is checked in tools/verify-build.py.
+ *
+ * Levels are restricted to 2 and 3 and rendered explicitly rather than through a
+ * dynamic tag, which keeps the component type-safe and makes an accidental
+ * level 4 (which would skip a level) impossible to write.
+ */
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  level?: 2 | 3;
+  align?: 'start' | 'center';
+  /** Applied to the heading element, for aria-labelledby targets. */
+  id?: string;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  level = 2,
+  align = 'start',
+  id,
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'section-head',
+  align === 'center' ? 'section-head--center' : '',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<div class={classes}>
+  {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+  {level === 3 ? <h3 id={id}>{title}</h3> : <h2 id={id}>{title}</h2>}
+  {lede && <p class="lede">{lede}</p>}
+  <slot />
+</div>

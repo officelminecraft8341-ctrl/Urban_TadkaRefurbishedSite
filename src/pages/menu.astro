@@ -1,0 +1,488 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import MenuCategory from '../components/MenuCategory.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import {
+  categories,
+  totalItems,
+  categoryLabel,
+  duplicateNames,
+  parserWarnings,
+  menuMeta,
+} from '../lib/menu.js';
+import { siteConfig, telHref } from '../config/site.js';
+
+const dishCount = totalItems();
+const categoryCount = categories.length;
+
+// Surfaced rather than hidden: names that appear twice on the restaurant's own
+// menu with different prices are the restaurant's call to resolve, not ours.
+const duplicates = duplicateNames();
+const warnings = parserWarnings();
+---
+
+<MainLayout
+  title="Menu"
+  description={`The full Urban Tadka menu — ${dishCount} dishes across ${categoryCount} categories, including appetizers, tandoori breads, biryani, chicken, lamb and vegetable curries.`}
+  canonicalPath="/menu/"
+>
+  <div id="menu-top"></div>
+
+  <!-- =========================== PAGE HEAD ========================== -->
+  <section class="menu-head">
+    <div class="container">
+      <p class="eyebrow">Menu</p>
+      <h1>{dishCount} dishes, {categoryCount} categories</h1>
+      <p class="menu-head__lede">
+        Dish names, descriptions and prices below are taken directly from Urban Tadka’s own
+        published menu. Nothing has been added or rewritten.
+      </p>
+
+      <ul class="menu-head__stats">
+        <li><strong>{dishCount}</strong> dishes</li>
+        <li><strong>{categoryCount}</strong> categories</li>
+        <li><strong>$0</strong> guessed prices</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== TOOLBAR ============================= -->
+  <div class="menu-toolbar" data-menu-toolbar>
+    <div class="container menu-toolbar__inner">
+      <!--
+        A <div role="search"> rather than a <form>: filtering happens live as you
+        type, and a form with no action would offer a submit that does nothing
+        without JavaScript. No dead controls.
+      -->
+      <div class="menu-search" role="search" data-menu-form>
+        <label class="menu-search__label" for="menu-search">Search the menu</label>
+        <div class="menu-search__field">
+          <Icon name="search" size={18} />
+          <input
+            id="menu-search"
+            class="menu-search__input"
+            type="search"
+            name="q"
+            placeholder="Try “paneer”, “biryani”, “naan”…"
+            autocomplete="off"
+            data-menu-search
+          />
+          <button type="button" class="menu-search__clear" data-menu-clear hidden>
+            Clear
+          </button>
+        </div>
+        <p class="menu-search__status" role="status" aria-live="polite" data-menu-status>
+          Showing all {dishCount} dishes.
+        </p>
+      </div>
+
+      <nav class="menu-jump" aria-label="Menu categories">
+        <ul>
+          {
+            categories.map((category) => (
+              <li>
+                <a href={`#${category.slug}`}>{categoryLabel(category.slug)}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ======================= DIETARY DISCLAIMER ==================== -->
+  <section class="container menu-notes">
+    <div class="menu-notes__grid">
+      <ConceptNote title="No dietary labels shown — on purpose" icon="alert">
+        Urban Tadka’s published menu does not state which dishes are vegetarian, vegan, halal,
+        gluten-free or nut-free, and it lists no allergen information. Rather than guess at
+        classifications that could affect someone’s health, this page shows none. Please ask
+        the restaurant directly about ingredients and allergens.
+      </ConceptNote>
+
+      <ConceptNote title="Prices need confirming">
+        These prices are the restaurant’s own, published on its current website, which was last
+        updated in 2019 ({menuMeta.stats.items} price strings in total). They must be
+        re-confirmed against the live kitchen menu before launch.
+      </ConceptNote>
+    </div>
+  </section>
+
+  <!-- =========================== CATEGORIES ========================= -->
+  <div class="container">
+    <div class="menu-body" data-menu-body>
+      {categories.map((category) => <MenuCategory category={category} />)}
+    </div>
+  </div>
+
+  <!-- ====================== OWNER QUESTIONS ======================== -->
+  <section class="section section--warm" aria-labelledby="owner-questions">
+    <div class="container">
+      <SectionHeading
+        eyebrow="For the owner"
+        id="owner-questions"
+        title="Questions this menu raises"
+        lede="Found while migrating the existing menu into this site. Each one needs a decision from the restaurant rather than a guess from us."
+      />
+
+      <details class="questions" open>
+        <summary>Duplicate dish names with different prices</summary>
+        <p class="questions__intro">
+          These names appear more than once in the restaurant’s own menu markup, at different
+          prices. Both entries are shown exactly as published — we have not chosen between them.
+        </p>
+        <ul>
+          {
+            Object.entries(duplicates).map(([name, places]) => (
+              <li>
+                <strong>{name}</strong> — {places.join('; ')}
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+
+      <details class="questions">
+        <summary>Other details to confirm</summary>
+        <ul>
+          <li>Is catering offered, and if so what are the minimum headcount, lead time and delivery radius?</li>
+          <li>Are reservations taken, or is it walk-in only?</li>
+          <li>Is the lunch buffet still offered? Times and price?</li>
+          <li>Are any dishes vegetarian? Any vegan?</li>
+          <li>Does the kitchen want allergen information published, and in what wording?</li>
+          <li>Are any dishes seasonal or rotating, so they should be marked as such?</li>
+          <li>
+            {
+              categories
+                .filter((c) => c.items.length <= 8 && c.slug !== 'desserts')
+                .map((c) => categoryLabel(c.slug))
+                .join(', ')
+            }
+            {' '}carry comparatively few dishes — are these categories complete?
+          </li>
+        </ul>
+      </details>
+
+      {
+        warnings.unmatchedPriceRows.length > 0 && (
+          <details class="questions">
+            <summary>Rows we could not read automatically</summary>
+            <ul>
+              {warnings.unmatchedPriceRows.map((row) => <li>{row}</li>)}
+            </ul>
+          </details>
+        )
+      }
+
+      <p class="questions__meta">
+        Source: {menuMeta.source} · extraction confidence: {menuMeta.confidence}
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= CTA ============================ -->
+  <section class="section section--night">
+    <div class="container menu-cta">
+      <div>
+        <h2>Ready to eat?</h2>
+        <p class="menu-cta__lede">
+          Call the restaurant directly, or order through the platforms it uses.
+        </p>
+      </div>
+      <div class="btn-row">
+        <Button href={telHref} variant="on-night" size="lg" icon="phone">
+          Call {siteConfig.business.phoneDisplay}
+        </Button>
+        <Button href="/visit/#order" variant="outline-night" size="lg" iconAfter="arrowRight">
+          Ordering options
+        </Button>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .menu-head {
+    padding-block: var(--sp-7) var(--sp-6);
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .menu-head__lede {
+    margin-top: var(--sp-4);
+    max-width: var(--measure);
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+  }
+
+  .menu-head__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-5);
+    margin-top: var(--sp-5);
+    list-style: none;
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+  }
+
+  .menu-head__stats strong {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+  }
+
+  /* --------------------------- toolbar ----------------------------- */
+  .menu-toolbar {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 60;
+    background: color-mix(in srgb, var(--paper) 96%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .menu-toolbar__inner {
+    display: grid;
+    gap: var(--sp-4);
+    padding-block: var(--sp-4);
+  }
+
+  .menu-search__label {
+    display: block;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: var(--sp-2);
+  }
+
+  .menu-search__field {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    max-width: 34rem;
+    padding-inline: var(--sp-3);
+    /* Input boundary: 3:1 (WCAG 1.4.11). */
+    border: 1.5px solid var(--line-control);
+    border-radius: var(--r-sm);
+    background: #fff;
+  }
+
+  .menu-search__field :global(svg) {
+    color: var(--ink-soft);
+  }
+
+  .menu-search__input {
+    flex: 1;
+    min-height: 2.75rem;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: var(--fs-body);
+  }
+
+  .menu-search__clear {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--cta);
+    padding: 0.4rem 0.5rem;
+  }
+
+  .menu-search__status {
+    margin-top: var(--sp-2);
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+  }
+
+  /* Wraps rather than scrolls sideways, so nothing can overflow the page. */
+  .menu-jump ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    list-style: none;
+    padding: 0;
+  }
+
+  .menu-jump a {
+    display: inline-block;
+    padding: 0.35rem 0.7rem;
+    /* These are controls (links), so the boundary needs 3:1. */
+    border: 1.5px solid var(--line-control);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .menu-jump a:hover {
+    border-color: var(--brand-gold);
+    background: var(--brand-gold);
+    color: var(--night);
+  }
+
+  /* ---------------------------- notes ------------------------------ */
+  .menu-notes {
+    padding-top: var(--sp-6);
+  }
+
+  .menu-notes__grid {
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  @media (min-width: 64rem) {
+    .menu-notes__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .menu-body {
+    max-width: 54rem;
+    margin-top: var(--sp-6);
+  }
+
+  /* ------------------------- owner questions ----------------------- */
+  .questions {
+    margin-top: var(--sp-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    padding: var(--sp-4) var(--sp-5);
+    max-width: 60rem;
+  }
+
+  .questions summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 600;
+  }
+
+  .questions summary:hover {
+    color: var(--cta);
+  }
+
+  .questions__intro {
+    margin-top: var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .questions ul {
+    margin-top: var(--sp-3);
+    padding-left: 1.1rem;
+    list-style: disc;
+    display: grid;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .questions__meta {
+    margin-top: var(--sp-5);
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+    word-break: break-word;
+  }
+
+  /* ----------------------------- cta ------------------------------- */
+  .menu-cta {
+    display: grid;
+    gap: var(--sp-5);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .menu-cta {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+
+  .menu-cta__lede {
+    margin-top: var(--sp-2);
+    color: #ded7cc;
+  }
+</style>
+
+<script>
+  /**
+   * Menu search — progressive enhancement.
+   *
+   * Without JavaScript every dish is already in the document and readable; this
+   * script only hides rows that do not match. Results are announced through a
+   * polite live region so the filter is usable with a screen reader.
+   *
+   * Matching reads the row's own rendered text rather than a duplicated
+   * data-attribute, which keeps the menu page roughly half the size.
+   */
+  const input = document.querySelector<HTMLInputElement>('[data-menu-search]');
+
+  // Cached lowercase text per row; rows never change after render.
+  type SearchableRow = HTMLElement & { __searchText?: string };
+  const rows = Array.from(
+    document.querySelectorAll<SearchableRow>('[data-menu-row]'),
+  );
+  const clear = document.querySelector<HTMLButtonElement>('[data-menu-clear]');
+  const status = document.querySelector<HTMLElement>('[data-menu-status]');
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-menu-section]'));
+
+  const totalRows = sections.reduce(
+    (sum, section) => sum + section.querySelectorAll('[data-menu-row]').length,
+    0,
+  );
+
+  function applyFilter(rawQuery: string) {
+    const query = rawQuery.trim().toLowerCase();
+    let visible = 0;
+
+    // Warm the text cache once, then reuse it for every keystroke.
+    rows.forEach((row) => {
+      row.__searchText ??= (row.textContent ?? '').toLowerCase();
+    });
+
+    sections.forEach((section) => {
+      const sectionRows = rows.filter((row) => section.contains(row));
+      let sectionVisible = 0;
+
+      sectionRows.forEach((row) => {
+        const matches = query === '' || (row.__searchText ?? '').includes(query);
+        row.hidden = !matches;
+        if (matches) sectionVisible += 1;
+      });
+
+      visible += sectionVisible;
+      section.hidden = sectionVisible === 0;
+
+      const empty = section.querySelector<HTMLElement>('[data-menu-empty]');
+      if (empty) empty.hidden = sectionVisible !== 0;
+    });
+
+    if (clear) clear.hidden = query === '';
+
+    if (status) {
+      status.textContent =
+        query === ''
+          ? `Showing all ${totalRows} dishes.`
+          : visible === 0
+            ? `No dishes match “${rawQuery.trim()}”.`
+            : `Showing ${visible} of ${totalRows} dishes.`;
+    }
+  }
+
+  input?.addEventListener('input', () => applyFilter(input.value));
+
+  clear?.addEventListener('click', () => {
+    if (!input) return;
+    input.value = '';
+    applyFilter('');
+    input.focus();
+  });
+</script>

@@ -1,0 +1,256 @@
+---
+/**
+ * Footer
+ *
+ * Every link here resolves. The restaurant's existing site has href="#" for
+ * both social icons on all four pages; this footer only renders an account when
+ * it actually exists, and lists ordering platforms that were verified.
+ */
+
+import Icon from './Icon.astro';
+import { siteConfig, telHref, directionsUrl } from '../config/site.js';
+
+const year = new Date().getFullYear();
+const { business, social, ordering, brand } = siteConfig;
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <p class="site-footer__wordmark">
+          Urban <em>Tadka</em>
+        </p>
+        <p class="site-footer__tag">{brand.tagline}</p>
+
+        <address class="site-footer__address">
+          {business.streetAddress}
+          <br />
+          {business.addressLocality}, {business.addressRegion}
+          {business.postalCode}
+        </address>
+
+        <p class="site-footer__contact">
+          <a href={telHref}>
+            <Icon name="phone" size={16} />
+            {business.phoneDisplay}
+          </a>
+        </p>
+        <p class="site-footer__contact">
+          <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+            <Icon name="navigation" size={16} />
+            Get directions
+            <span class="visually-hidden">(opens in a new tab)</span>
+          </a>
+        </p>
+      </div>
+
+      <nav class="site-footer__col" aria-labelledby="footer-explore">
+        <h2 id="footer-explore" class="site-footer__heading">Explore</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          {
+            siteConfig.nav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading" id="footer-order">Order</h2>
+        <ul aria-labelledby="footer-order">
+          {
+            ordering.options.map((option) => (
+              <li>
+                <a href={option.url} target="_blank" rel="noopener noreferrer">
+                  {option.label}
+                  <span class="visually-hidden">— {option.kind} (opens in a new tab)</span>
+                </a>
+              </li>
+            ))
+          }
+          <li><a href={telHref}>Call to order</a></li>
+        </ul>
+      </div>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading" id="footer-follow">Follow</h2>
+        <ul aria-labelledby="footer-follow">
+          {
+            social.accounts.map((account) => (
+              <li>
+                <a href={account.url} target="_blank" rel="noopener noreferrer">
+                  {account.label}
+                  <span class="visually-hidden">
+                    — @{account.handle} (opens in a new tab)
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="site-footer__note">{social.note}</p>
+      </div>
+    </div>
+
+    <div class="site-footer__legal">
+      <p>
+        &copy; {year} {business.legalName}. Menu details, photographs and the
+        restaurant name remain the property of {business.legalName}.
+      </p>
+      <p>
+        This is an <strong>unapproved design concept</strong> prepared for review. It is not
+        affiliated with, endorsed by, or operated by {business.legalName}, and it is
+        <strong>not published or indexed</strong>. {siteConfig.concept.ownerNote}
+      </p>
+      <p class="site-footer__links">
+        <a href="/privacy/">Privacy &amp; data</a>
+        <span aria-hidden="true">·</span>
+        <a href="/visit/">Contact</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--night);
+    color: #d8d1c6;
+    padding-block: var(--sp-8) var(--sp-6);
+    font-size: var(--fs-sm);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-7);
+  }
+
+  @media (min-width: 40rem) {
+    .site-footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--sp-6);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .site-footer__grid {
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: var(--sp-6);
+    }
+  }
+
+  .site-footer__wordmark {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink-invert);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .site-footer__wordmark em {
+    font-style: italic;
+    color: var(--brand-gold);
+  }
+
+  .site-footer__tag {
+    margin-top: var(--sp-2);
+    color: #a8a19a;
+  }
+
+  .site-footer__address {
+    margin-top: var(--sp-5);
+    font-style: normal;
+    line-height: 1.6;
+  }
+
+  .site-footer__contact {
+    margin-top: var(--sp-2);
+  }
+
+  .site-footer__contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    color: var(--brand-gold);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .site-footer__contact a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .site-footer__heading {
+    font-family: var(--font-body);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--brand-gold);
+    margin-bottom: var(--sp-4);
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .site-footer__col a {
+    color: #d8d1c6;
+    text-decoration: none;
+    display: inline-block;
+    padding-block: 0.15rem;
+  }
+
+  .site-footer__col a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .site-footer__note {
+    margin-top: var(--sp-3);
+    font-size: var(--fs-xs);
+    color: #8f8880;
+    max-width: 26ch;
+  }
+
+  .site-footer__legal {
+    margin-top: var(--sp-7);
+    padding-top: var(--sp-5);
+    border-top: 1px solid rgba(251, 248, 243, 0.14);
+    display: grid;
+    gap: var(--sp-3);
+    font-size: var(--fs-xs);
+    color: #a8a19a;
+    max-width: 82ch;
+  }
+
+  .site-footer__legal strong {
+    color: #d8d1c6;
+  }
+
+  .site-footer__links {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+
+  .site-footer__links a {
+    color: var(--brand-gold);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .site-footer__links a:hover {
+    text-decoration: underline;
+  }
+</style>

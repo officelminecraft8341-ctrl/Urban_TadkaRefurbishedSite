@@ -1,0 +1,89 @@
+---
+/**
+ * StructuredData — schema.org Restaurant
+ *
+ * The restaurant's current site has no structured data at all.
+ *
+ * Only verified facts are emitted:
+ *   - name, address, phone: taken verbatim from the restaurant's own site and
+ *     identical across every public listing.
+ *   - geo: derived from the coordinates in the restaurant's own Maps embed.
+ *   - servesCuisine / hasMenu: the restaurant's own description and its real
+ *     menu page on this site.
+ *
+ * Deliberately absent:
+ *   - aggregateRating and review: publishing invented review data is both
+ *     dishonest and a search-engine guideline violation.
+ *   - priceRange: no verified source states one.
+ *   - acceptsReservations: no verified source states one.
+ *   - image: we ship no photographs.
+ */
+
+import { siteConfig } from '../config/site.js';
+
+const { business, hours, ordering } = siteConfig;
+
+const origin = siteConfig.deployment.siteUrl.replace(/\/$/, '');
+
+// The config already stores real schema.org day names, so they pass through.
+const openingHoursSpecification = hours.schema.map((block) => ({
+  '@type': 'OpeningHoursSpecification',
+  dayOfWeek: block.days,
+  opens: block.opens,
+  closes: block.closes,
+}));
+
+const sameAs = siteConfig.social.accounts.map((account) => account.url);
+
+const data = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  '@id': `${origin}/#restaurant`,
+  name: business.legalName,
+  url: `${origin}/`,
+  telephone: business.phoneE164,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: business.streetAddress,
+    addressLocality: business.addressLocality,
+    addressRegion: business.addressRegion,
+    postalCode: business.postalCode,
+    addressCountry: business.addressCountry,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: business.latitude,
+    longitude: business.longitude,
+  },
+  servesCuisine: business.cuisine,
+  hasMenu: `${origin}/menu/`,
+  openingHoursSpecification,
+  ...(sameAs.length ? { sameAs } : {}),
+  ...(ordering.options.length
+    ? {
+        // Real, verified ordering channels rather than a guessed one.
+        potentialAction: ordering.options.map((option) => ({
+          '@type': 'OrderAction',
+          name: `Order from ${option.label}`,
+          target: option.url,
+        })),
+      }
+    : {}),
+};
+
+const json = JSON.stringify(data, null, 2);
+---
+
+<script type="application/ld+json" is:inline set:html={json} />
+
+{
+  /*
+    Notes for whoever maintains this next:
+      - the address used above is the one verified against every public listing.
+      - hours are the restaurant's own published hours; third-party listings
+        differ, so they are flagged in docs/03-unverified-details.md.
+      - no aggregateRating, review, priceRange or image is emitted, because none
+        of them could be verified. Inventing review data would also breach
+        search-engine guidelines.
+  */
+}

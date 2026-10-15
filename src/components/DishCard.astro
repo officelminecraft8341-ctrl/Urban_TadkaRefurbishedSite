@@ -1,0 +1,144 @@
+---
+/**
+ * DishCard
+ *
+ * Used for featured dishes on the homepage. Prices and descriptions come from
+ * src/data/menu.json, so this card can never drift from the menu page.
+ *
+ * No dietary, spice or allergen chips are rendered because no such data exists
+ * in the source menu. Inventing them would be a fabricated claim about the food;
+ * the absence is deliberate and is listed as an owner question instead.
+ */
+
+import Icon from './Icon.astro';
+import PhotoPlaceholder from './PhotoPlaceholder.astro';
+import { formatPrice, categoryHref, categoryLabel } from '../lib/menu.js';
+
+interface Props {
+  /** A dish resolved from src/data/menu.json, plus its category slug. */
+  dish: {
+    name: string;
+    price: number | null;
+    description: string | null;
+    category: string;
+  };
+  /** The shot we need for this dish; shown inside the placeholder. */
+  photoCaption: string;
+}
+
+const { dish, photoCaption } = Astro.props;
+
+const price = formatPrice(dish.price);
+---
+
+<article class="dish-card">
+  <div class="dish-card__media">
+    <PhotoPlaceholder caption={photoCaption} ratio="4/3" compact />
+  </div>
+
+  <div class="dish-card__body">
+    <p class="dish-card__kicker">{categoryLabel(dish.category)}</p>
+
+    <div class="dish-card__row">
+      <h3 class="dish-card__name">{dish.name}</h3>
+      {price ? (
+        <span class="price dish-card__price">{price}</span>
+      ) : (
+        <span class="dish-card__price dish-card__price--missing">Ask us</span>
+      )}
+    </div>
+
+    {dish.description && <p class="dish-card__text">{dish.description}</p>}
+
+    <a class="dish-card__link" href={categoryHref(dish.category)}>
+      See this on the menu
+      <Icon name="arrowRight" size={16} />
+    </a>
+  </div>
+</article>
+
+<style>
+  .dish-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .dish-card:hover {
+      border-color: var(--line-strong);
+      box-shadow: var(--shadow-1);
+    }
+  }
+
+  .dish-card__media {
+    padding: var(--sp-3) var(--sp-3) 0;
+  }
+
+  .dish-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-4) var(--sp-5) var(--sp-5);
+    flex: 1;
+  }
+
+  .dish-card__kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* Classic menu typography: name left, price right, on one baseline. */
+  .dish-card__row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    justify-content: space-between;
+  }
+
+  .dish-card__name {
+    font-size: var(--fs-h3);
+    margin: 0;
+  }
+
+  .dish-card__price {
+    font-size: var(--fs-body);
+    color: var(--ink);
+  }
+
+  .dish-card__price--missing {
+    font-weight: 500;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .dish-card__text {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+    flex: 1;
+  }
+
+  .dish-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--cta);
+    text-decoration: none;
+  }
+
+  .dish-card__link:hover {
+    color: var(--cta-hover);
+    text-decoration: underline;
+  }
+</style>

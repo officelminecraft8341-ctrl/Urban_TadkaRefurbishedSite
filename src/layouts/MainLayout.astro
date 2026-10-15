@@ -1,0 +1,107 @@
+---
+/**
+ * MainLayout
+ *
+ * Fonts are self-hosted from npm (Fontsource, SIL OFL 1.1) rather than fetched
+ * from Google Fonts at runtime. That removes a third-party request, removes a
+ * privacy consideration, and means the site renders identically offline.
+ *
+ * Brand colours are injected here from src/config/site.js, so re-theming this
+ * site for a different restaurant means editing that config file — the CSS in
+ * src/styles/ never changes.
+ */
+
+import '@fontsource-variable/fraunces/index.css';
+import '@fontsource-variable/fraunces/wght-italic.css';
+import '@fontsource-variable/inter/index.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/components.css';
+
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ActionBar from '../components/ActionBar.astro';
+import StructuredData from '../components/StructuredData.astro';
+import { siteConfig } from '../config/site.js';
+
+const { title, description, canonicalPath, ogType, bodyClass = '' } = Astro.props;
+
+const colors = siteConfig.brand.colors;
+
+/**
+ * Config key -> CSS custom property.
+ *
+ * Typed as a complete map of the colour object: adding a colour to
+ * siteConfig.brand.colors without also deciding its CSS variable becomes a
+ * type error here rather than a silently ignored value.
+ */
+const CSS_VARS: Record<keyof typeof colors, string> = {
+  gold: '--brand-gold',
+  crimson: '--brand-crimson',
+  charcoal: '--brand-charcoal',
+  steel: '--brand-steel',
+  ink: '--ink',
+  inkSoft: '--ink-soft',
+  paper: '--paper',
+  paperWarm: '--paper-warm',
+  line: '--line',
+  night: '--night',
+  cta: '--cta',
+  ctaHover: '--cta-hover',
+  ctaActive: '--cta-active',
+};
+
+const brandVariables = (Object.entries(CSS_VARS) as [keyof typeof colors, string][])
+  .map(([key, cssVar]) => `${cssVar}: ${colors[key]};`)
+  .join('\n  ');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} canonicalPath={canonicalPath} ogType={ogType} />
+    <!--
+      Brand tokens injected from src/config/site.js.
+
+      `:root:root` (specificity 0,2,0) is deliberate: Astro emits its stylesheet
+      link AFTER this block, and token stylesheets define the same custom
+      properties as fallbacks. At equal specificity the later rule wins, so a
+      plain `:root` here would be silently overridden and re-theming this site
+      from the config file would appear to do nothing. Doubling the selector
+      makes these values win on specificity instead of source order.
+    -->
+    <style is:inline set:html={`:root:root {\n  ${brandVariables}\n}`} />
+  </head>
+
+  <body class={`has-actionbar ${bodyClass}`.trim()}>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <Header />
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <ActionBar />
+
+    <StructuredData />
+  </body>
+</html>
+
+<style is:global>
+  /* The fixed action bar only exists below 48rem, so its clearance does too. */
+  @media (max-width: 47.99rem) {
+    body.has-actionbar {
+      padding-bottom: calc(var(--actionbar-h) + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  /* #main is a landmark, not a control: a focus ring round the whole page reads
+     as a rendering glitch. The skip link still moves focus and scroll here. */
+  #main:focus {
+    outline: none;
+  }
+</style>
