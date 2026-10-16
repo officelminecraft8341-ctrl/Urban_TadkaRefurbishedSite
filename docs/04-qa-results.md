@@ -419,3 +419,12 @@ observation, text-spacing check, reduced-motion observation, axe/Lighthouse
 scan. The statement page says exactly this. Do not claim conformance on this
 evidence alone — independent review with disabled participants is still required
 before any formal claim.
+
+### Cloudflare Pages channel (16 Oct 2026)
+
+The owner connected the GitHub repo to Cloudflare Pages. Workspace synced to
+`main` (`0a5722a`), `deploy/` gitignored so Pages builds clean `dist/` from
+source. Live at `https://urban-tadkarefurbishedsite.pages.dev`: all 9 routes
+200, real 404s, `noindex,nofollow` intact, robots disallowing, sitemap 9 entries,
+all four §11 fixes confirmed in served HTML/CSS. This URL is now the channel for
+the manual testing above — it runs in a real browser, which this environment cannot.
