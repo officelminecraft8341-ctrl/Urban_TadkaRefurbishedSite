@@ -371,3 +371,47 @@ const categoryCount = categories.length;
     input.focus();
   });
 </script>
+
+<script>
+  /**
+   * Live menu overlay — instant publish without a rebuild.
+   *
+   * The page renders fully from the committed menu at build time (SEO +
+   * no-JS fallback). If the admin has published live data to /api/menu, this
+   * patches prices/descriptions in place via textContent (never innerHTML).
+   * If the API is absent or reports live:false, the static build stands.
+   */
+  (async () => {
+    try {
+      const res = await fetch('/api/menu', { headers: { Accept: 'application/json' } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || data.live !== true || !Array.isArray(data.categories)) return;
+      const fmt = (p: number | null | undefined) =>
+        p === null || p === undefined ? null : `$${Number(p).toFixed(2)}`;
+      const map = new Map();
+      for (const c of data.categories) {
+        for (const it of c.items || []) {
+          map.set(`${c.slug}::${String(it.name).trim().toLowerCase()}`, it);
+        }
+      }
+      document.querySelectorAll('[data-menu-row]').forEach((row) => {
+        const el = row;
+        const key = `${el.getAttribute('data-category')}::${(el.getAttribute('data-dish') || '').trim().toLowerCase()}`;
+        const live = map.get(key);
+        if (!live) return;
+        const priceEl = el.querySelector('[data-price]');
+        if (priceEl) {
+          const p = fmt(live.price);
+          priceEl.textContent = p ?? 'Ask us';
+        }
+        const descEl = el.querySelector('[data-desc]');
+        if (descEl && typeof live.description === 'string') {
+          descEl.textContent = live.description;
+        }
+      });
+    } catch {
+      // Static build remains; live overlay is best-effort.
+    }
+  })();
+</script>

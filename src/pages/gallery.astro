@@ -32,6 +32,7 @@ const tileCount = 12;
   <section class="section section--flushtop" aria-labelledby="gallery-grid-heading">
     <div class="container">
       <h2 id="gallery-grid-heading" class="visually-hidden">Photographs</h2>
+      <div id="live-gallery" hidden></div>
       <GalleryGrid count={tileCount} id="main-gallery" />
     </div>
   </section>
@@ -81,4 +82,67 @@ const tileCount = 12;
     margin-top: var(--sp-2);
     color: #ded7cc;
   }
+
+  #live-gallery {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    margin-bottom: var(--sp-6);
+  }
+
+  #live-gallery figure {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    background: var(--paper);
+  }
+
+  #live-gallery img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  #live-gallery figcaption {
+    padding: var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
 </style>
+
+<script>
+  /**
+   * Live gallery overlay. Placeholders render at build time; photos the
+   * admin publishes via /api/admin/upload appear here instantly via
+   * /api/gallery. All text via textContent, images via src only.
+   */
+  (async () => {
+    try {
+      const res = await fetch('/api/gallery', { headers: { Accept: 'application/json' } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || data.live !== true || !Array.isArray(data.images) || data.images.length === 0) return;
+      const box = document.getElementById('live-gallery');
+      if (!box) return;
+      box.textContent = '';
+      box.hidden = false;
+      for (const g of data.images) {
+        if (!g || typeof g.url !== 'string' || typeof g.label !== 'string') continue;
+        if (!g.url.startsWith('/images/')) continue;
+        const fig = document.createElement('figure');
+        const img = document.createElement('img');
+        img.src = g.url;
+        img.alt = g.label;
+        img.loading = 'lazy';
+        const cap = document.createElement('figcaption');
+        cap.textContent = g.label;
+        fig.appendChild(img);
+        fig.appendChild(cap);
+        box.appendChild(fig);
+      }
+    } catch {
+      // Placeholders remain; live overlay is best-effort.
+    }
+  })();
+</script>

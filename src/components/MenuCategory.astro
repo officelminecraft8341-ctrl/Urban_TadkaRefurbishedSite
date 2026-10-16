@@ -50,15 +50,15 @@ const headingId = `${category.slug}-heading`;
       category.items.map((dish) => {
         const price = formatPrice(dish.price);
         return (
-          <div class="menu-list__row" data-menu-row>
+          <div class="menu-list__row" data-menu-row data-category={category.slug} data-dish={dish.name}>
             <dt class="menu-list__name">
               <span class="menu-list__label">{dish.name}</span>
               <span class="menu-list__leader" aria-hidden="true" />
-              <span class="menu-list__price">
+              <span class="menu-list__price" data-price>
                 {price ?? <span class="menu-list__ask">Ask us</span>}
               </span>
             </dt>
-            {dish.description && <dd class="menu-list__desc">{dish.description}</dd>}
+            {dish.description && <dd class="menu-list__desc" data-desc>{dish.description}</dd>}
           </div>
         );
       })
