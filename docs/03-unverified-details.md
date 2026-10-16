@@ -14,9 +14,9 @@ decision. **Optional** = improves the site but nothing breaks without it.
 | # | Item | Current treatment on the site | What we need | Owner of the answer |
 |---|---|---|---|---|
 | 1 | **Opening hours** (Blocker) | Shown, with a visible "Confirm before launch" note | Day-by-day hours, lunch and dinner. Three versions disagree — see §2 | Restaurant |
-| 2 | **Prices** (Blocker) | Shown exactly as published, with a "Prices need confirming" note | A current priced menu, or written confirmation that these are still correct | Restaurant |
+| 2 | **Prices** (Blocker) | Shown from the current printed menu (Oct 2026), with a "confirm when you call" note | Owner sign-off that the photographed menu is the live menu | Restaurant |
 | 3 | **Lunch buffet** (Important) | Absent entirely | Does it exist? Days, times, price | Restaurant |
-| 4 | **Duplicate dishes at two prices** (Important) | Both entries shown, listed as owner questions on the menu page | Which price is current, or whether both are intended | Restaurant |
+| 4 | **Duplicate dish at two prices** (Important) | Chilli Paneer is printed twice (Appetizer $13.99, Paneer $18.49) and shown as printed | Confirm both listings are intended | Restaurant |
 | 5 | **Dietary classifications** (Important) | Absent — no veg/vegan/halal/gluten-free/nut-free labels anywhere | Which dishes are vegetarian, which vegan, and whether to publish halal status | Restaurant |
 | 6 | **Allergen information** (Important) | Absent | Whether to publish any, and in what wording — this carries liability, so it is the restaurant's call | Restaurant (+ qualified advice) |
 | 7 | **Spice levels** (Optional) | Absent | Whether dishes should carry a mild/medium/hot indicator | Restaurant |

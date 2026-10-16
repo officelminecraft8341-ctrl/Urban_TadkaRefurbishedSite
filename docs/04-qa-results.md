@@ -93,7 +93,7 @@ Served `dist/` and requested every route:
 | Metric | Measured |
 |---|---|
 | Homepage HTML | 62.3 KB raw → **9.4 KB gzip** |
-| Menu page (157 dishes) | 120.4 KB raw → **13.1 KB gzip** |
+| Menu page (142 dishes) | 113.5 KB raw → **12.7 KB gzip** |
 | Gallery | 59.1 KB raw → 8.8 KB gzip |
 | Visit | 40.5 KB raw → 7.5 KB gzip |
 | Global CSS | 20.2 KB raw → **4.7 KB gzip** |
@@ -156,7 +156,7 @@ This is evidence about the CSS, not proof of rendered layout. A browser pass is 
 | **Cross-browser check** | Only the build output was inspected. |
 | **Network-throttled testing** | No throttling harness available. |
 | **Deployment / HTTPS** | Nothing is deployed. The `http → https` redirect and certificate requirements are documented in the README, not tested. |
-| **The menu filter with JavaScript disabled** | Reasoned about (all 157 dishes are server-rendered, so the menu is fully readable without JS) but not verified in a JS-disabled browser. |
+| **The menu filter with JavaScript disabled** | Reasoned about (all 142 dishes are server-rendered, so the menu is fully readable without JS) but not verified in a JS-disabled browser. |
 
 ## 5. Remaining issues, prioritised
 
@@ -182,7 +182,7 @@ This is evidence about the CSS, not proof of rendered layout. A browser pass is 
 
 ### Worth considering
 
-8. **Menu page weight.** 120 KB raw for 157 dishes. Fine gzipped (13 KB), but if the menu grows
+8. **Menu page weight.** 113 KB raw for 142 dishes. Fine gzipped (12.7 KB), but if the menu grows
    substantially, collapsible categories or pagination would help.
 9. **Preload the two critical font files.** Would reduce the swap flash. Requires the hashed
    filenames, so it needs build-time wiring in `BaseHead`.
@@ -209,7 +209,7 @@ conversation that produced them. Files: `src/pages/review.astro`, `src/data/phot
 |---|---|---|
 | Typecheck, build and all three gates | `npm run check` | **exit 0.** 9 pages built (was 8); `/review/` = 64.6 KB HTML plus a 4.1 KB page script; 0 errors, 0 warnings |
 | Contrast gate | part of the above | all 21 token pairs pass, plus the composite lightbox-border check — 22 passing lines in the output, 0 failures; both negative controls still fail as designed |
-| Photo-record gate | `python3 tools/verify-photo-records.py` | 4 records checked, 157 menu name/price pairs, all checks passed |
+| Photo-record gate | `python3 tools/verify-photo-records.py` | 4 records checked, 142 menu name/price pairs, all checks passed |
 | The gate is discriminating | 7 deliberate faults injected into the catalogue, then restored | **exit 1 with 10 errors**, each naming the fault: an invented dish, a real dish at the wrong price, drift from the authored document, an undefined verification status, a summary the records contradict, a withheld photograph claimed as included, promotional alt text. Restored file re-checked clean |
 | Built artifact | inspection of `dist/review/index.html` | all four record ids, the data hooks the script needs, both `NEEDS HUMAN REVIEW` records, menu names and prices, and the noindex meta are present; the batch id and date are passed to the script through the page rather than hardcoded; the page script is emitted as `/_astro/review.astro_astro_type_script_index_0_lang.*.js` (4.1 KB) and carries its storage key. (It was inlined when shorter — Astro switches to an external asset once the script crosses its inline threshold, so this is expected, not a regression.) |
 | Served page | dev server, with the preview `Host` header | `/review/` **200 `text/html`**, 113,692 bytes, containing the record content; `/`, `/gallery/`, `/menu/` all 200 |
@@ -428,3 +428,22 @@ source. Live at `https://urban-tadkarefurbishedsite.pages.dev`: all 9 routes
 200, real 404s, `noindex,nofollow` intact, robots disallowing, sitemap 9 entries,
 all four §11 fixes confirmed in served HTML/CSS. This URL is now the channel for
 the manual testing above — it runs in a real browser, which this environment cannot.
+
+---
+
+## 12. Current printed-menu transcription (16 Oct 2026)
+
+Requested: adopt the restaurant's current printed menu (five photographed pages) with minimal
+design change. `src/data/menu.json` retranscribed: 142 dishes across the same 13 categories
+(down from 157 — the legacy page's fourteen duplicate-price entries collapse to one, except
+Chilli Paneer, which the printed menu itself lists twice: Appetizer $13.99, Paneer $18.49, shown
+as printed). Entrée note (served with rice or butter naan) and 18% gratuity for 6+ added as
+menu-page fineprint from the menu itself; one spacing typo normalized ("car damom" → "cardamom").
+No component, layout or style changed — homepage, category tiles, search, featured dishes and
+counts render from the same data file. Photo-record B2-01 refreshed (Amritsari Paneer Tikka
+$19.99 → $19.49) with evidence text untouched; `docs/05` match table updated to match.
+
+`npm run check` exit 0 (10 pages, 0 errors, 0 warnings; photo gate: 142 pairs, 4 records, pass).
+Built output verified: Butter Chicken $18.99 in Chicken, Chilli Paneer twice at both printed
+prices, 142-dish headcount, entrée + gratuity notes on the menu page. Owner sign-off that the
+photographed menu is the live menu is still outstanding (docs/03 item 2, docs/06 §3).

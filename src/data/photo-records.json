@@ -21,7 +21,7 @@
       "id": "B2",
       "receivedOn": "2026-10-15",
       "receivedVia": "Uploaded in chat, four images, upload order preserved",
-      "menuAvailable": "src/data/menu.json — 157 items across 13 categories, transcribed verbatim from the restaurant's own published menu page",
+      "menuAvailable": "src/data/menu.json — 142 items across 13 categories, transcribed from the restaurant's current printed menu (October 2026)",
       "fileAccess": false,
       "fileAccessNote": "The images arrived as paths on the reviewer's own computer. This environment could not open them as files, so analysis was performed on the images as rendered in the conversation. No file was opened, saved, renamed, moved, compressed or modified, and the suggested filenames below are records rather than actions.",
       "photosPublishable": false,
@@ -44,7 +44,7 @@
             "summary": "Paneer Tikka (probable), or Amritsari Paneer Tikka if the redder marinade belongs to that variant",
             "items": [
               { "name": "Paneer Tikka", "price": 19.49, "category": "tandoor" },
-              { "name": "Amritsari Paneer Tikka", "price": 19.99, "category": "tandoor" }
+              { "name": "Amritsari Paneer Tikka", "price": 19.49, "category": "tandoor" }
             ]
           },
           "verificationStatus": "PROBABLE MATCH",

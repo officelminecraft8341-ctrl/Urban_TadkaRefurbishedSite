@@ -87,22 +87,16 @@ What we need from the owner, if they want it included:
 
 ## 3. Menu and culinary descriptions
 
-**Status: Needs owner confirmation.** Dish names, descriptions and prices are
-transcribed verbatim from the restaurant's own menu page (last updated 2019).
-The site adds nothing and rewrites nothing — which means it also reproduces the
-source's open questions:
+**Status: Updated Oct 2026, owner sign-off still needed.** Dish names, descriptions and prices are
+transcribed from the restaurant's current printed menu (photographed page by page, Oct 2026:
+142 dishes, 13 categories). The site adds nothing and rewrites nothing — which means it also
+reproduces the source's one open question:
 
-- **Fourteen dish names appear twice at different prices.** Both entries are shown
-  exactly as published. The owner must rule on each: Chicken Biryani ($12.99 /
-  $15.99), Chilli Paneer ($13.99 / $18.49), Kadai Paneer ($10.99 / $18.49), Lamb
-  Biryani ($13.99 / $18.99), Lassi Punjabi ($1.99 / $3.99), Mango Lassi ($2.99 /
-  $4.99), Masala Chai ($1.99 / $2.99), Masala Gucchi ($10.99 / $17.49), Patiala
-  Lassi ($2.99 / $5.99), Saag Paneer ($10.99 / $18.49), Shrimp Biryani ($14.95 /
-  $18.99), Smokey Baigan ($10.99 / $17.99), Soft Drinks ($0.99 / $2.50), Vegetable
-  Biryani ($10.99 / $14.99). Possible causes are portion sizes, lunch versus
-  dinner pricing, or a stale page — the owner knows which.
-- **Current prices.** Everything shown is 2019 pricing until re-confirmed against
-  the live kitchen menu.
+- **One dish name appears twice at different prices — as printed.** Chilli Paneer is listed
+  both as an appetizer ($13.99) and as a paneer curry ($18.49). Both entries are shown exactly
+  as printed; confirm both listings are intended.
+- **Current prices.** Everything shown is the photographed menu's pricing. Please confirm that
+  menu is the live one, including the 18% gratuity for parties of 6+.
 - **Thin categories** — are these complete? Seafood (2 dishes), Tandoor (8),
   Sides (7).
 - **Dietary and allergens.** The published menu states no vegetarian, vegan, halal,

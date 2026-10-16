@@ -32,7 +32,7 @@ Last reviewed: 16 October 2026, against the preview build then live.
 |---|---|---|---|---|---|
 | Restaurant name "Urban Tadka" | Throughout (`src/config/site.js` → `brand.name`, headers, titles) | Restaurant's own published site | Trademark rights (if any) belong to the restaurant; no licence | **None sought yet** | Written permission to use the name in a demo and, separately, on a live site — before any sale or publication |
 | Address, phone, hours, cuisine description | `src/config/site.js` → `business`, `hours`; rendered on Home, Visit, About | Restaurant's own published pages + public listings | Facts; presentation is ours, underlying business facts are theirs | **None sought yet** | Owner re-confirmation (hours/prices conflict — see `docs/03-unverified-details.md`) + written permission to publish |
-| All 157 dish names, descriptions, prices | `src/data/menu.json` (via `tools/parse-legacy-menu.py` from restaurant's menu page) | Restaurant's own menu page, transcribed verbatim | Menu text remains the restaurant's property; no licence | **None sought yet** | Written permission to reproduce; re-confirm prices (2019) and duplicate-price dishes before launch |
+| All 142 dish names, descriptions, prices | `src/data/menu.json` (transcribed from the current printed menu, photographed Oct 2026) | Restaurant's current printed menu, transcribed | Menu text remains the restaurant's property; no licence | **None sought yet** | Written permission to reproduce; owner sign-off that the photographed menu is live |
 | Tagline "Authentic traditional Indian cuisine" | `src/config/site.js` → `brand.tagline`, footer | Restaurant's site header, verbatim | Restaurant's wording | **None sought yet** | Confirm canonical strapline (§17 of doc 03) + permission as above |
 | Region/spice lists, "tadka" explanation | `src/pages/about.astro` | Restaurant's About page, summarised | Restaurant's description | **None sought yet** | Owner approval of wording (checklist §2) |
 | Brand colour values (#FFCC29, #BF383E, #373435, #BDBFC1) | `src/config/site.js` → `brand.colors` | Sampled from restaurant's logo file by pixel histogram | Colour values are facts, not artwork; logo artwork itself is NOT reproduced | N/A (values) but logo permission still outstanding | Low risk as values; still needs logo permission if artwork is ever used |
@@ -75,7 +75,7 @@ Last reviewed: 16 October 2026, against the preview build then live.
 ## 6. Uncertain items flagged for manual verification (do not launch without)
 
 1. Written permission for: restaurant name, menu text, tagline, logo (if ever used), photographs (when supplied), staff/customer likenesses.
-2. Hours + prices re-confirmation (three sources disagree; prices frozen at 2019).
+2. Hours + prices re-confirmation (listings disagree on hours; prices now from the Oct 2026 printed menu, still needs owner sign-off).
 3. Ordering platform page ownership (Grubhub/Uber Eats) + correct catering URL.
 4. Social account ownership (Facebook `UrbanTadkaDallas` only; no X/Instagram/TikTok verified).
 5. Developer legal business name in `siteConfig.developer.name` + signed contract terms.

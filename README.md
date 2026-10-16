@@ -33,7 +33,7 @@ This is the part worth reading before showing the site to anyone.
 
 | What | Where it comes from |
 |---|---|
-| All 157 dishes, their descriptions and prices | Transcribed verbatim from the restaurant's own menu page by `tools/parse-legacy-menu.py` |
+| All 142 dishes, their descriptions and prices | Transcribed from the restaurant's current printed menu (photographed Oct 2026) |
 | Name, address, phone | The restaurant's site, and identical on every public listing |
 | Opening hours | The restaurant's own Contact page |
 | Cuisine description, the Punjab region list, the meaning of "tadka" | The restaurant's own About page |
@@ -63,8 +63,7 @@ This is the part worth reading before showing the site to anyone.
 ### Flagged in place, with visible annotations
 
 Anything unconfirmed renders a `<ConceptNote>` ("For the owner") rather than passing as settled
-fact. The two big ones are opening hours (three conflicting versions exist) and prices (published
-in 2019). See [`docs/03-unverified-details.md`](docs/03-unverified-details.md).
+fact. The biggest one is opening hours (listings disagree with the restaurant's own page); prices are transcribed from the current printed menu (Oct 2026). See [`docs/03-unverified-details.md`](docs/03-unverified-details.md).
 
 ---
 
@@ -103,7 +102,7 @@ audit/                    ← local mirror of the old site (gitignored)
 **Astro**, static output. Reasons, in order:
 
 1. The menu is the client's most-edited content. It lives in one JSON file and renders through one
-   component, so a price change is a single edit in a single place instead of a hunt through 157
+   component, so a price change is a single edit in a single place instead of a hunt through 142
    inline `<span>`s.
 2. Shared header/nav/footer come from one layout, so pages cannot drift apart — the restaurant's
    current site links "About us" to `#` on one page and to `about.html` on another.
@@ -178,7 +177,7 @@ Measured on the actual build output:
 | Metric | Value |
 |---|---|
 | Homepage HTML | 62 KB raw → **9.4 KB gzip** |
-| Menu page HTML (157 dishes) | 120 KB raw → **13 KB gzip** |
+| Menu page HTML (142 dishes) | 113 KB raw → **12.7 KB gzip** |
 | CSS (global) | 20 KB raw → **4.7 KB gzip** |
 | JavaScript shipped | **0 KB** — Astro inlines the small scripts needed per page |
 | Fonts actually downloaded | ~128 KB (3 latin subsets) |
