@@ -2,54 +2,72 @@
 /**
  * GalleryGrid
  *
- * Responsive gallery plus an accessible lightbox built on the native <dialog>
- * element, which gives us focus trapping, Esc-to-close and inert background
- * content from the platform rather than from hand-written JavaScript.
+ * Twelve art tiles standing in for photographs that will be shot in the
+ * restaurant. Each tile names its shot in the middle of the panel, so beta
+ * reviewers see the shot list where the photographs will sit.
  *
- * Keyboard: every tile is a real <button>; inside the viewer, Left/Right move
- * between items, Esc closes, and focus returns to the tile that opened it.
+ * The viewer is a native <dialog>: focus trapping, Esc-to-close and inert
+ * background content come from the platform. Keyboard: every tile is a real
+ * <button>; inside the viewer, Left/Right move between tiles, Esc closes, and
+ * focus returns to the tile that opened it.
  *
- * All slides are rendered server-side and toggled here, so dropping in real
- * photography later means replacing the PhotoPlaceholder inside each slide
- * with an <img> — the viewer logic does not change.
+ * All slides render server-side. Dropping in real photography later means
+ * replacing the PhotoPlaceholder inside each slide with an <img> carrying a
+ * factual alt text — the viewer logic does not change.
  */
 
 import PhotoPlaceholder from './PhotoPlaceholder.astro';
 import Icon from './Icon.astro';
 
-interface GalleryItem {
-  /** Shot description. Doubles as the photography brief. */
-  caption: string;
-  /** Any key from PhotoPlaceholder's RATIOS map. */
-  ratio?: string;
-}
-
 interface Props {
-  items: GalleryItem[];
+  /** How many tiles the grid holds. */
+  count: number;
   /** Base for the dialog id, so two galleries can coexist on one page. */
   id?: string;
 }
 
-const { items, id = 'gallery' } = Astro.props;
+/**
+ * The twelve shots, in the same order as the owner-review checklist. The same
+ * label drives the grid tile and its lightbox slide, so the two can never
+ * disagree about which photograph goes where.
+ */
+const SHOTS = [
+  'Dining room, wide, dinner service',
+  'Exterior on Market Place Blvd, daytime',
+  'Chef lifting naan from the tandoor',
+  'Biryani in its handi, lid opened at table',
+  'Table with three curries, rice, naan basket',
+  'Samosas with chutney, close-up',
+  'Tandoori platter arriving at table',
+  'Whole spices in steel bowl, close-up',
+  'Lassi in a tall glass',
+  'Gulab jamun in syrup, two pieces',
+  'Full table of dishes, overhead',
+  'Counter and pickup area, staffed',
+];
+
+const { count, id = 'gallery' } = Astro.props;
 const dialogId = `${id}-dialog`;
+const tiles = Array.from({ length: count }, (_, index) => ({
+  index,
+  shot: SHOTS[index] ?? `Photo ${index + 1}`,
+}));
 ---
 
 <ul class="gallery" data-gallery>
   {
-    items.map((item, index) => (
+    tiles.map((tile) => (
       <li class="gallery__item">
         <button
           type="button"
           class="gallery__trigger"
-          data-gallery-open={index}
-          aria-label={`Open larger view: ${item.caption}`}
+          data-gallery-open={tile.index}
+          aria-label={`Photo needed, ${tile.shot}, photo ${tile.index + 1} of ${count}`}
         >
-          <PhotoPlaceholder
-            caption={item.caption}
-            ratio={item.ratio ?? '4/3'}
-            compact
-          />
-          <span class="gallery__hint" aria-hidden="true">View</span>
+          <PhotoPlaceholder ratio="4/3" compact title={tile.shot} />
+          <span class="gallery__hint" aria-hidden="true">
+            {tile.index + 1} / {count}
+          </span>
         </button>
       </li>
     ))
@@ -67,10 +85,13 @@ const dialogId = `${id}-dialog`;
 
   <div class="lightbox__stage">
     {
-      items.map((item, index) => (
-        <div class="lightbox__slide" data-gallery-slide={index} hidden={index !== 0}>
-          <PhotoPlaceholder caption={item.caption} ratio="3/2" tone="night" />
-          <p class="lightbox__caption">{item.caption}</p>
+      tiles.map((tile) => (
+        <div
+          class="lightbox__slide"
+          data-gallery-slide={tile.index}
+          hidden={tile.index !== 0}
+        >
+          <PhotoPlaceholder ratio="3/2" tone="night" title={tile.shot} />
         </div>
       ))
     }
@@ -202,12 +223,6 @@ const dialogId = `${id}-dialog`;
     display: grid;
   }
 
-  .lightbox__caption {
-    margin-top: var(--sp-3);
-    font-size: var(--fs-sm);
-    color: #d8d1c6;
-  }
-
   .lightbox__nav {
     display: flex;
     justify-content: space-between;
@@ -265,7 +280,7 @@ const dialogId = `${id}-dialog`;
     });
 
     if (gallery.counter) {
-      gallery.counter.textContent = `Image ${gallery.index + 1} of ${total}`;
+      gallery.counter.textContent = `Photo ${gallery.index + 1} of ${total}`;
     }
   }
 

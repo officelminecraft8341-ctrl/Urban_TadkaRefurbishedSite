@@ -1,27 +1,14 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import MenuCategory from '../components/MenuCategory.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import ConceptNote from '../components/ConceptNote.astro';
-import {
-  categories,
-  totalItems,
-  categoryLabel,
-  duplicateNames,
-  parserWarnings,
-  menuMeta,
-} from '../lib/menu.js';
+import { categories, totalItems, categoryLabel } from '../lib/menu.js';
 import { siteConfig, telHref } from '../config/site.js';
 
 const dishCount = totalItems();
 const categoryCount = categories.length;
-
-// Surfaced rather than hidden: names that appear twice on the restaurant's own
-// menu with different prices are the restaurant's call to resolve, not ours.
-const duplicates = duplicateNames();
-const warnings = parserWarnings();
 ---
 
 <MainLayout
@@ -95,20 +82,16 @@ const warnings = parserWarnings();
 
   <!-- ======================= DIETARY DISCLAIMER ==================== -->
   <section class="container menu-notes">
-    <div class="menu-notes__grid">
-      <ConceptNote title="No dietary labels shown — on purpose" icon="alert">
-        Urban Tadka’s published menu does not state which dishes are vegetarian, vegan, halal,
-        gluten-free or nut-free, and it lists no allergen information. Rather than guess at
-        classifications that could affect someone’s health, this page shows none. Please ask
-        the restaurant directly about ingredients and allergens.
-      </ConceptNote>
+    <ConceptNote title="No dietary labels shown — on purpose" icon="alert">
+      Urban Tadka’s published menu does not state which dishes are vegetarian, vegan, halal,
+      gluten-free or nut-free, and it lists no allergen information. Rather than guess at
+      classifications that could affect someone’s health, this page shows none. Please ask
+      the restaurant directly about ingredients and allergens.
+    </ConceptNote>
 
-      <ConceptNote title="Prices need confirming">
-        These prices are the restaurant’s own, published on its current website, which was last
-        updated in 2019 ({menuMeta.stats.items} price strings in total). They must be
-        re-confirmed against the live kitchen menu before launch.
-      </ConceptNote>
-    </div>
+    <p class="fineprint">
+      Prices follow the restaurant’s published menu — worth confirming when you call.
+    </p>
   </section>
 
   <!-- =========================== CATEGORIES ========================= -->
@@ -117,71 +100,6 @@ const warnings = parserWarnings();
       {categories.map((category) => <MenuCategory category={category} />)}
     </div>
   </div>
-
-  <!-- ====================== OWNER QUESTIONS ======================== -->
-  <section class="section section--warm" aria-labelledby="owner-questions">
-    <div class="container">
-      <SectionHeading
-        eyebrow="For the owner"
-        id="owner-questions"
-        title="Questions this menu raises"
-        lede="Found while migrating the existing menu into this site. Each one needs a decision from the restaurant rather than a guess from us."
-      />
-
-      <details class="questions" open>
-        <summary>Duplicate dish names with different prices</summary>
-        <p class="questions__intro">
-          These names appear more than once in the restaurant’s own menu markup, at different
-          prices. Both entries are shown exactly as published — we have not chosen between them.
-        </p>
-        <ul>
-          {
-            Object.entries(duplicates).map(([name, places]) => (
-              <li>
-                <strong>{name}</strong> — {places.join('; ')}
-              </li>
-            ))
-          }
-        </ul>
-      </details>
-
-      <details class="questions">
-        <summary>Other details to confirm</summary>
-        <ul>
-          <li>Is catering offered, and if so what are the minimum headcount, lead time and delivery radius?</li>
-          <li>Are reservations taken, or is it walk-in only?</li>
-          <li>Is the lunch buffet still offered? Times and price?</li>
-          <li>Are any dishes vegetarian? Any vegan?</li>
-          <li>Does the kitchen want allergen information published, and in what wording?</li>
-          <li>Are any dishes seasonal or rotating, so they should be marked as such?</li>
-          <li>
-            {
-              categories
-                .filter((c) => c.items.length <= 8 && c.slug !== 'desserts')
-                .map((c) => categoryLabel(c.slug))
-                .join(', ')
-            }
-            {' '}carry comparatively few dishes — are these categories complete?
-          </li>
-        </ul>
-      </details>
-
-      {
-        warnings.unmatchedPriceRows.length > 0 && (
-          <details class="questions">
-            <summary>Rows we could not read automatically</summary>
-            <ul>
-              {warnings.unmatchedPriceRows.map((row) => <li>{row}</li>)}
-            </ul>
-          </details>
-        )
-      }
-
-      <p class="questions__meta">
-        Source: {menuMeta.source} · extraction confidence: {menuMeta.confidence}
-      </p>
-    </div>
-  </section>
 
   <!-- ============================= CTA ============================ -->
   <section class="section section--night">
@@ -276,6 +194,17 @@ const warnings = parserWarnings();
     color: var(--ink-soft);
   }
 
+  /*
+    The input itself carries `outline: none` so the ring must live on the
+    field: without this, keyboard users tabbing into the search box would see
+    no focus indicator at all (WCAG 2.4.7). The colour is the surface-aware
+    focus token, already verified at 4.40:1 on this band's background.
+  */
+  .menu-search__field:focus-within {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 2px var(--focus);
+  }
+
   .menu-search__input {
     flex: 1;
     min-height: 2.75rem;
@@ -333,64 +262,16 @@ const warnings = parserWarnings();
     padding-top: var(--sp-6);
   }
 
-  .menu-notes__grid {
-    display: grid;
-    gap: var(--sp-4);
-  }
-
-  @media (min-width: 64rem) {
-    .menu-notes__grid {
-      grid-template-columns: 1fr 1fr;
-    }
+  .fineprint {
+    margin-top: var(--sp-4);
+    max-width: var(--measure);
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
   }
 
   .menu-body {
     max-width: 54rem;
     margin-top: var(--sp-6);
-  }
-
-  /* ------------------------- owner questions ----------------------- */
-  .questions {
-    margin-top: var(--sp-4);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    background: var(--paper);
-    padding: var(--sp-4) var(--sp-5);
-    max-width: 60rem;
-  }
-
-  .questions summary {
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-size: var(--fs-lg);
-    font-weight: 600;
-  }
-
-  .questions summary:hover {
-    color: var(--cta);
-  }
-
-  .questions__intro {
-    margin-top: var(--sp-3);
-    font-size: var(--fs-sm);
-    color: var(--ink-2);
-  }
-
-  .questions ul {
-    margin-top: var(--sp-3);
-    padding-left: 1.1rem;
-    list-style: disc;
-    display: grid;
-    gap: var(--sp-2);
-    font-size: var(--fs-sm);
-    color: var(--ink-2);
-  }
-
-  .questions__meta {
-    margin-top: var(--sp-5);
-    font-size: var(--fs-xs);
-    color: var(--ink-soft);
-    word-break: break-word;
   }
 
   /* ----------------------------- cta ------------------------------- */

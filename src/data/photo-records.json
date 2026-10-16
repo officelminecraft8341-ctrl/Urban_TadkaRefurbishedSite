@@ -1,0 +1,185 @@
+{
+  "_meta": {
+    "purpose": "Image-identification catalogue. Records how each photographed dish was identified, on what evidence, and whether it can be matched to a real menu item, so that no photograph reaches the website carrying a guessed dish name.",
+    "authoredRecord": "docs/05-image-identification.md",
+    "relationship": "This file is the machine-readable copy the review page renders. docs/05-image-identification.md is the authored record of the same batch. tools/verify-photo-records.py fails the build if the two disagree, or if any record cites a dish or price that is not in src/data/menu.json.",
+    "menuSource": "src/data/menu.json",
+    "confidenceRule": "Confidence describes the strength of the identification only. It is never raised to make a result look more complete, and a probable match is never presented as a verified one.",
+    "statuses": [
+      "VERIFIED FROM PROVIDED TEXT",
+      "VERIFIED AGAINST OFFICIAL MENU",
+      "VISUAL IDENTIFICATION ONLY",
+      "PROBABLE MATCH",
+      "NEEDS HUMAN REVIEW",
+      "NOT A FOOD IMAGE",
+      "UNIDENTIFIED"
+    ]
+  },
+
+  "batches": [
+    {
+      "id": "B2",
+      "receivedOn": "2026-10-15",
+      "receivedVia": "Uploaded in chat, four images, upload order preserved",
+      "menuAvailable": "src/data/menu.json — 157 items across 13 categories, transcribed verbatim from the restaurant's own published menu page",
+      "fileAccess": false,
+      "fileAccessNote": "The images arrived as paths on the reviewer's own computer. This environment could not open them as files, so analysis was performed on the images as rendered in the conversation. No file was opened, saved, renamed, moved, compressed or modified, and the suggested filenames below are records rather than actions.",
+      "photosPublishable": false,
+      "photosWithheldReason": "These are third-party Google Maps review photographs attributed to named members of the public. The copyright sits with the photographers and the restaurant has no licence to reuse them. They are evidence for identification and must not be published on the restaurant's website.",
+
+      "records": [
+        {
+          "id": "B2-01",
+          "originalFilename": "paste-1792096537295-22776.png",
+          "contentType": "Single dish",
+          "visualIdentification": "Grilled paneer (Indian cheese) tikka on a sizzler",
+          "alternatives": [
+            "Chicken tikka — argued against by the cut faces, but not excluded with certainty",
+            "A variant rather than the plain dish: Amritsari or malai paneer tikka"
+          ],
+          "confidence": "HIGH (dish) / MEDIUM (variant)",
+          "confidenceLevel": "high",
+          "evidence": "B: a caption reads \"Paneer tikka\". It is a reviewer's label, not the restaurant's. D: pale, uniform cut faces with no fibrous grain, which argues paneer over chicken; charred edges; served on a cast-iron sizzler over shredded cabbage with lemon and a green chutney.",
+          "officialMenuMatch": {
+            "summary": "Paneer Tikka (probable), or Amritsari Paneer Tikka if the redder marinade belongs to that variant",
+            "items": [
+              { "name": "Paneer Tikka", "price": 19.49, "category": "tandoor" },
+              { "name": "Amritsari Paneer Tikka", "price": 19.99, "category": "tandoor" }
+            ]
+          },
+          "verificationStatus": "PROBABLE MATCH",
+          "websiteCategory": "Menu — tandoor",
+          "suggestedFilename": "paneer-tikka-sizzler.jpg",
+          "altText": "Grilled paneer tikka served on a cast-iron sizzler with lemon and green chutney.",
+          "description": "Grilled paneer tikka on a sizzling cast-iron platter with lemon and green chutney.",
+          "imageIncluded": false
+        },
+        {
+          "id": "B2-02",
+          "originalFilename": "paste-1792096555651-22776.png",
+          "contentType": "Single dish",
+          "visualIdentification": "Fried chicken appetiser with frenched wing bones",
+          "alternatives": [
+            "Chicken lollipops",
+            "Chicken pakora",
+            "Chicken 65 — argued against by the protruding bones, which are not typical of that dish"
+          ],
+          "confidence": "MEDIUM",
+          "confidenceLevel": "medium",
+          "evidence": "D: deep orange-red spiced crust, thin bone ends protruding, a bed of shredded cabbage, a lemon wedge and a green chutney.",
+          "officialMenuMatch": {
+            "summary": "Chicken Lollipops (probable); two similar appetisers are listed as alternatives",
+            "items": [
+              { "name": "Chicken Lollipops", "price": 13.99, "category": "appetizers" },
+              { "name": "Chicken Pakora", "price": 9.99, "category": "appetizers" },
+              { "name": "Chicken 65", "price": 13.99, "category": "appetizers" }
+            ]
+          },
+          "verificationStatus": "PROBABLE MATCH",
+          "websiteCategory": "Menu — appetisers",
+          "suggestedFilename": "fried-chicken-appetiser-platter.jpg",
+          "altText": "Deep-fried chicken appetiser with protruding wing bones, served with lemon and green chutney.",
+          "description": "A fried chicken appetiser with frenched wing bones, served on shredded cabbage with lemon and chutney.",
+          "imageIncluded": false
+        },
+        {
+          "id": "B2-03",
+          "originalFilename": "paste-1792096572449-22776.png",
+          "contentType": "Multiple dishes",
+          "visualIdentification": "Three curries and tandoor bread — none individually identifiable",
+          "alternatives": [
+            "Orange curry: butter chicken, tikka masala, paneer makhni or shahi paneer",
+            "Speckled yellow curry: a lentil dal",
+            "Dark gravy: any brown curry"
+          ],
+          "confidence": "LOW",
+          "confidenceLevel": "low",
+          "evidence": "D only. No caption. A garnish, a creamy orange gravy and visible lentil grains are present, but nothing in the frame separates the candidate dishes from one another.",
+          "officialMenuMatch": {
+            "summary": "None confirmed",
+            "items": []
+          },
+          "verificationStatus": "NEEDS HUMAN REVIEW",
+          "websiteCategory": "Only if the restaurant confirms which dishes these are",
+          "suggestedFilename": "mixed-curry-plate.jpg",
+          "altText": "Indian curries and tandoor bread served on a steel plate; dishes not individually identified.",
+          "description": "Three Indian curries with folded tandoor bread on a steel platter.",
+          "imageIncluded": false
+        },
+        {
+          "id": "B2-04",
+          "originalFilename": "paste-1792096679678-22776.png",
+          "contentType": "Multiple dishes",
+          "visualIdentification": "Two curries, steamed white rice, naan and green herb-coated kebabs",
+          "alternatives": [
+            "Rice: plain or jeera",
+            "Green kebabs: hara bhara kebab, spinach pakora or a vegetable kebab",
+            "Curries unidentified"
+          ],
+          "confidence": "LOW–MEDIUM",
+          "confidenceLevel": "low-medium",
+          "evidence": "B: a caption reads \"ood platter with naan bread\" (truncated) — generic. D: the rice is plainly steamed, not biryani; the kebabs carry a green spinach-and-herb coating, with lemon on shredded cabbage.",
+          "officialMenuMatch": {
+            "summary": "Harabara Kebob (probable, for the green kebabs only); Plain Rice (possible); the curries match nothing",
+            "items": [
+              { "name": "Harabara Kebob", "price": 12.99, "category": "appetizers" },
+              { "name": "Plain Rice", "price": 4.99, "category": "rice-biryani" }
+            ]
+          },
+          "verificationStatus": "NEEDS HUMAN REVIEW",
+          "websiteCategory": "Menu — appetisers / rice",
+          "suggestedFilename": "table-platter-naan-rice-kebabs.jpg",
+          "altText": "A table of Indian dishes with naan, steamed rice and green herb-coated kebabs; individual curries not identified.",
+          "description": "A large table spread: naan, steamed rice, green herb-coated kebabs and two curries.",
+          "imageIncluded": false
+        }
+      ],
+
+      "summary": [
+        { "label": "Images received", "value": "4" },
+        { "label": "Images analysed", "value": "4" },
+        { "label": "Food images", "value": "4" },
+        { "label": "Non-food images", "value": "0" },
+        { "label": "Probable menu matches", "value": "2", "note": "B2-01, B2-02" },
+        { "label": "Partial match", "value": "1", "note": "B2-04 — one component of a multi-dish frame only" },
+        { "label": "Menu matches confirmed", "value": "0", "note": "Nothing in this batch rises to official verification" },
+        { "label": "Uncertain identity", "value": "2", "note": "B2-03, B2-04" },
+        { "label": "Possible duplicates", "value": "1", "note": "B2-01 against two files from the earlier batch" },
+        { "label": "Requiring human review", "value": "2", "note": "B2-03, B2-04, plus the variant question on B2-01" }
+      ],
+
+      "duplicateFindings": [
+        {
+          "records": "B2-01",
+          "relation": "Probably the same photograph as two images from the previous batch (paste-1792096533298-22776.png and paste-1792096534668-22776.png), which were themselves identical to each other.",
+          "basis": "Visual comparison of the frames as rendered: composition, reviewer attribution, plateware and chutney bowl all match, and the paste timestamps sit about three seconds apart.",
+          "confidenceLevel": "medium",
+          "caveat": "This is a visual comparison, not a byte comparison — the files could not be read here. If confirmed, the dish keeps a single identity while each file keeps its own image record.",
+          "actionTaken": "Reported only. No file was deleted, moved or renamed."
+        }
+      ],
+
+      "limitations": [
+        "No file-level access to the images. They were supplied as paths on the reviewer's own computer, which this environment cannot open. Analysis was performed on the images as rendered in the conversation, and no file was saved, renamed or modified.",
+        "The link between these photographs and the restaurant is contextual, not established by the reviewer. The menu matching above is therefore against the menu held in this repository and is marked conservative.",
+        "These photographs cannot be published. They are third-party review images with named photographers.",
+        "No web lookup was used to confirm dish names for this batch, so no external name verification was performed."
+      ],
+
+      "questions": [
+        {
+          "question": "Does the restaurant confirm any of the probable matches (B2-01, B2-02, B2-04)?",
+          "owner": "Restaurant"
+        },
+        {
+          "question": "Is \"Amritsari Chicken Tikkka\" in the menu data a typo in the source menu, or intentional? It is transcribed verbatim and is reproduced here without correction.",
+          "owner": "Restaurant"
+        },
+        {
+          "question": "The green kebab and the sizzler platter shots are validated by this batch and should be added to the photography brief.",
+          "owner": "Photography"
+        }
+      ]
+    }
+  ]
+}

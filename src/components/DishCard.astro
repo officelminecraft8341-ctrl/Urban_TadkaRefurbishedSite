@@ -1,4 +1,6 @@
 ---
+
+
 /**
  * DishCard
  *
@@ -7,7 +9,10 @@
  *
  * No dietary, spice or allergen chips are rendered because no such data exists
  * in the source menu. Inventing them would be a fabricated claim about the food;
- * the absence is deliberate and is listed as an owner question instead.
+ * the absence is deliberate and is listed with the owner-review checklist.
+ *
+ * The media area is an art panel naming the dish close-up it holds the place
+ * for, in the middle of the panel itself.
  */
 
 import Icon from './Icon.astro';
@@ -22,18 +27,16 @@ interface Props {
     description: string | null;
     category: string;
   };
-  /** The shot we need for this dish; shown inside the placeholder. */
-  photoCaption: string;
 }
 
-const { dish, photoCaption } = Astro.props;
+const { dish } = Astro.props;
 
 const price = formatPrice(dish.price);
 ---
 
 <article class="dish-card">
   <div class="dish-card__media">
-    <PhotoPlaceholder caption={photoCaption} ratio="4/3" compact />
+    <PhotoPlaceholder ratio="4/3" compact title={`${dish.name} — close-up`} />
   </div>
 
   <div class="dish-card__body">
@@ -50,8 +53,15 @@ const price = formatPrice(dish.price);
 
     {dish.description && <p class="dish-card__text">{dish.description}</p>}
 
+    <!--
+      The four cards repeat the same visible link text to four different category
+      anchors, so the dish name rides along for screen-reader users navigating by
+      links. Without it, "See this on the menu" would be announced four times
+      with no way to tell the destinations apart.
+    -->
     <a class="dish-card__link" href={categoryHref(dish.category)}>
       See this on the menu
+      <span class="visually-hidden">: {dish.name}</span>
       <Icon name="arrowRight" size={16} />
     </a>
   </div>

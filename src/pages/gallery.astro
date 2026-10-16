@@ -1,30 +1,15 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import GalleryGrid from '../components/GalleryGrid.astro';
-import ConceptNote from '../components/ConceptNote.astro';
 import Button from '../components/Button.astro';
 import { directionsUrl, telHref } from '../config/site.js';
 
 /**
- * Every caption is a shot request, not a description of a picture we own.
- * The gallery therefore doubles as the photography brief, which is what the
- * restaurant needs in order to fill these slots.
+ * Twelve tiles stand in for photographs to be shot in the restaurant. Each
+ * tile names its shot in the middle of the panel, so the shot list lives
+ * where the photographs will sit.
  */
-const shots = [
-  { caption: 'Dining room during dinner service, wide shot', ratio: '4/3' },
-  { caption: 'Exterior of the restaurant on Market Place Blvd, daytime', ratio: '4/3' },
-  { caption: 'Chef lifting naan out of the tandoor', ratio: '4/3' },
-  { caption: 'Biryani served in its handi, lid opened at the table', ratio: '4/3' },
-  { caption: 'A table set with three curries, rice and a naan basket', ratio: '4/3' },
-  { caption: 'Samosas plated with chutney, close-up', ratio: '4/3' },
-  { caption: 'Tandoori platter arriving at a table', ratio: '4/3' },
-  { caption: 'Whole spices in a steel bowl, close-up', ratio: '4/3' },
-  { caption: 'Lassi served in a tall glass', ratio: '4/3' },
-  { caption: 'Gulab jamun in syrup, two pieces in a small bowl', ratio: '4/3' },
-  { caption: 'A full table of dishes shot from directly above', ratio: '4/3' },
-  { caption: 'Counter and pickup area, staffed', ratio: '4/3' },
-];
+const tileCount = 12;
 ---
 
 <MainLayout
@@ -37,75 +22,17 @@ const shots = [
       <p class="eyebrow">Gallery</p>
       <h1>The room and the food</h1>
       <p class="gallery-lede">
-        Twelve photographs will sit here, shot in the restaurant. Each slot below says what it
-        needs, so the set can be captured in one visit.
+        The dining room, the tandoor and the food. Photography for this page is
+        being arranged with the restaurant — each panel below names the shot it
+        is waiting for.
       </p>
-
-      <div class="gallery-note">
-        <ConceptNote title="Why these are empty" icon="alert">
-          No photographs are shipped with this concept. We hold no written permission to
-          redistribute Urban Tadka’s images, and the two photographs on the restaurant’s current
-          website appear to be generic stock — a stock chef holding a salad stands in for
-          “Catering Services” — so reusing them would misrepresent the food. Generated imagery
-          would be worse. These slots stay honest until real photography arrives.
-        </ConceptNote>
-      </div>
     </div>
   </section>
 
   <section class="section section--flushtop" aria-labelledby="gallery-grid-heading">
     <div class="container">
-      <h2 id="gallery-grid-heading" class="visually-hidden">Photograph placeholders</h2>
-      <GalleryGrid items={shots} id="main-gallery" />
-    </div>
-  </section>
-
-  <section class="section section--warm" aria-labelledby="photo-brief">
-    <div class="container">
-      <SectionHeading
-        eyebrow="Photography brief"
-        id="photo-brief"
-        title="What we need, and how to get it"
-        lede="Everything here is feasible on a phone in a single session. No studio, no specialist equipment."
-      />
-
-      <div class="brief">
-        <ul class="brief__list">
-          <li>
-            <strong>Shoot in daylight where you can.</strong> Window light is enough; avoid mixing
-            it with overhead fluorescents in the same frame.
-          </li>
-          <li>
-            <strong>Shoot food at 45° or straight down,</strong> never with the phone’s flash — and
-            wipe the rim of the plate first.
-          </li>
-          <li>
-            <strong>Keep one crop shape.</strong> Landscape 4:3 for every shot means the grid
-            stays consistent as photos are swapped in and out.
-          </li>
-          <li>
-            <strong>Include the room, not just the food.</strong> People choose restaurants with
-            their eyes: the dining room and the tandoor matter as much as the dishes.
-          </li>
-          <li>
-            <strong>Get permission for anyone in frame.</strong> Staff and customers must agree in
-            writing before a photograph of them is published.
-          </li>
-          <li>
-            <strong>Send originals.</strong> Full-resolution files, unedited, so they can be
-            cropped and compressed for the web here.
-          </li>
-        </ul>
-
-        <div class="brief__side">
-          <ConceptNote title="Before any of it is published">
-            We need the owner’s written permission to use the restaurant’s name, logo and
-            photographs. Until that exists, this concept stays internal and
-            <strong>unindexed</strong> — you can confirm that in the page source, where the
-            robots tag reads <code>noindex, nofollow</code>.
-          </ConceptNote>
-        </div>
-      </div>
+      <h2 id="gallery-grid-heading" class="visually-hidden">Photographs</h2>
+      <GalleryGrid count={tileCount} id="main-gallery" />
     </div>
   </section>
 
@@ -136,52 +63,6 @@ const shots = [
     max-width: var(--measure);
     font-size: var(--fs-lg);
     color: var(--ink-2);
-  }
-
-  .gallery-note {
-    margin-top: var(--sp-6);
-    max-width: 62rem;
-  }
-
-  .brief {
-    display: grid;
-    gap: var(--sp-7);
-    margin-top: var(--sp-6);
-  }
-
-  @media (min-width: 64rem) {
-    .brief {
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: var(--sp-8);
-    }
-  }
-
-  .brief__list {
-    display: grid;
-    gap: var(--sp-4);
-    list-style: none;
-    padding: 0;
-    max-width: var(--measure);
-  }
-
-  .brief__list li {
-    padding-left: var(--sp-5);
-    position: relative;
-    color: var(--ink-2);
-  }
-
-  .brief__list li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 0.6rem;
-    height: 2px;
-    background: var(--brand-gold);
-  }
-
-  .brief__list strong {
-    color: var(--ink);
   }
 
   .gallery-cta {

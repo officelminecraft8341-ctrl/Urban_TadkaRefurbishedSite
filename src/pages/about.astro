@@ -2,13 +2,15 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
-import ConceptNote from '../components/ConceptNote.astro';
 import Button from '../components/Button.astro';
 import { siteConfig, directionsUrl } from '../config/site.js';
 
 /**
- * The region list below is the restaurant's own: its About page names exactly
- * these cities as the "urbanised melting posts" behind the menu.
+ * Everything below is drawn from the restaurant's own published description of
+ * its cooking — the cities it names, the dishes it cites, the spices it lists.
+ * The restaurant publishes no founding date, owner biography or awards list, so
+ * this page carries none. That history, if the owner wants it told, is the
+ * first item on the owner-review checklist, not something to invent here.
  */
 const regions = [
   'Lahore',
@@ -43,16 +45,18 @@ const spices = [
         <p class="eyebrow">About</p>
         <h1>A tradition from India</h1>
         <p class="about-head__lede">
-          Urban Tadka serves North Indian food in Irving, Texas. What follows is drawn from the
-          restaurant’s own description of its cooking.
+          Urban Tadka is a North Indian restaurant in Irving, Texas, cooking the food of the
+          undivided Punjab — curries, tandoor breads and biryani, served at lunch and dinner.
         </p>
+        <div class="btn-row about-head__actions">
+          <Button href="/menu/" variant="primary" iconAfter="arrowRight">
+            See the menu
+          </Button>
+        </div>
       </div>
 
       <div class="about-head__media">
-        <PhotoPlaceholder
-          caption="Photograph: hands adding whole spices to a hot pan — the tadka technique"
-          ratio="4/3"
-        />
+        <PhotoPlaceholder ratio="4/3" title="Dining room during dinner service — wide" />
       </div>
     </div>
   </section>
@@ -84,10 +88,7 @@ const spices = [
       </div>
 
       <div class="about-grid__media">
-        <PhotoPlaceholder
-          caption="Photograph: a steel bowl of whole spices — cumin, cardamom, cinnamon, saffron"
-          ratio="4/5"
-        />
+        <PhotoPlaceholder ratio="4/5" tone="night" title="Hands tempering whole spices — tadka close-up" />
       </div>
     </div>
   </section>
@@ -95,10 +96,7 @@ const spices = [
   <section class="section" aria-labelledby="tadka-heading">
     <div class="container about-grid about-grid--reverse">
       <div class="about-grid__media">
-        <PhotoPlaceholder
-          caption="Photograph: naan being lifted out of the tandoor with a hook"
-          ratio="4/5"
-        />
+        <PhotoPlaceholder ratio="4/5" title="Chef lifting naan from the tandoor" />
       </div>
 
       <div class="prose">
@@ -114,17 +112,15 @@ const spices = [
         <ul class="spice-list">
           {spices.map((spice) => <li>{spice}</li>)}
         </ul>
-
-        <div class="about-note">
-          <ConceptNote title="Nothing here was invented">
-            Urban Tadka does not publish a founding date, an owner biography or an awards list,
-            so none appears on this page. If the restaurant wants its history told, we need the
-            facts from them first — including any press coverage they want quoted.
-          </ConceptNote>
-        </div>
       </div>
     </div>
   </section>
+
+  <div class="container">
+    <div class="art-band">
+      <PhotoPlaceholder ratio="16/9" tone="night" title="Full table of dishes — overhead" />
+    </div>
+  </div>
 
   <section class="section section--night" aria-labelledby="about-cta">
     <div class="container about-cta">
@@ -165,6 +161,10 @@ const spices = [
     max-width: 48ch;
     font-size: var(--fs-lg);
     color: var(--ink-2);
+  }
+
+  .about-head__actions {
+    margin-top: var(--sp-6);
   }
 
   .about-head__media {
@@ -221,8 +221,12 @@ const spices = [
     background: var(--paper);
   }
 
-  .about-note {
-    margin-top: var(--sp-6);
+  /* A full-width art band between the story and the call to action. It carries
+     no heading, so it adds nothing to the document outline — but its "photo
+     needed" label stays in the accessibility tree, so screen-reader users get
+     the same pending-photography information as sighted users. */
+  .art-band {
+    padding-block: var(--sp-2) var(--sp-7);
   }
 
   .about-cta {

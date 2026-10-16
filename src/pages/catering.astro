@@ -3,7 +3,6 @@ import MainLayout from '../layouts/MainLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
-import ConceptNote from '../components/ConceptNote.astro';
 import { siteConfig, telHref } from '../config/site.js';
 
 const { business } = siteConfig;
@@ -33,13 +32,17 @@ const whatWeKnow = [
   'The restaurant takes enquiries by telephone.',
 ];
 
-const whatWeNeed = [
-  'Minimum and maximum headcount for a catering order.',
-  'Notice required, and how far ahead you should book.',
-  'Delivery radius, or whether catering is pickup-only.',
-  'Whether catering is priced per head, per tray, or from a separate catering menu.',
-  'Who should receive catering enquiries, and by which channel.',
-  'Which dishes are available for large orders, and whether lead times differ.',
+/**
+ * Details the restaurant confirms on the call. Written from the customer's side:
+ * what to ask about, not what we are missing. The owner-facing version of these
+ * questions lives with the owner-review checklist.
+ */
+const callSettles = [
+  'Headcount range the kitchen can take on.',
+  'How far ahead to book.',
+  'Delivery range, or pickup only.',
+  'How catering is priced.',
+  'Which dishes travel well in large orders.',
 ];
 ---
 
@@ -118,20 +121,16 @@ const whatWeNeed = [
       </div>
 
       <div>
-        <SectionHeading eyebrow="Open questions" title="What we still need" level={3} />
+        <SectionHeading
+          eyebrow="On the call"
+          title="Settled in one call"
+          level={3}
+          lede="Anything below is confirmed directly with the restaurant."
+        />
         <ul class="status-list">
-          {whatWeNeed.map((item) => <li>{item}</li>)}
+          {callSettles.map((item) => <li>{item}</li>)}
         </ul>
       </div>
-    </div>
-
-    <div class="container catering-note">
-      <ConceptNote title="For the owner" icon="alert">
-        This page only states what Urban Tadka already publishes about catering. No packages,
-        minimums, prices, lead times or delivery areas have been invented. Send us the answers
-        above and the page can carry real catering information — including a catering menu and a
-        working enquiry form, if you want one.
-      </ConceptNote>
     </div>
   </section>
 
@@ -301,11 +300,6 @@ const whatWeNeed = [
 
   .status-list--done li::before {
     background: var(--brand-gold);
-  }
-
-  .catering-note {
-    margin-top: var(--sp-7);
-    max-width: 62rem;
   }
 
   .catering-cta {

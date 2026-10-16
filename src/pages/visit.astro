@@ -3,7 +3,6 @@ import MainLayout from '../layouts/MainLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
-import ConceptNote from '../components/ConceptNote.astro';
 import MapEmbed from '../components/MapEmbed.astro';
 import { siteConfig, telHref, directionsUrl, mapsPlaceUrl } from '../config/site.js';
 
@@ -85,9 +84,10 @@ const quickActions = [
             </tbody>
           </table>
 
-          <ConceptNote title="Confirm before launch" icon="alert">
-            {hours.note}
-          </ConceptNote>
+          <p class="fineprint">
+            Hours follow the restaurant’s own website; listings elsewhere differ — call
+            ahead to be sure.
+          </p>
         </div>
       </div>
     </div>
@@ -133,14 +133,6 @@ const quickActions = [
         }
       </div>
 
-      <div class="order-note">
-        <ConceptNote title="Platform links need confirming">
-          {ordering.note} The restaurant’s own website links to an ezCater page that, when
-          requested, redirects to ezCater’s homepage rather than any Urban Tadka page — so that
-          link has deliberately <strong>not</strong> been given a button here. If catering is
-          ordered through ezCater, we need the correct URL from the restaurant.
-        </ConceptNote>
-      </div>
     </div>
   </section>
 
@@ -176,15 +168,6 @@ const quickActions = [
       </div>
 
       <div class="enquiries__side">
-        <ConceptNote title="Why there is no form here yet" icon="alert">
-          A form that appears to send a message but does not is worse than no form. This site is
-          static, so a working form needs either an approved email address and a form-handling
-          service, or a small serverless endpoint. Both need the owner’s sign-off, and collecting
-          anyone’s details then triggers the privacy obligations in
-          <a href="/privacy/">Privacy &amp; data</a>. Send us a destination address and this takes
-          about half an hour to wire up properly.
-        </ConceptNote>
-
         <dl class="fact-list enquiries__facts">
           <div class="fact-list__row">
             <dt class="fact-list__term">Address</dt>
@@ -236,6 +219,13 @@ const quickActions = [
     max-width: var(--measure);
     font-size: var(--fs-lg);
     color: var(--ink-2);
+  }
+
+  .fineprint {
+    margin-top: var(--sp-4);
+    max-width: var(--measure);
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
   }
 
   .visit-actions {

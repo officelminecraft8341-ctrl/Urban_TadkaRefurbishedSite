@@ -20,7 +20,11 @@ import { siteConfig, telHref, directionsUrl } from '../config/site.js';
 const collected = [
   {
     what: 'Personal information',
-    detail: 'None. This site has no forms, no accounts, no newsletter and no checkout, so there is nothing to submit and nothing stored.',
+    detail: 'None collected. This site has no accounts, no newsletter and no checkout, and no form that sends anything anywhere: the menu search filters on the page, and anything entered on the review page stays in your own browser (see the next row).',
+  },
+  {
+    what: 'Review answers, kept on your device',
+    detail: 'On the /review/ page only: the decisions you record and any notes you type are saved in your own browser\u2019s local storage so a refresh does not lose them. They are never transmitted to us or to anyone else. Clearing them, or switching browsers, removes them.',
   },
   {
     what: 'Analytics or advertising',
@@ -69,7 +73,7 @@ const willChange = [
       <div class="privacy-status">
         <span class="privacy-status__badge">
           <Icon name="shield" size={18} />
-          0 trackers · 0 cookies · 0 forms
+          0 trackers · 0 cookies · 0 accounts
         </span>
       </div>
 
@@ -136,8 +140,8 @@ const willChange = [
         <div class="inventory__row">
           <dt class="inventory__term">Photographs</dt>
           <dd class="inventory__detail">
-            None are included. Every image position is a labelled placeholder awaiting
-            authorised photography from the restaurant.
+            None are included. Image areas are finished panels in the site’s own visual
+            language, holding the place of authorised photography from the restaurant.
           </dd>
         </div>
         <div class="inventory__row">
@@ -158,9 +162,9 @@ const willChange = [
         <div class="inventory__row">
           <dt class="inventory__term">This concept</dt>
           <dd class="inventory__detail">
-            Prepared for review. It is not published, not indexed, and not presented as approved
-            by Urban Tadka. A page-level <code>noindex, nofollow</code> tag and a disallowing
-            robots file are in place until the owner approves publication.
+            Prepared for review. It is shared as a preview link only, is not indexed, and is not
+            presented as approved by Urban Tadka. A page-level <code>noindex, nofollow</code> tag
+            and a disallowing robots file are in place until the owner approves publication.
           </dd>
         </div>
       </dl>

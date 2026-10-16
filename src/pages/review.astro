@@ -1,0 +1,1559 @@
+---
+/**
+ * /review/ — the photograph-identification review page.
+ *
+ * This page exists so the identification work is reviewable by a person who was
+ * not in the conversation that produced it: the restaurant's owner, a colleague
+ * on the build, or a photographer. It is the shareable face of the workflow
+ * documented in docs/05-image-identification.md, and renders the records held in
+ * src/data/photo-records.json.
+ *
+ * Two deliberate decisions are visible on the page itself:
+ *
+ *   1. THE PHOTOGRAPHS ARE NOT SHOWN. They are third-party Google Maps review
+ *      images attributed to named members of the public, so the restaurant has
+ *      no licence to reuse them. A frame states which original file each record
+ *      refers to, which is what a reviewer needs in order to match the record to
+ *      the file they hold. Shipping the pictures here would be the exact
+ *      copyright mistake the workflow is meant to prevent.
+ *   2. THE REVIEW IS EXPLICIT. Every record carries a decision control and the
+ *      decisions assemble into a text block that can be copied and sent back, so
+ *      the review produces a durable answer instead of a conversation.
+ *
+ * The page is not linked from the site navigation: it is an internal review
+ * artefact, not a page for diners. It inherits the concept build's noindex
+ * setting from BaseHead like every other page.
+ */
+
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import catalogue from '../data/photo-records.json';
+
+const batch = catalogue.batches[0];
+
+/** The three answers a reviewer can give, and what each one commits to. */
+const DECISIONS = [
+  {
+    value: 'confirm',
+    label: 'Confirm',
+    hint: 'The dish name is right, and the photograph may be used under that name once we hold a licensed copy.',
+  },
+  {
+    value: 'correct',
+    label: 'Correct it',
+    hint: 'It is a different dish. Write the correct name in the note.',
+  },
+  {
+    value: 'owner',
+    label: 'Ask the owner',
+    hint: 'Neither of us can settle it; the restaurant has to confirm.',
+  },
+];
+
+/**
+ * Confidence level -> badge treatment.
+ *
+ * Every badge carries its level as a word, so colour is never the only signal.
+ * The treatments use colour pairs the contrast gate already verifies (gold on
+ * night, secondary on warm, white on the CTA), rather than new invented ones.
+ */
+const BADGE_CLASS: Record<string, string> = {
+  high: 'badge--high',
+  medium: 'badge--medium',
+  low: 'badge--low',
+  'low-medium': 'badge--low',
+};
+
+/** Human-readable date, so the page does not show a raw ISO string. */
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+function formatDate(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  return `${day} ${MONTHS[month - 1]} ${year}`;
+}
+
+const receivedOn = formatDate(batch.receivedOn);
+
+const undecided = batch.records.length;
+
+const PAGE_TITLE = 'Photograph review';
+const PAGE_DESCRIPTION =
+  'How each photographed dish was identified, on what evidence, and which records still need a human decision before any photograph is used on the restaurant website.';
+---
+
+<MainLayout title={PAGE_TITLE} description={PAGE_DESCRIPTION} canonicalPath="/review/">
+  <!-- ============================ INTRO ============================= -->
+  <section class="section section--flushtop">
+    <div class="container review-intro">
+      <p class="eyebrow">For review</p>
+      <h1>How each photographed dish was identified</h1>
+
+      <p class="review-intro__lede">
+        A wrong dish on a restaurant's website is worse than no photograph: it misleads customers and
+        embarrasses the restaurant. So every photograph is catalogued with the evidence behind its
+        identification, and anything uncertain is handed to a person rather than guessed at.
+      </p>
+
+      <p class="review-intro__meta">
+        <Icon name="calendar" size={16} />
+        Batch {batch.id} &middot; received {receivedOn} &middot; {batch.records.length} images &middot;
+        matched against the full menu
+      </p>
+
+      <div class="btn-row">
+        <Button href="#records" variant="primary" iconAfter="arrowDown">Go to the records</Button>
+        <Button href="/gallery/" variant="tertiary" icon="image">See the photography brief</Button>
+      </div>
+
+      <ConceptNote title="Nothing here is published" icon="alert">
+        The photographs in this batch are <strong>not on this page, and not on the website.</strong>
+        They are third-party Google Maps review images attributed to named members of the public, so
+        the copyright belongs to the photographers and the restaurant holds no licence to reuse them.
+        They are evidence for identification only. Replacing them with authorised photography from
+        the restaurant is the outstanding task.
+      </ConceptNote>
+    </div>
+  </section>
+
+  <!-- =========================== WHAT TO DO ========================== -->
+  <section class="section section--warm" aria-labelledby="decide-heading">
+    <div class="container">
+      <SectionHeading
+        id="decide-heading"
+        eyebrow="What we need"
+        title="What to decide"
+        lede="Each record below offers the same three answers. Nothing you choose here is published — it is sent back and applied by hand."
+      />
+
+      <ul class="decide-list">
+        {
+          DECISIONS.map((option, index) => (
+            <li class="decide">
+              <span class="decide__num" aria-hidden="true">
+                {index + 1}
+              </span>
+              <div>
+                <h3 class="decide__title">{option.label}</h3>
+                <p class="decide__hint">{option.hint}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="decide__foot">
+        Your answers are assembled into a block of text at the bottom of this page. Copy it and send
+        it back, and each record is updated from it. Decisions are stored in your own browser only —
+        there is no account, no upload, and no server holding them.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ SUMMARY =========================== -->
+  <section class="section" aria-labelledby="summary-heading">
+    <div class="container">
+      <SectionHeading
+        id="summary-heading"
+        eyebrow="The batch"
+        title={`${batch.id} at a glance`}
+        lede="Counts below are from the actual processing of this batch. Nothing is estimated."
+      />
+
+      <ul class="stats">
+        {
+          batch.summary.map((row) => (
+            <li class="stat">
+              <span class="stat__value">{row.value}</span>
+              <span class="stat__label">{row.label}</span>
+              {'note' in row && row.note && <span class="stat__note">{row.note}</span>}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="summary__menu">
+        Matched against <strong>{batch.menuAvailable}</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ RECORDS =========================== -->
+  <section class="section section--warm" id="records" aria-labelledby="records-heading">
+    <div class="container">
+      <SectionHeading
+        id="records-heading"
+        eyebrow="Records"
+        title={`The ${batch.records.length} images`}
+        lede="One record per image, keeping visual identification, menu match, confidence and verification status apart on purpose — collapsing them is how a guess turns into a fact."
+      />
+
+      <div class="records">
+        {
+          batch.records.map((record) => (
+            <article
+              class="record"
+              data-record
+              data-record-id={record.id}
+              data-record-label={`${record.visualIdentification} (${record.confidence})`}
+              data-record-file={record.originalFilename}
+            >
+              <div class="record__media">
+                <figure class="withheld">
+                  <div class="withheld__frame">
+                    <span class="withheld__tag">Not shown</span>
+                    <span class="withheld__mark" aria-hidden="true">
+                      <Icon name="image" size={26} />
+                    </span>
+                    <figcaption class="withheld__caption">
+                      <strong>{record.id}</strong> — third-party review photograph, withheld because
+                      it cannot be republished.
+                    </figcaption>
+                  </div>
+                </figure>
+
+                <p class="record__file">
+                  <span class="record__file-label">Original file</span>
+                  <code>{record.originalFilename}</code>
+                </p>
+                <p class="record__file">
+                  <span class="record__file-label">Suggested name</span>
+                  <code>{record.suggestedFilename}</code>
+                </p>
+              </div>
+
+              <div class="record__body">
+                <header class="record__head">
+                  <h3 class="record__title">
+                    {record.id} &middot; {record.visualIdentification}
+                  </h3>
+                  <span class={`badge ${BADGE_CLASS[record.confidenceLevel] ?? 'badge--low'}`}>
+                    {record.confidence} confidence
+                  </span>
+                </header>
+
+                <dl class="record__fields">
+                  <div class="field">
+                    <dt>Content type</dt>
+                    <dd>{record.contentType}</dd>
+                  </div>
+
+                  <div class="field">
+                    <dt>Alternative matches</dt>
+                    <dd>
+                      <ul class="field__list">
+                        {record.alternatives.map((alternative) => (
+                          <li>{alternative}</li>
+                        ))}
+                      </ul>
+                    </dd>
+                  </div>
+
+                  <div class="field">
+                    <dt>Evidence</dt>
+                    <dd>{record.evidence}</dd>
+                  </div>
+
+                  <div class="field">
+                    <dt>Official menu match</dt>
+                    <dd>
+                      {record.officialMenuMatch.summary}
+                      {record.officialMenuMatch.items.length > 0 && (
+                        <ul class="menu-match">
+                          {record.officialMenuMatch.items.map((item) => (
+                            <li>
+                              <span class="menu-match__name">{item.name}</span>
+                              <span class="menu-match__price">${item.price.toFixed(2)}</span>
+                              <span class="menu-match__cat">{item.category}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </dd>
+                  </div>
+
+                  <div class="field">
+                    <dt>Verification status</dt>
+                    <dd>
+                      <span class="status">{record.verificationStatus}</span>
+                    </dd>
+                  </div>
+
+                  <div class="field">
+                    <dt>Website category</dt>
+                    <dd>{record.websiteCategory}</dd>
+                  </div>
+
+                  <div class="field">
+                    <dt>Suggested alt text</dt>
+                    <dd class="field__quote">{record.altText}</dd>
+                  </div>
+
+                  <div class="field">
+                    <dt>Website description</dt>
+                    <dd class="field__quote">{record.description}</dd>
+                  </div>
+                </dl>
+
+                <fieldset class="decision">
+                  <legend class="decision__legend">Your decision on {record.id}</legend>
+                  <div class="decision__options">
+                    {DECISIONS.map((option) => {
+                      const hintId = `hint-${record.id}-${option.value}`;
+                      return (
+                        <div class="decision__choice">
+                          <label class="decision__option">
+                            <input
+                              type="radio"
+                              name={`decision-${record.id}`}
+                              value={option.value}
+                              data-decision-input
+                              aria-describedby={hintId}
+                            />
+                            <span class="decision__option-label">{option.label}</span>
+                          </label>
+                          <p class="decision__hint" id={hintId}>
+                            {option.hint}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <label class="decision__note-label" for={`note-${record.id}`}>
+                    Correction or note for {record.id}
+                  </label>
+                  <textarea
+                    class="decision__note"
+                    id={`note-${record.id}`}
+                    rows="2"
+                    data-note
+                    placeholder="The correct dish name, or why this needs the restaurant"
+                  ></textarea>
+                </fieldset>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <h3 class="records__subhead">Duplicate finding</h3>
+      {
+        batch.duplicateFindings.map((finding) => (
+          <div class="duplicate">
+            <p class="duplicate__head">
+              <Icon name="alert" size={18} />
+              <strong>{finding.records}</strong> — {finding.relation}
+            </p>
+            <p class="duplicate__body">
+              <span class="duplicate__key">Why</span>
+              {finding.basis}
+            </p>
+            <p class="duplicate__body">
+              <span class="duplicate__key">Limits</span>
+              {finding.caveat}
+            </p>
+            <p class="duplicate__body">
+              <span class="duplicate__key">Action taken</span>
+              {finding.actionTaken}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!--
+    ========================= YOUR REVIEW ==========================
+    The batch id and date ride on this section rather than being written into the
+    script: the generated summary and the downloaded filename both name the batch,
+    and a hardcoded "B2" would quietly mislabel a later batch.
+  -->
+  <section
+    class="section"
+    aria-labelledby="review-heading"
+    data-batch-id={batch.id}
+    data-batch-received={receivedOn}
+  >
+    <div class="container">
+      <SectionHeading
+        id="review-heading"
+        eyebrow="Send back"
+        title="Your review"
+        lede="Write this page's decisions back in your own words, or copy the block below and send it as it is."
+      />
+
+      <p class="review-progress" data-review-progress aria-live="polite">
+        No records reviewed yet — {undecided} to go.
+      </p>
+
+      <div class="review-output">
+        <label class="visually-hidden" for="review-summary">Your review, as text</label>
+        <pre class="review-output__text" id="review-summary" data-review-output></pre>
+      </div>
+
+      <div class="btn-row review-actions">
+        <Button variant="primary" icon="check" data-review-copy>Copy the summary</Button>
+        <Button variant="secondary" icon="arrowDown" data-review-download>
+          Download as a file
+        </Button>
+        <Button variant="tertiary" data-review-reset>Clear my answers</Button>
+      </div>
+
+      <p class="review-status" data-review-status aria-live="polite"></p>
+
+      <noscript>
+        <ConceptNote title="Answers need JavaScript" icon="info">
+          Recording decisions on this page needs JavaScript. With it switched off, the records above
+          are still fully readable — reply with the record IDs and your notes instead.
+        </ConceptNote>
+      </noscript>
+
+      <ConceptNote title="Stored in your browser only" icon="shield">
+        Your choices are saved in this browser so a refresh does not lose them. They are not sent
+        anywhere, and there is no account involved. Clearing them, or using a different browser,
+        removes them.
+      </ConceptNote>
+    </div>
+  </section>
+
+  <!-- ====================== NEEDS HUMAN REVIEW ====================== -->
+  <section class="section section--deep" aria-labelledby="flags-heading">
+    <div class="container">
+      <SectionHeading
+        id="flags-heading"
+        eyebrow="Exceptions"
+        title="Images requiring human review"
+        lede="These are the records where the correct answer is uncertainty. They were not guessed at, and they are not ready to place."
+      />
+
+      <ul class="flags">
+        {
+          batch.records
+            .filter(
+              (record) =>
+                record.verificationStatus === 'NEEDS HUMAN REVIEW' ||
+                record.confidenceLevel.startsWith('low'),
+            )
+            .map((record) => (
+              <li class="flag">
+                <h3 class="flag__title">
+                  <span class="status">{record.verificationStatus}</span>
+                  {record.id} &middot; {record.originalFilename}
+                </h3>
+                <p class="flag__body">
+                  <span class="duplicate__key">What we see</span>
+                  {record.visualIdentification}
+                </p>
+                <p class="flag__body">
+                  <span class="duplicate__key">Why it is unresolved</span>
+                  {record.evidence}
+                </p>
+              </li>
+            ))
+        }
+      </ul>
+
+      <p class="flags__foot">
+        One further question sits on a record that is otherwise settled: <strong>B2-01</strong> is
+        identified with high confidence as paneer tikka, but the marinade is far redder than the
+        plain dish, so whether it is the plain <em>Paneer Tikka</em> or the
+        <em>Amritsari Paneer Tikka</em> variant is unconfirmed.
+      </p>
+    </div>
+  </section>
+
+  <!-- ======================== OPEN QUESTIONS ======================== -->
+  <section class="section" aria-labelledby="questions-heading">
+    <div class="container">
+      <SectionHeading
+        id="questions-heading"
+        eyebrow="Open"
+        title="Questions this batch raises"
+        lede="Each one has a named owner. None of them can be settled from the photographs."
+      />
+
+      <!--
+        A scrollable region must be operable by keyboard, not just by touch and
+        mouse. tabindex="0" puts it in the tab order and the label tells a
+        screen-reader user what they have entered; the visible focus ring comes
+        from the global :focus-visible rule.
+      -->
+      <div class="table-wrap" role="region" aria-label="Open questions" tabindex="0">
+        <table class="plain-table">
+          <caption class="visually-hidden">Open questions from batch review</caption>
+          <thead>
+            <tr>
+              <th scope="col">Question</th>
+              <th scope="col">Owner</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              batch.questions.map((row) => (
+                <tr data-question={row.question} data-question-owner={row.owner}>
+                  <td>{row.question}</td>
+                  <td class="plain-table__owner">{row.owner}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= LIMITATIONS ========================== -->
+  <section class="section section--night" aria-labelledby="limits-heading">
+    <div class="container">
+      <SectionHeading
+        id="limits-heading"
+        eyebrow="Honesty"
+        title="What this batch could not establish"
+        lede="Stated plainly, because an overstated identification is the failure this workflow exists to prevent."
+      />
+
+      <ul class="limits">
+        {
+          batch.limitations.map((limitation) => (
+            <li>
+              <Icon name="info" size={16} />
+              <span>{limitation}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- =========================== METHOD ============================= -->
+  <section class="section" aria-labelledby="method-heading">
+    <div class="container">
+      <SectionHeading
+        id="method-heading"
+        eyebrow="Method"
+        title="How the identifications are made"
+        lede="The same rules are applied to every batch, so two people reviewing this work reach the same conclusion."
+      />
+
+      <div class="method">
+        <div class="method__col">
+          <h3>Evidence, strongest first</h3>
+          <ol class="method__list">
+            <li>Information supplied with the image.</li>
+            <li>Text clearly readable inside the image.</li>
+            <li>A matching item in the restaurant's own menu.</li>
+            <li>Visual characteristics: shape, colour, texture, visible ingredients, cooking method implied by appearance, garnish, accompaniments, plating.</li>
+            <li>External research — used to verify a name, never to identify someone else's photograph.</li>
+          </ol>
+          <p class="method__note">
+            Appearance establishes how a dish looks, not its recipe. An orange curry may be butter
+            chicken, tikka masala, paneer makhni or shahi paneer. A bowl of rice is not biryani.
+            Grilled meat is not automatically tandoori chicken. A fried pastry is not automatically a
+            samosa. Paneer and chicken are never merged because their sauces look alike.
+          </p>
+        </div>
+
+        <div class="method__col">
+          <h3>Confidence</h3>
+          <ul class="method__list method__list--plain">
+            <li>
+              <span class={`badge ${BADGE_CLASS.high}`}>HIGH</span>
+              Clearly recognisable, or reliable text names it. The dish may be named, but its recipe
+              and ingredients are not thereby verified.
+            </li>
+            <li>
+              <span class={`badge ${BADGE_CLASS.medium}`}>MEDIUM</span>
+              Resembles a specific dish without establishing it. The name is marked probable.
+            </li>
+            <li>
+              <span class={`badge ${BADGE_CLASS.low}`}>LOW</span>
+              Several dishes fit equally well. A general category is used instead of a dish name.
+            </li>
+            <li>
+              <span class="badge badge--none">UNIDENTIFIED</span>
+              Too little evidence. No dish name is assigned.
+            </li>
+          </ul>
+
+          <h3>Verification statuses</h3>
+          <p class="method__note">
+            {catalogue._meta.statuses.join(' · ')}
+          </p>
+          <p class="method__note">
+            <strong>Verified against official menu</strong> is used only when a menu was actually
+            available and a meaningful match was established. Merely looking like a menu item is not
+            verification — which is why this batch records <strong>zero</strong> confirmed matches.
+          </p>
+        </div>
+      </div>
+
+      <ConceptNote title="The system itself" icon="info">
+        This page is generated from the same records the workflow keeps. The rules above live with the
+        project as <code>docs/05-image-identification.md</code>, and the records are held in
+        <code>src/data/photo-records.json</code>. A dish name can only appear in a record if it exists
+        in the restaurant's own menu file, with a price that matches.
+      </ConceptNote>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  /* ---------------------------------------------------------------- intro */
+  .review-intro {
+    max-width: 60rem;
+  }
+
+  .review-intro__lede {
+    margin-top: var(--sp-4);
+    max-width: 62ch;
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+  }
+
+  .review-intro__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-5);
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+  }
+
+  .review-intro .btn-row {
+    margin-top: var(--sp-6);
+  }
+
+  .review-intro .concept-note {
+    margin-top: var(--sp-6);
+  }
+
+  /* ------------------------------------------------------------- decide */
+  .decide-list {
+    display: grid;
+    gap: var(--sp-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 48rem) {
+    .decide-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .decide {
+    display: flex;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper);
+  }
+
+  .decide__num {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--night);
+    color: var(--brand-gold);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+  }
+
+  .decide__title {
+    font-size: var(--fs-h3);
+  }
+
+  .decide__hint {
+    margin-top: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .decide__foot {
+    margin-top: var(--sp-5);
+    max-width: 70ch;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  /* ------------------------------------------------------------ summary */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: var(--sp-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    padding: var(--sp-5) var(--sp-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper-warm);
+  }
+
+  .stat__value {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .stat__label {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  .stat__note {
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+  }
+
+  .summary__menu {
+    margin-top: var(--sp-5);
+    max-width: 70ch;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  /* ------------------------------------------------------------ records */
+  .records {
+    display: grid;
+    gap: var(--sp-6);
+  }
+
+  .record {
+    display: grid;
+    gap: var(--sp-5);
+    padding: var(--sp-5);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    box-shadow: var(--shadow-1);
+  }
+
+  @media (min-width: 56rem) {
+    .record {
+      grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+      gap: var(--sp-6);
+      padding: var(--sp-6);
+    }
+  }
+
+  /* --- the withheld-photograph frame --------------------------------- */
+  .withheld {
+    margin: 0;
+  }
+
+  .withheld__frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-3);
+    aspect-ratio: 4 / 3;
+    padding: var(--sp-4);
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--brand-gold) 55%, var(--line-strong));
+    border-radius: var(--r-md);
+    background-image: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--brand-gold) 12%, var(--paper-warm)) 0%,
+      var(--paper-warm) 55%,
+      var(--paper-deep) 100%
+    );
+  }
+
+  .withheld__tag {
+    position: absolute;
+    top: var(--sp-3);
+    left: var(--sp-3);
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--r-xs);
+    background: var(--night);
+    color: var(--brand-gold);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+  }
+
+  .withheld__mark {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .withheld__caption {
+    max-width: 26ch;
+    font-size: var(--fs-xs);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .record__file {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: var(--sp-4);
+    font-size: var(--fs-xs);
+  }
+
+  .record__file-label {
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .record__file code {
+    font-size: var(--fs-xs);
+    overflow-wrap: anywhere;
+    color: var(--ink);
+  }
+
+  /* --- record body --------------------------------------------------- */
+  .record__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+
+  .record__title {
+    flex: 1 1 18rem;
+    font-size: var(--fs-h3);
+  }
+
+  .record__fields {
+    display: grid;
+    gap: var(--sp-4);
+    margin: var(--sp-5) 0 0;
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 40rem) {
+    .record__fields {
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    }
+  }
+
+  .field dt {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .field dd {
+    margin-top: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .field__list {
+    display: grid;
+    gap: var(--sp-1);
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .field__quote {
+    font-style: italic;
+  }
+
+  /* --- menu match ------------------------------------------------------ */
+  .menu-match {
+    display: grid;
+    gap: var(--sp-1);
+    margin: var(--sp-2) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu-match li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    background: var(--paper-warm);
+  }
+
+  .menu-match__name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .menu-match__price {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-2);
+  }
+
+  .menu-match__cat {
+    margin-left: auto;
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
+  }
+
+  /* --- badges and statuses -------------------------------------------- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  /* Colour pairs already verified by tools/check-contrast.py. */
+  .badge--high {
+    background: var(--night);
+    color: var(--brand-gold);
+  }
+
+  .badge--medium {
+    background: var(--paper-warm);
+    color: var(--ink-2);
+    border-color: var(--line-control);
+  }
+
+  .badge--low {
+    background: var(--cta);
+    color: #ffffff;
+  }
+
+  .badge--none {
+    background: var(--paper);
+    color: var(--ink-soft);
+    border-color: var(--line-control);
+  }
+
+  .status {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--line-control);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  /* --- decision controls ---------------------------------------------- */
+  .decision {
+    margin: var(--sp-5) 0 0;
+    padding: var(--sp-5);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--paper-warm);
+  }
+
+  .decision__legend {
+    padding-inline: var(--sp-2);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  .decision__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-4);
+  }
+
+  .decision__option {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 2.75rem;
+    padding: 0.35rem 0.85rem;
+    border: 1.5px solid var(--line-control);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .decision__option:hover {
+    border-color: var(--ink-soft);
+  }
+
+  .decision__option input {
+    accent-color: var(--cta);
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .decision__choice {
+    display: grid;
+    gap: var(--sp-1);
+    justify-items: start;
+  }
+
+  .decision__hint {
+    margin: 0;
+    max-width: 30ch;
+    font-size: var(--fs-xs);
+    color: var(--ink-2);
+  }
+
+  .decision__option:has(input:checked) {
+    border-color: var(--cta);
+    box-shadow: inset 0 0 0 1px var(--cta);
+  }
+
+  .decision__note-label {
+    display: block;
+    margin-top: var(--sp-4);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  .decision__note {
+    width: 100%;
+    margin-top: var(--sp-2);
+    padding: var(--sp-3);
+    border: 1.5px solid var(--line-control);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    font: inherit;
+    font-size: var(--fs-sm);
+    color: var(--ink);
+    resize: vertical;
+  }
+
+  /* --- duplicate finding ---------------------------------------------- */
+  .records__subhead {
+    margin-top: var(--sp-7);
+    font-size: var(--fs-h3);
+  }
+
+  .duplicate {
+    margin-top: var(--sp-4);
+    padding: var(--sp-5);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--brand-gold);
+    border-radius: var(--r-md);
+    background: var(--paper);
+  }
+
+  .duplicate__head {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--ink);
+  }
+
+  .duplicate__body {
+    margin-top: var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .duplicate__key {
+    display: block;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* --- review output --------------------------------------------------- */
+  .review-progress {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  .review-output {
+    margin-top: var(--sp-4);
+  }
+
+  .review-output__text {
+    margin: 0;
+    padding: var(--sp-5);
+    min-height: 8rem;
+    max-height: 26rem;
+    overflow: auto;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--paper-warm);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: var(--fs-xs);
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .review-actions {
+    margin-top: var(--sp-5);
+  }
+
+  .review-status {
+    margin-top: var(--sp-3);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  /* --- flags ------------------------------------------------------------ */
+  .flags {
+    display: grid;
+    gap: var(--sp-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 48rem) {
+    .flags {
+      grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    }
+  }
+
+  .flag {
+    padding: var(--sp-5);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper);
+  }
+
+  .flag__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+
+  .flag__body {
+    margin-top: var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .flags__foot {
+    margin-top: var(--sp-5);
+    max-width: 72ch;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  /* --- tables ------------------------------------------------------------ */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+
+  .plain-table {
+    width: 100%;
+    min-width: 34rem;
+    border-collapse: collapse;
+    background: var(--paper);
+    font-size: var(--fs-sm);
+  }
+
+  .plain-table th,
+  .plain-table td {
+    padding: var(--sp-4);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+
+  .plain-table thead th {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--paper-warm);
+  }
+
+  .plain-table tbody tr:last-child th,
+  .plain-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .plain-table__owner {
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* --- limitations -------------------------------------------------------- */
+  .limits {
+    display: grid;
+    gap: var(--sp-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .limits li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-body);
+    color: #d8d1c6;
+  }
+
+  .limits svg {
+    margin-top: 0.2rem;
+    color: var(--brand-gold);
+  }
+
+  /* --- method -------------------------------------------------------------- */
+  .method {
+    display: grid;
+    gap: var(--sp-6);
+  }
+
+  @media (min-width: 56rem) {
+    .method {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--sp-7);
+    }
+  }
+
+  .method__col h3 {
+    font-size: var(--fs-h3);
+  }
+
+  .method__col h3 + * {
+    margin-top: var(--sp-3);
+  }
+
+  .method__col h3:not(:first-child) {
+    margin-top: var(--sp-6);
+  }
+
+  .method__list {
+    display: grid;
+    gap: var(--sp-3);
+    padding-left: 1.2rem;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .method__list--plain {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .method__list--plain li {
+    display: grid;
+    gap: var(--sp-1);
+    justify-items: start;
+  }
+
+  .method__note {
+    margin-top: var(--sp-3);
+    max-width: 62ch;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .method .concept-note {
+    margin-top: var(--sp-7);
+  }
+
+  .method code {
+    font-size: var(--fs-xs);
+    overflow-wrap: anywhere;
+  }
+</style>
+
+<script>
+  /**
+   * Review recording — progressive enhancement.
+   *
+   * Without JavaScript every record, badge and note on this page is already
+   * readable; this script only adds the ability to record a decision and turn
+   * the set of decisions into a block of text that can be sent back.
+   *
+   * State lives in localStorage, on the reviewer's own machine. Nothing is
+   * transmitted anywhere, which is why there is no server side to this page.
+   */
+  const STORAGE_KEY = 'urban-tadka-photo-review-v1';
+
+  const DECISION_LABELS: Record<string, string> = {
+    confirm: 'Confirm',
+    correct: 'Correct it',
+    owner: 'Ask the owner',
+  };
+
+  interface ReviewState {
+    version: number;
+    decisions: Record<string, { decision: string; note: string }>;
+  }
+
+  const batchId = document.querySelector<HTMLElement>('[data-batch-id]')?.dataset.batchId ?? '';
+  const batchReceived =
+    document.querySelector<HTMLElement>('[data-batch-id]')?.dataset.batchReceived ?? '';
+
+  const records = Array.from(document.querySelectorAll<HTMLElement>('[data-record]'));
+  const output = document.querySelector<HTMLElement>('[data-review-output]');
+  const progress = document.querySelector<HTMLElement>('[data-review-progress]');
+  const status = document.querySelector<HTMLElement>('[data-review-status]');
+
+  const total = records.length;
+
+  function readForm(): ReviewState {
+    const decisions: ReviewState['decisions'] = {};
+
+    records.forEach((record) => {
+      const id = record.dataset.recordId ?? '';
+      const checked = record.querySelector<HTMLInputElement>('[data-decision-input]:checked');
+      const note = record.querySelector<HTMLTextAreaElement>('[data-note]');
+
+      decisions[id] = {
+        decision: checked?.value ?? '',
+        note: (note?.value ?? '').trim(),
+      };
+    });
+
+    return { version: 1, decisions };
+  }
+
+  function save(state: ReviewState): void {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Private browsing and full storage both throw here. The page still works;
+      // the answers simply are not remembered across a reload.
+      setStatus('Answers could not be saved in this browser — copy the summary before leaving.');
+    }
+  }
+
+  function load(): ReviewState | null {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as ReviewState;
+      return parsed && parsed.version === 1 ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setStatus(message: string): void {
+    if (status) status.textContent = message;
+  }
+
+  function decidedCount(state: ReviewState): number {
+    return Object.values(state.decisions).filter((entry) => entry.decision !== '').length;
+  }
+
+  /**
+   * The shareable artefact.
+   *
+   * Deliberately plain text: it survives being pasted into an email, a chat
+   * message or a document without losing its meaning, and the record IDs make it
+   * unambiguous which image each answer refers to.
+   */
+  function buildSummary(state: ReviewState): string {
+    const lines: string[] = [];
+    const reviewed = decidedCount(state);
+
+    lines.push(`PHOTOGRAPH REVIEW — batch ${batchId}`);
+    lines.push('');
+    lines.push(`Batch received: ${batchReceived}`);
+    lines.push(`Records reviewed: ${reviewed} of ${total}`);
+    lines.push('Reviewer: ');
+    lines.push('Date: ');
+    lines.push('');
+    lines.push('DECISIONS');
+    lines.push('');
+
+    records.forEach((record) => {
+      const id = record.dataset.recordId ?? '';
+      const label = record.dataset.recordLabel ?? '';
+      const entry = state.decisions[id];
+      const answer = entry?.decision ? DECISION_LABELS[entry.decision] ?? entry.decision : 'not reviewed';
+
+      lines.push(`${id} — ${answer}`);
+      lines.push(`  identification: ${label}`);
+      lines.push(`  original file:  ${record.dataset.recordFile ?? ''}`);
+      if (entry?.note) lines.push(`  note: ${entry.note}`);
+      lines.push('');
+    });
+
+    const notes = records
+      .map((record) => {
+        const id = record.dataset.recordId ?? '';
+        const note = state.decisions[id]?.note;
+        return note ? `- ${id}: ${note}` : null;
+      })
+      .filter((entry): entry is string => Boolean(entry));
+
+    lines.push('NOTES');
+    lines.push(notes.length > 0 ? notes.join('\n') : '- none');
+    lines.push('');
+    lines.push('OPEN QUESTIONS (answer below each)');
+    document.querySelectorAll<HTMLElement>('[data-question]').forEach((question, index) => {
+      lines.push(`${index + 1}. ${question.dataset.question ?? ''}`);
+      lines.push(`   owner: ${question.dataset.questionOwner ?? ''}`);
+      lines.push('   answer: ');
+    });
+    lines.push('');
+    lines.push('Reminder: the photographs in this batch are third-party review images and are not');
+    lines.push('licensed for publication. Replace them with authorised photography before launch.');
+
+    return lines.join('\n');
+  }
+
+  function render(): void {
+    const state = readForm();
+
+    if (output) output.textContent = buildSummary(state);
+
+    if (progress) {
+      const reviewed = decidedCount(state);
+      progress.textContent =
+        reviewed === 0
+          ? `No records reviewed yet — ${total} to go.`
+          : reviewed === total
+            ? `All ${total} records reviewed. Copy the summary below and send it back.`
+            : `${reviewed} of ${total} records reviewed — ${total - reviewed} to go.`;
+    }
+
+    save(state);
+  }
+
+  function restore(state: ReviewState): void {
+    records.forEach((record) => {
+      const id = record.dataset.recordId ?? '';
+      const entry = state.decisions[id];
+      if (!entry) return;
+
+      if (entry.decision) {
+        const input = record.querySelector<HTMLInputElement>(
+          `[data-decision-input][value="${entry.decision}"]`,
+        );
+        if (input) input.checked = true;
+      }
+
+      const note = record.querySelector<HTMLTextAreaElement>('[data-note]');
+      if (note && entry.note) note.value = entry.note;
+    });
+  }
+
+  records.forEach((record) => {
+    record.addEventListener('input', render);
+    record.addEventListener('change', render);
+  });
+
+  document.querySelector('[data-review-copy]')?.addEventListener('click', async () => {
+    const text = buildSummary(readForm());
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus('Copied. Paste it into an email or message to send the review back.');
+    } catch {
+      // Clipboard access can be refused (permissions, insecure context). Selecting
+      // the block means the reviewer can still copy it with the keyboard.
+      const selection = window.getSelection();
+      if (output && selection) {
+        const range = document.createRange();
+        range.selectNodeContents(output);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        setStatus('The summary is selected — press Ctrl or Cmd + C to copy it.');
+      } else {
+        setStatus('Copying is unavailable in this browser; select the summary text by hand.');
+      }
+    }
+  });
+
+  document.querySelector('[data-review-download]')?.addEventListener('click', () => {
+    const text = buildSummary(readForm());
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = `photograph-review-${batchId || 'batch'}.txt`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    setStatus(`Saved as ${link.download}.`);
+  });
+
+  document.querySelector('[data-review-reset]')?.addEventListener('click', () => {
+    records.forEach((record) => {
+      record
+        .querySelectorAll<HTMLInputElement>('[data-decision-input]')
+        .forEach((input) => (input.checked = false));
+      const note = record.querySelector<HTMLTextAreaElement>('[data-note]');
+      if (note) note.value = '';
+    });
+
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Nothing to do: the form is cleared either way.
+    }
+
+    render();
+    setStatus('Answers cleared from this browser.');
+  });
+
+  const saved = load();
+  if (saved) {
+    restore(saved);
+    setStatus('Your earlier answers were restored from this browser.');
+  }
+  render();
+</script>

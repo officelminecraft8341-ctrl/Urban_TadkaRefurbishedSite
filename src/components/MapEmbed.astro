@@ -44,7 +44,20 @@ const { business } = siteConfig;
     </p>
   </div>
 
-  <div class="map__frame" data-map-frame hidden></div>
+  <!--
+    A labelled region, focusable by script only. When the map loads, the button
+    that had focus disappears with the placeholder, which would drop keyboard
+    and screen-reader users at the top of the page with no announcement. Moving
+    focus here instead tells them where they are and what just appeared.
+  -->
+  <div
+    class="map__frame"
+    data-map-frame
+    hidden
+    role="region"
+    aria-label={`Map showing the location of ${business.legalName}`}
+    tabindex="-1"
+  ></div>
 </div>
 
 <script>
@@ -70,6 +83,8 @@ const { business } = siteConfig;
 
       frame.hidden = false;
       placeholder.hidden = true;
+      // The control that had focus no longer exists; hand focus to the region.
+      frame.focus({ preventScroll: true });
     });
   });
 </script>

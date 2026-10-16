@@ -161,18 +161,25 @@ export const siteConfig = {
       { day: 'Saturday', lunch: '11:30 am – 3:00 pm', dinner: '5:30 pm – 9:45 pm' },
       { day: 'Sunday', lunch: '11:30 am – 2:30 pm', dinner: '5:30 pm – 9:45 pm' },
     ],
-    /** Machine-readable form for structured data (schema.org). */
+    /**
+     * Machine-readable form for structured data (schema.org).
+     *
+     * MUST be kept in step with `schedule` above. Tuesday is deliberately
+     * absent from every block: schema.org has no "closed" marker, so a closed
+     * day is expressed by omission. A previous version listed Tuesday with a
+     * lunch window AND inside the seven-day dinner block, which told Google
+     * the restaurant was open on the one day it is shut.
+     */
     schema: [
       {
         days: ['Monday', 'Wednesday', 'Thursday', 'Friday'],
         opens: '11:00',
         closes: '14:30',
       },
-      { days: ['Tuesday'], opens: '11:00', closes: '14:00' },
       { days: ['Saturday'], opens: '11:30', closes: '15:00' },
       { days: ['Sunday'], opens: '11:30', closes: '14:30' },
       {
-        days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        days: ['Monday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         opens: '17:30',
         closes: '21:45',
       },

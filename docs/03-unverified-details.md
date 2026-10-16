@@ -29,6 +29,10 @@ decision. **Optional** = improves the site but nothing breaks without it.
 | 14 | **Public email address** (Optional) | Absent | An address safe to publish, if one exists | Restaurant |
 | 15 | **Cuisine description** (Optional) | Shown, sourced from the restaurant's own About page | Confirm the wording is still accurate; it is their text, summarised | Restaurant |
 | 16 | **Press coverage** (Optional) | Absent | Any reviews or articles they want quoted, with permission | Restaurant |
+| 17 | **Which strapline is canonical** (Optional) | The footer carries *"Authentic traditional Indian cuisine"*, taken from the website's own header | Two straplines are in circulation: the website says *"Authentic traditional Indian cuisine"*, while the building's signage and the logo both read *"A tradition from India."* Choose one and use it consistently across site, signage and print | Restaurant |
+| 18 | **Google rating and review count** (Important) | Absent — no rating or review count is shown anywhere | The Google listing shows **3.5★ from 280 reviews** (Oct 2026). Deciding to publish a rating is a judgement call, not a default: a 3.5 shown without context can cost more than it earns, so this needs a deliberate decision plus a plan for improving it | Restaurant |
+| 19 | **Patio / outdoor seating** (Optional) | Absent | Listing photographs show tables and chairs on the patio at the front entrance. Confirm whether patio seating is a standing feature and worth advertising on `/visit/` | Restaurant |
+| 20 | **Buffet, confirmed or retired** (Important) | Absent entirely | Still unresolved. Neither the Google listing nor any supplied photograph shows a buffet, which weakens the case for the commented-out buffet hours — but silence is not evidence. Ask directly | Restaurant |
 
 ---
 
@@ -40,6 +44,7 @@ that is the most authoritative source available, and flags them.
 | Source | Lunch | Dinner | Closed |
 |---|---|---|---|
 | **The restaurant's own Contact page** (used on the site) | Mon, Wed–Fri 11:00–2:30 · Sat 11:30–3:00 · Sun 11:30–2:30 | Mon–Sun 5:30–9:45 | Tuesday |
+| **Google Business Profile** (listing screenshot, Oct 2026) | Mon, Wed–Fri 11:00–2:00 · Sat 11:30–2:30 · Sun 11:30–2:00 | Mon–Sun 5:30–9:30 | Tuesday |
 | Yelp and Uber Eats listings | Mon 11:00–2:00 | 5:30–9:30 | — |
 | Commented-out HTML on the restaurant's own homepage | Mon–Fri 11:30–2:30 (labelled "Buffet") | — | Sat–Sun 11:30–5:30 |
 
@@ -47,6 +52,42 @@ The third row is dead code on their homepage, not visible to visitors, but it sh
 intention. Once the restaurant confirms the real hours, the change is one edit in
 `src/config/site.js` → `hours.schedule` (and `hours.schema` for structured data), and the
 "Confirm before launch" note is deleted.
+
+### What the Google listing changes
+
+The Google Business Profile screenshot supplied in chat (October 2026) is a **fourth** version, and it disagrees with the restaurant's own site in one consistent direction:
+lunch ends 30 minutes earlier on weekdays (2:00 vs 2:30), on Saturday (2:30 vs 3:00) and on
+Sunday (2:00 vs 2:30), and dinner ends 15 minutes earlier every night (9:30 vs 9:45). Its shape
+matches the Yelp and Uber Eats listings, which state the same times but say nothing about a
+closing day. On the one point where it can be cross-checked against another source, it agrees with
+the restaurant's own site: **Tuesday closed**.
+
+That direction matters, because the restaurant's own site has been **frozen since 2019** (see
+[`01-website-audit.md`](01-website-audit.md)), whereas a Google Business Profile is normally kept
+up to date by the business and is what most customers actually look at. On the evidence available,
+the restaurant's own published hours are the **likeliest of the four to be stale** — but that is
+inference, not confirmation.
+
+The hours shown on the site are therefore **unchanged**: swapping one unverified source for
+another would only move the uncertainty around, and the rule in this project is to show the
+restaurant's own published hours until the owner says otherwise. What the screenshot gives the
+owner is a concrete question to answer — *are the Google times the real ones?* If they are, the
+fix is one edit to `hours.schedule`; Tuesday is already handled in both places.
+
+### A contradiction this review found, and fixed
+
+Cross-checking the four sources against the site's own output exposed a defect **inside this
+build**, not in the source data: `hours.schedule` has listed Tuesday as closed all along, but
+`hours.schema` — the config that feeds the `openingHoursSpecification` JSON-LD — declared Tuesday
+open for lunch *and* included it in the seven-day dinner block. The rendered structured data was
+telling Google that Urban Tadka opens on its one closing day.
+
+This is precisely the failure mode the original audit ranked **High** ("hours conflict across
+sources"), reproduced in the new build. Fixed in `src/config/site.js`: schema.org has no "closed"
+marker, so a closed day is now expressed by omission, and the config carries a comment tying
+`hours.schema` to `hours.schedule`. Verified in the rebuilt output — no block declares Tuesday
+open. This is also a reminder to check every remaining `*status` flag the same way: a fact can be
+right in one field and wrong in the field beside it.
 
 ---
 
@@ -75,6 +116,7 @@ intention. Once the restaurant confirms the real hours, the change is one edit i
 | Restaurant name & menu text | Used as published, no permission sought yet | Written permission before publication |
 | Logo artwork | **Not used** | Permission + vector file |
 | Photographs | **None used** — all placeholders | Permission + originals |
+| Reference screenshots supplied in chat (Google listing, customer review photos, TripAdvisor) | **Not used** — reviewed as evidence only, nothing committed | These are third-party images: some carry a **TripAdvisor watermark** and some are attributed to named Google reviewers. They cannot be published on the site or committed to this repo. Their lasting value is evidential — they corroborate the hours, the signage strapline and the photography brief — and they must be replaced by the restaurant's own photographs. Batch B2 (four such photographs) is catalogued in [`05-image-identification.md`](05-image-identification.md) and presented on the internal `/review/` page; the images themselves are still not committed, not published, and not on that page |
 | Typefaces (Fraunces, Inter) | SIL OFL 1.1, commercial use permitted, self-hosted | Keep the bundled licence files |
 | Icons | Hand-drawn for this project | None needed |
 | Favicon | Original mark, drawn for this project | None needed |
@@ -87,10 +129,16 @@ intention. Once the restaurant confirms the real hours, the change is one edit i
 
 | Answer | Change required |
 |---|---|
-| Confirmed hours | Edit `siteConfig.hours`; delete the hours `ConceptNote` |
+| Confirmed hours | Edit `siteConfig.hours` → `schedule` **and** `schema` (keep the two in step); delete the hours `ConceptNote` |
+| Decision on the Google rating | Either add a rating display with its source and date, or leave it off — nothing changes structurally |
+| Patio seating confirmed | Add an outdoor-seating line to `/visit/` |
+| Canonical strapline chosen | Edit `siteConfig.brand.tagline` (and align signage/print) |
 | Current prices | Re-run `npm run menu:parse` after updating the source, or edit `src/data/menu.json`; delete the price note |
 | Dietary / allergen data | Add per-dish fields in `menu.json`; `DishCard` and `MenuCategory` render chips once data exists |
 | Official social accounts | Edit `siteConfig.social.accounts`; remove the ownership note |
 | Catering details | Replace the open-questions block on `/catering/` with real information |
 | Photography supplied | Replace `<PhotoPlaceholder>` with `<img>` at the same positions; add `alt` text and `width`/`height` |
+| Photograph identifications confirmed or corrected | Edit the record in `src/data/photo-records.json` **and** the matching row in [`05-image-identification.md`](05-image-identification.md). `npm run verify` fails if the two disagree, or if a record names a dish that is not on the menu at that price. Then replace the placeholder in `/review/` and `/gallery/` with the licence-cleared photograph |
+| Accessibility barrier reported | Log it in `docs/04-qa-results.md`, fix it in the working build, and update `/accessibility/` — including its last-reviewed date |
+| Accessibility feedback email approved | Add it to `/accessibility/` as a second route beside the telephone; until then the phone number stays the only contact method |
 | Ready to publish | Set the real `deployment.siteUrl` **and** flip `deployment.allowIndexing` to `true` |

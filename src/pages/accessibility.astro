@@ -1,0 +1,353 @@
+---
+/**
+ * /accessibility/ — the accessibility statement.
+ *
+ * This page is a factual record, not a certificate. Every claim in it was
+ * checked against the source: what was built, what was verified by the
+ * project's own gates, and what is still untested because this environment
+ * has no browser, no screen reader and no automated accessibility runner.
+ *
+ * Two constraints shape the wording:
+ *
+ *   1. The only verified contact method is the restaurant's telephone number.
+ *      There is no verified email address, so none is offered; the page says
+ *      so instead of inventing one.
+ *   2. Nothing here claims conformance, compliance or immunity. Meeting a
+ *      development target is not a guarantee, and no overlay or widget is
+ *      installed or claimed to fix anything.
+ */
+
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ConceptNote from '../components/ConceptNote.astro';
+import Button from '../components/Button.astro';
+import { siteConfig, telHref } from '../config/site.js';
+
+const phone = siteConfig.business.phoneDisplay;
+
+/** Built into the site and verified against the source. */
+const inPlace = [
+  {
+    what: 'Keyboard support',
+    detail:
+      'Every control is a real button, link or input: the navigation toggle, the menu search, the gallery viewer with its arrow-key and Escape handling, the map loader and the review-page decisions all operate from the keyboard, and focus returns to the control that opened a dialog when it closes.',
+  },
+  {
+    what: 'A way past the header',
+    detail:
+      'A skip-to-main-content link is the first control in the tab order on every page.',
+  },
+  {
+    what: 'Visible focus',
+    detail:
+      'A 3 px focus ring follows the keyboard on every page, drawn in a colour chosen for the surface behind it — blue on light surfaces, gold on dark ones — and each pair is verified against WCAG contrast thresholds by an automated gate.',
+  },
+  {
+    what: 'Contrast-verified text',
+    detail:
+      'Body, secondary and caption text, button labels, links and headings on dark bands are each checked numerically against WCAG 2.2 AA thresholds on every build.',
+  },
+  {
+    what: 'Honest images',
+    detail:
+      'No image area pretends to be a photograph. Each one is a finished panel in the site\u2019s own visual language, holding the place of authorised photography, and real photography will ship with factual alternative text written for each picture. The pending-photography labels stay in the accessibility tree rather than being hidden from it.',
+  },
+  {
+    what: 'A focus mark in the menu search',
+    detail:
+      'The search input itself carries no outline, so the field draws the surface-verified focus colour around the whole box when tabbed into — keyboard users always see where they are.',
+  },
+  {
+    what: 'Names that match what you see',
+    detail:
+      'Gallery tiles announce the same “Photo needed” words they display, so voice-control users can speak them; every review-page decision option carries its meaning as described text tied to its radio button.',
+  },
+  {
+    what: 'Announced changes',
+    detail:
+      'The menu filter results, the gallery position and the review-page progress are announced through polite live regions rather than appearing silently.',
+  },
+  {
+    what: 'Motion and timing',
+    detail:
+      'The site honours the operating system\u2019s reduced-motion setting, sets no time limits, autoplays nothing and flashes nothing.',
+  },
+  {
+    what: 'No surprises from the map',
+    detail:
+      'The embedded map loads only when asked for, after a plain-language warning that Google may set cookies. Until then no request leaves the browser.',
+  },
+];
+
+/** Verified gaps, each with a way around it. */
+const limitations = [
+  {
+    what: 'No screen-reader testing yet',
+    detail:
+      'The markup has been reviewed for labelling, headings and live regions, but it has not been driven with VoiceOver, NVDA or TalkBack. If you use one and hit a barrier, the telephone below reaches a person.',
+  },
+  {
+    what: 'Interactions not yet exercised in a browser',
+    detail:
+      'The scripts compile and their hooks are present in the built pages, but opening the navigation, filtering the menu, driving the gallery viewer, loading the map and recording review decisions have not been watched in a live browser. All content remains readable with JavaScript switched off.',
+  },
+  {
+    what: 'Third-party pages are theirs, not ours',
+    detail:
+      'Ordering on Grubhub and Uber Eats, the Facebook page and the Google map itself are run by their owners, and this statement cannot cover them. Ordering by telephone and asking for directions by telephone work regardless.',
+  },
+  {
+    what: 'Physical access is unconfirmed',
+    detail:
+      'Parking, step-free access and large tables are not published by the restaurant. The visit page says so openly and asks visitors to call ahead — please do.',
+  },
+  {
+    what: 'Hours and prices await the owner',
+    detail:
+      'Both are the restaurant\u2019s own published figures, flagged on the page wherever they appear, and both need re-confirming before a visit you are depending on. A telephone call settles either in a minute.',
+  },
+  {
+    what: 'No email route',
+    detail:
+      'The restaurant publishes no email address, so this statement offers none. The telephone below is the way to reach a person, and anyone who sent you this preview link can pass a message on.',
+  },
+];
+---
+
+<MainLayout
+  title="Accessibility"
+  description="How this site is built for keyboard, screen-reader and low-vision visitors, which parts are still untested, and how to report an access barrier by phone."
+  canonicalPath="/accessibility/"
+>
+  <section class="section">
+    <div class="container access-intro">
+      <p class="eyebrow">Access for everyone</p>
+      <h1>Accessibility</h1>
+      <p class="access-lede">
+        This page says what this website does to be usable by everyone, what we know is still
+        untested, and how to tell us about a barrier. It describes the site as it is, not as we
+        wish it were.
+      </p>
+
+      <ConceptNote title="A target, not a certificate" icon="shield">
+        This site is built toward <strong>WCAG 2.2 Level AA</strong>. That is a development
+        target, not a certificate of conformance and not a promise of immunity from anything. No
+        accessibility overlay or widget is installed — those do not fix barriers, and this site
+        does not pretend one does. What follows is what was actually built and verified, and what
+        was not.
+      </ConceptNote>
+    </div>
+  </section>
+
+  <section class="section section--warm" aria-labelledby="inplace-heading">
+    <div class="container">
+      <SectionHeading
+        id="inplace-heading"
+        eyebrow="Verified"
+        title="What is in place"
+        lede="Each of these was checked against the site's source and is re-checked by an automated gate on every build."
+      />
+
+      <dl class="inventory">
+        {
+          inPlace.map((item) => (
+            <div class="inventory__row">
+              <dt class="inventory__term">{item.what}</dt>
+              <dd class="inventory__detail">{item.detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="report-heading">
+    <div class="container access-report">
+      <SectionHeading
+        id="report-heading"
+        eyebrow="Tell us"
+        title="Report an access barrier"
+        lede="The fastest way to reach a person about this website is the restaurant's own verified telephone number."
+      />
+
+      <div class="btn-row access-report__actions">
+        <Button href={telHref} variant="primary" size="lg" icon="phone">
+          Call {phone}
+        </Button>
+      </div>
+
+      <div class="prose">
+        <p>It helps to include three things:</p>
+        <ul>
+          <li>Which page you were on and what you were trying to do.</li>
+          <li>What happened instead, in your own words.</li>
+          <li>Your device and browser, if you happen to know them.</li>
+        </ul>
+        <p>
+          Your report is logged with the build&apos;s quality record and addressed in the working
+          build. Because this site is awaiting the owner&apos;s approval to launch, no publication
+          date for a fix can be promised — but nothing reported is left unrecorded.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--warm" aria-labelledby="limits-heading">
+    <div class="container">
+      <SectionHeading
+        id="limits-heading"
+        eyebrow="Honest gaps"
+        title="Known limitations"
+        lede="Verified gaps, each with a way around it. A barrier we have written down is one you can plan for."
+      />
+
+      <dl class="inventory">
+        {
+          limitations.map((item) => (
+            <div class="inventory__row">
+              <dt class="inventory__term">{item.what}</dt>
+              <dd class="inventory__detail">{item.detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="compat-heading">
+    <div class="container">
+      <SectionHeading
+        id="compat-heading"
+        eyebrow="Settings"
+        title="Compatibility and settings"
+        lede="How this site behaves with the settings and tools visitors actually use."
+      />
+
+      <div class="prose">
+        <ul>
+          <li>
+            <strong>Without JavaScript.</strong> All content — every dish, address, hour and
+            photograph slot — is readable with scripting switched off. Filtering the menu, viewing
+            the gallery larger, loading the map and recording review decisions are the only parts
+            that need it.
+          </li>
+          <li>
+            <strong>Zoom and text resizing.</strong> Type is set in relative units and layouts
+            reflow from narrow phones upward, so browser zoom enlarges rather than clips. That was
+            verified by reading the stylesheets; it has not yet been watched in a browser.
+          </li>
+          <li>
+            <strong>Reduced motion.</strong> The operating system&apos;s setting is honoured
+            throughout: transitions and smooth scrolling switch off when asked.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--night" aria-labelledby="kept-heading">
+    <div class="container">
+      <SectionHeading
+        id="kept-heading"
+        eyebrow="Maintained"
+        title="How this statement is kept current"
+      />
+
+      <div class="prose prose--night">
+        <ul>
+          <li>This statement is reviewed with every preview deployment of the site.</li>
+          <li>
+            <strong>Last reviewed: 16 October 2026</strong>, against the preview build then live.
+          </li>
+          <li>
+            Accessibility feedback is logged with the build&apos;s quality record, and this page is
+            updated whenever a limitation is fixed or a new one is found.
+          </li>
+          <li>
+            This statement covers this website only — not Grubhub, Uber Eats, Google Maps or
+            Facebook, which are run by their owners under their own terms.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .access-intro {
+    max-width: 60rem;
+  }
+
+  .access-lede {
+    margin-top: var(--sp-4);
+    max-width: var(--measure);
+    font-size: var(--fs-lg);
+    color: var(--ink-2);
+  }
+
+  .access-intro .concept-note {
+    margin-top: var(--sp-6);
+    max-width: 62rem;
+  }
+
+  .inventory {
+    margin-top: var(--sp-6);
+    display: grid;
+    gap: 0;
+    max-width: 66rem;
+  }
+
+  .inventory__row {
+    display: grid;
+    gap: var(--sp-1);
+    padding-block: var(--sp-5);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .inventory__row:first-child {
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 48rem) {
+    .inventory__row {
+      grid-template-columns: 14rem 1fr;
+      gap: var(--sp-5);
+      align-items: baseline;
+    }
+  }
+
+  .inventory__term {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+  }
+
+  .inventory__detail {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+
+  .access-report {
+    max-width: 60rem;
+  }
+
+  .access-report__actions {
+    margin-top: var(--sp-6);
+  }
+
+  .access-report .prose {
+    margin-top: var(--sp-5);
+  }
+
+  /*
+    Doubled class beats `.prose li` (0,1,1) regardless of stylesheet order, so
+    the night-section list cannot render dark-on-dark.
+  */
+  .prose.prose--night li {
+    color: #d8d1c6;
+  }
+
+  .prose.prose--night strong {
+    color: var(--ink-invert);
+  }
+</style>

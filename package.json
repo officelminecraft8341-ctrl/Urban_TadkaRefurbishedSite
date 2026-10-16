@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview --host 0.0.0.0 --port 3000",
     "typecheck": "astro check",
-    "verify": "python3 tools/verify-build.py && python3 tools/check-contrast.py",
+    "verify": "python3 tools/verify-build.py && python3 tools/check-contrast.py && python3 tools/verify-photo-records.py",
     "check": "npm run typecheck && npm run build && npm run verify",
     "menu:parse": "python3 tools/parse-legacy-menu.py"
   },

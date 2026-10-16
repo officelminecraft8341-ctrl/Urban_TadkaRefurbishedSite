@@ -2,24 +2,22 @@
 /**
  * PhotoPlaceholder
  *
- * Every image position on this site renders one of these until the restaurant
- * supplies authorised photography.
+ * Same finished-looking art panel in the site's own visual language — deep
+ * spice-toned gradients with a thali-ring motif, drawn entirely in CSS — but
+ * the middle of the panel now names the photograph it is holding the place
+ * for. Beta reviewers see exactly which shot goes where without opening a
+ * separate notes page; diners see an honest "photo needed" card, never a
+ * fake photograph or a dish it does not show.
  *
- * Why a placeholder rather than a picture: the brief forbids AI-generated
- * imagery presented as real food, and we hold no licensed photographs of this
- * restaurant. The two photographs on the restaurant's current site appear to be
- * generic stock images, so reusing them would misrepresent the food. An honest,
- * clearly-labelled slot is better than a plausible fake.
- *
- * `caption` should state the shot we are asking for, so the page doubles as a
- * photography brief. Dropping in a real image later means replacing this
- * component with an <img> at the same position: the aspect ratio and framing
- * are already defined here.
+ * `title` is the shot needed, e.g. "Biryani handi, lid opened at table".
+ * Every position on the site passes one. Omitting it renders pure art
+ * (decorative, aria-hidden). Dropping in real photography later means
+ * replacing this component with an <img> at the same position.
  */
 
 interface Props {
-  /** The shot we are asking for. Shown in the placeholder, so it is a brief. */
-  caption?: string;
+  /** Which photograph belongs here. Always pass one on the site. */
+  title?: string;
   /** Any key of RATIOS; anything else falls back to 4/3. */
   ratio?: string;
   tone?: 'warm' | 'night';
@@ -28,7 +26,7 @@ interface Props {
 }
 
 const {
-  caption,
+  title,
   ratio = '4/3',
   tone = 'warm',
   compact = false,
@@ -45,17 +43,21 @@ const RATIOS: Record<string, string> = {
 };
 
 const ratioValue = RATIOS[ratio] ?? RATIOS['4/3'];
-
-import Icon from './Icon.astro';
 ---
 
-<figure class={`photo photo--${tone} ${compact ? 'photo--compact' : ''} ${className}`.trim()}>
-  <div class="photo__frame" style={`--ratio: ${ratioValue}`}>
-    <span class="photo__tag">Placeholder</span>
-    <span class="photo__mark" aria-hidden="true">
-      <Icon name="image" size={compact ? 22 : 30} />
-    </span>
-    {caption && <figcaption class="photo__caption">{caption}</figcaption>}
+<figure
+  class={`photo photo--${tone} ${compact ? 'photo--compact' : ''} ${className}`.trim()}
+  aria-hidden={title ? undefined : 'true'}
+>
+  <div class="photo__art" style={`--ratio: ${ratioValue}`}>
+    {
+      title && (
+        <span class="photo__label">
+          <span class="photo__eyebrow">Photo needed</span>
+          <span class="photo__title">{title}</span>
+        </span>
+      )
+    }
   </div>
 </figure>
 
@@ -66,87 +68,96 @@ import Icon from './Icon.astro';
     height: 100%;
   }
 
-  .photo__frame {
+  .photo__art {
     position: relative;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--sp-3);
     aspect-ratio: var(--ratio);
     width: 100%;
-    padding: var(--sp-4);
-    text-align: center;
-    border: 1px dashed color-mix(in srgb, var(--brand-gold) 55%, var(--line-strong));
-    border-radius: var(--r-md);
-    background-image: linear-gradient(
-      160deg,
-      color-mix(in srgb, var(--brand-gold) 12%, var(--paper-warm)) 0%,
-      var(--paper-warm) 55%,
-      var(--paper-deep) 100%
-    );
     overflow: hidden;
+    border-radius: var(--r-md);
+    border: 1px solid rgba(255, 204, 41, 0.28);
+    background:
+      radial-gradient(circle at 50% 28%, rgba(255, 204, 41, 0.24), transparent 46%),
+      repeating-radial-gradient(
+        circle at 50% 42%,
+        rgba(255, 204, 41, 0.1) 0 2px,
+        transparent 2px 16px
+      ),
+      linear-gradient(155deg, #54282c 0%, #33201f 48%, #1c1917 100%);
   }
 
-  .photo__tag {
+  /* A single crisp ring: the rim of a thali seen from above. */
+  .photo__art::before {
+    content: "";
     position: absolute;
-    top: var(--sp-3);
-    left: var(--sp-3);
-    padding: 0.15rem 0.45rem;
-    border-radius: var(--r-xs);
-    background: rgba(28, 25, 23, 0.08);
-    color: var(--ink-soft);
+    top: 7%;
+    left: 50%;
+    width: 46%;
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    border: 1px solid rgba(255, 204, 41, 0.32);
+    border-radius: 50%;
+  }
+
+  /* Vignette, so the panel reads as a finished image area. */
+  .photo__art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 95% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.4));
+  }
+
+  .photo--warm .photo__art {
+    background:
+      radial-gradient(circle at 50% 28%, rgba(255, 204, 41, 0.3), transparent 46%),
+      repeating-radial-gradient(
+        circle at 50% 42%,
+        rgba(255, 204, 41, 0.12) 0 2px,
+        transparent 2px 16px
+      ),
+      linear-gradient(155deg, #6b3a1e 0%, #422716 48%, #241a12 100%);
+  }
+
+  .photo__label {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.35rem;
+    justify-items: center;
+    max-width: 92%;
+    margin: 0;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(255, 204, 41, 0.35);
+    border-radius: var(--r-sm);
+    background: rgba(20, 17, 15, 0.66);
+    text-align: center;
+  }
+
+  .photo__eyebrow {
     font-size: 0.6875rem;
     font-weight: 700;
-    letter-spacing: var(--tracking-eyebrow);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: var(--brand-gold, #ffcc29);
   }
 
-  .photo__mark {
-    display: grid;
-    place-items: center;
-    width: 3.25rem;
-    height: 3.25rem;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
+  .photo__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    color: #fbf8f3;
+    text-wrap: balance;
   }
 
-  .photo__caption {
-    max-width: 30ch;
-    font-size: var(--fs-xs);
-    line-height: 1.5;
-    color: var(--ink-2);
+  .photo--compact .photo__art::before {
+    width: 40%;
   }
 
-  .photo--compact .photo__frame {
-    padding: var(--sp-3);
-    gap: var(--sp-2);
-  }
-
-  .photo--compact .photo__mark {
-    width: 2.25rem;
-    height: 2.25rem;
-  }
-
-  .photo--night .photo__frame {
-    border-color: rgba(255, 204, 41, 0.4);
-    background-image: linear-gradient(160deg, #2b2622 0%, var(--night) 100%);
-  }
-
-  .photo--night .photo__tag {
-    background: rgba(255, 204, 41, 0.16);
-    color: var(--brand-gold);
-  }
-
-  .photo--night .photo__mark {
-    background: rgba(251, 248, 243, 0.08);
-    border-color: rgba(251, 248, 243, 0.2);
-    color: #d8d1c6;
-  }
-
-  .photo--night .photo__caption {
-    color: #d8d1c6;
+  .photo--compact .photo__label {
+    padding: 0.55rem 0.85rem;
   }
 </style>

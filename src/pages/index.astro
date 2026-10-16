@@ -5,7 +5,6 @@ import Icon from '../components/Icon.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import DishCard from '../components/DishCard.astro';
 import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
-import ConceptNote from '../components/ConceptNote.astro';
 import MapEmbed from '../components/MapEmbed.astro';
 import {
   categories,
@@ -26,17 +25,18 @@ const featured = siteConfig.featured.map((entry) => {
       `Featured dish "${entry.name}" was not found in category "${entry.category}" in src/data/menu.json.`,
     );
   }
-  return { ...dish, photoCaption: `Photograph: ${dish.name}, close-up on a plate` };
+  return { ...dish };
 });
 
 const dishCount = totalItems();
 const categoryCount = categories.length;
 
-const galleryPreview = [
-  { caption: 'Photograph: the dining room during a busy dinner service', ratio: '4/3' },
-  { caption: 'Photograph: a tandoori platter arriving at the table', ratio: '4/3' },
-  { caption: 'Photograph: naan being lifted from the tandoor', ratio: '4/3' },
-  { caption: 'Photograph: a biryani served in its handi', ratio: '4/3' },
+/** The four homepage gallery panels, each naming its shot in the panel itself. */
+const galleryPreviewShots = [
+  'Dining room, wide, dinner service',
+  'Biryani handi, lid opened at table',
+  'Samosas with chutney, close-up',
+  'Naan pull from the tandoor',
 ];
 
 const visitFacts = [
@@ -98,11 +98,7 @@ const visitFacts = [
       </div>
 
       <div class="hero__media">
-        <PhotoPlaceholder
-          caption="Hero photograph: a spread of Urban Tadka dishes on the table, shot from above in warm light"
-          ratio="4/5"
-          tone="night"
-        />
+        <PhotoPlaceholder ratio="4/5" tone="night" title="Hero spread — full table, overhead, warm light" />
       </div>
     </div>
   </section>
@@ -119,18 +115,14 @@ const visitFacts = [
 
       <div class="grid grid--dishes">
         {
-          featured.map((dish) => (
-            <DishCard dish={dish} photoCaption={dish.photoCaption} />
-          ))
+          featured.map((dish) => <DishCard dish={dish} />)
         }
       </div>
 
       <div class="featured__note">
-        <ConceptNote title="Prices need confirming" icon="alert">
-          Prices are the restaurant’s own, as published on its current website, which was last
-          updated in 2019. They need re-confirming against the kitchen’s live menu before this
-          site goes live.
-        </ConceptNote>
+        <p class="fineprint">
+          Prices follow the restaurant’s published menu — worth confirming when you call.
+        </p>
       </div>
     </div>
   </section>
@@ -188,10 +180,7 @@ const visitFacts = [
   <section class="section" aria-labelledby="intro-heading">
     <div class="container intro">
       <div class="intro__media">
-        <PhotoPlaceholder
-          caption="Photograph: whole spices — cumin, cardamom, cinnamon and saffron — in a steel bowl"
-          ratio="4/5"
-        />
+        <PhotoPlaceholder ratio="4/5" title="Whole spices in steel bowl — close-up" />
       </div>
 
       <div class="intro__copy">
@@ -203,14 +192,9 @@ const visitFacts = [
 
         <div class="prose intro__prose">
           <p>
-            The menu draws on the food of the undivided Punjab — the region the restaurant
-            describes as the meeting point of Lahore, Peshawar, Rawalpindi, Kabul, Amritsar,
-            Multan and Patiala — alongside dishes from the wider North Indian kitchen.
-          </p>
-          <p>
-            <strong>Tadka</strong> is the restaurant’s own explanation of its name: the
-            North Indian technique of blooming whole spices — cumin, cloves, cinnamon,
-            cardamom, saffron, bay leaves — in hot oil or ghee to build a dish’s flavour.
+            The menu draws on the food of the undivided Punjab, and the restaurant’s name is
+            the technique at its heart: <strong>tadka</strong>, blooming whole spices in hot
+            oil or ghee.
           </p>
         </div>
 
@@ -230,14 +214,14 @@ const visitFacts = [
         eyebrow="Gallery"
         id="gallery-heading"
         title="What it looks like inside"
-        lede="Photographs of the room and the food will go here."
+        lede="The dining room, the tandoor and the food — photography arranged with the restaurant."
       />
 
       <ul class="gallery-preview">
         {
-          galleryPreview.map((item) => (
+          galleryPreviewShots.map((shot) => (
             <li>
-              <PhotoPlaceholder caption={item.caption} ratio={item.ratio} compact />
+              <PhotoPlaceholder ratio="4/3" compact title={shot} />
             </li>
           ))
         }
@@ -284,7 +268,7 @@ const visitFacts = [
       />
 
       <div class="visit">
-        <MapEmbed heading="Map" />
+        <MapEmbed />
 
         <div class="visit__panel">
           <dl class="fact-list">
@@ -311,10 +295,10 @@ const visitFacts = [
             Opening hours and ordering
           </Button>
 
-          <ConceptNote title="Hours need confirming" icon="alert">
-            These hours are the restaurant’s own published hours. Public listings show shorter
-            service windows, so they must be confirmed before launch.
-          </ConceptNote>
+          <p class="fineprint">
+            Hours follow the restaurant’s own website; listings elsewhere differ — call
+            ahead to be sure.
+          </p>
         </div>
       </div>
     </div>
@@ -437,6 +421,11 @@ const visitFacts = [
   .featured__note {
     margin-top: var(--sp-6);
     max-width: var(--measure);
+  }
+
+  .fineprint {
+    font-size: var(--fs-xs);
+    color: var(--ink-soft);
   }
 
   /* ------------------------- menu preview -------------------------- */
