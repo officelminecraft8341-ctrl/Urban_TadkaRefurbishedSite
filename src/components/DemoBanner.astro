@@ -1,0 +1,77 @@
+---
+/**
+ * DemoBanner — site-wide independent-concept disclosure.
+ *
+ * Rendered at the very top of every page (MainLayout, above the header) so
+ * the independent-concept status is visible on mobile and desktop without
+ * scrolling to the footer. It states: independent concept, not official,
+ * not approved/endorsed, and takes no real orders, reservations, payments
+ * or inquiries.
+ *
+ * A banner reduces confusion but does not by itself eliminate trademark,
+ * copyright or other legal risk — see /privacy/ licensing section.
+ */
+
+import { siteConfig } from '../config/site.js';
+
+const { brand, demo } = siteConfig;
+---
+
+<div class="demo-banner" role="note" aria-label="Independent design concept notice">
+  <div class="container demo-banner__inner">
+    <p class="demo-banner__text">
+      <strong>Design concept for review.</strong>
+      This is an independent website-design concept for {brand.name} — not the restaurant's
+      official website. It has not been approved or endorsed by {brand.name}. {demo.noOrdersNote}
+      <a class="demo-banner__link" href="/privacy/">How this demo handles data &amp; content</a>
+    </p>
+  </div>
+</div>
+
+<style>
+  .demo-banner {
+    background: var(--night);
+    color: #fbf8f3;
+    border-bottom: 2px solid var(--brand-gold);
+    font-size: var(--fs-xs);
+    line-height: 1.55;
+  }
+
+  .demo-banner__inner {
+    padding-block: var(--sp-3);
+  }
+
+  .demo-banner__text {
+    max-width: 90ch;
+  }
+
+  .demo-banner__text strong {
+    color: var(--brand-gold);
+  }
+
+  .demo-banner__link {
+    display: inline-block;
+    margin-left: var(--sp-2);
+    color: var(--brand-gold);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .demo-banner__link:hover {
+    color: #fff;
+  }
+
+  @media print {
+    .demo-banner {
+      border: 1px solid #000;
+      background: #fff;
+      color: #000;
+    }
+
+    .demo-banner__text strong,
+    .demo-banner__link {
+      color: #000;
+    }
+  }
+</style>

@@ -19,6 +19,7 @@ import '../styles/base.css';
 import '../styles/components.css';
 
 import BaseHead from '../components/BaseHead.astro';
+import DemoBanner from '../components/DemoBanner.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ActionBar from '../components/ActionBar.astro';
@@ -76,6 +77,8 @@ const brandVariables = (Object.entries(CSS_VARS) as [keyof typeof colors, string
 
   <body class={`has-actionbar ${bodyClass}`.trim()}>
     <a class="skip-link" href="#main">Skip to main content</a>
+
+    <DemoBanner />
 
     <Header />
 

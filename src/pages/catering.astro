@@ -3,6 +3,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
+import ConceptNote from '../components/ConceptNote.astro';
 import { siteConfig, telHref } from '../config/site.js';
 
 const { business } = siteConfig;
@@ -92,6 +93,12 @@ const callSettles = [
         title="What to have ready"
         lede="No form required — just the details the restaurant will ask you for."
       />
+
+      <ConceptNote title="Demo takes no bookings" icon="info">
+        This concept page accepts no catering bookings, payments or inquiries. Catering is
+        arranged by telephoning the real restaurant — headcount, lead time, delivery range and
+        pricing are all confirmed on that call, not through this demo.
+      </ConceptNote>
 
       <ul class="checklist">
         {

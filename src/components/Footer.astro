@@ -11,7 +11,7 @@ import Icon from './Icon.astro';
 import { siteConfig, telHref, directionsUrl } from '../config/site.js';
 
 const year = new Date().getFullYear();
-const { business, social, ordering, brand } = siteConfig;
+const { business, social, ordering, brand, developer, demo } = siteConfig;
 ---
 
 <footer class="site-footer">
@@ -98,14 +98,22 @@ const { business, social, ordering, brand } = siteConfig;
 
     <div class="site-footer__legal">
       <p>
-        &copy; {year} {business.legalName}. Menu details and the restaurant name remain the
-        property of {business.legalName}. No photographs are shipped with this concept.
+        &copy; {year} {developer.name} — original code, layout and placeholder artwork for this
+        design concept (provisional; final ownership and licence terms must be set in a signed
+        written agreement).
+        {business.legalName}'s name, menu text and tagline remain the restaurant's property and
+        are shown here without permission for owner review only. No photographs are shipped with
+        this concept, and no logo artwork is reproduced.
       </p>
       <p>
-        This is an <strong>unapproved design concept</strong> prepared for review. It is not
-        affiliated with, endorsed by, or operated by {business.legalName}. It is shared as a
-        preview link only and is <strong>not indexed by search engines</strong>.
-        {siteConfig.concept.ownerNote}
+        This is an <strong>independent, unapproved design concept</strong> prepared for review.
+        It is not the official {business.legalName} website and is not affiliated with, endorsed
+        by, or operated by {business.legalName}. {demo.noOrdersNote} It is shared as a preview
+        link only and carries <strong>noindex, nofollow</strong> plus a disallowing robots file so
+        it does not compete with the restaurant's live site in search results — which requests
+        non-indexing but does not make a publicly accessible page private. A notice alone does not
+        remove trademark or copyright risk; written permission and attorney review are still
+        required before any sale or publication. {siteConfig.concept.ownerNote}
       </p>
       <p class="site-footer__links">
         <a href="/privacy/">Privacy &amp; data</a>

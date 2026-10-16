@@ -1,0 +1,18 @@
+# Cloudflare Pages headers for this independent design-concept demo.
+#
+# X-Robots-Tag backs the in-page noindex,nofollow + robots.txt disallow so
+# non-HTML responses are also marked non-indexable. This requests
+# non-indexing; it does not make a publicly accessible preview URL private.
+# Remove or flip only on owner-approved publication (with
+# siteConfig.deployment.allowIndexing = true).
+#
+# The remaining headers are a conservative baseline that does not change site
+# behavior: no CSP is set here because Astro inlines per-page scripts/styles
+# and a strict policy would break them without a nonce plan.
+
+/*
+  X-Robots-Tag: noindex, nofollow
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  X-Frame-Options: SAMEORIGIN

@@ -4,6 +4,7 @@ import SectionHeading from '../components/SectionHeading.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import MapEmbed from '../components/MapEmbed.astro';
+import ConceptNote from '../components/ConceptNote.astro';
 import { siteConfig, telHref, directionsUrl, mapsPlaceUrl } from '../config/site.js';
 
 const { business, hours, ordering } = siteConfig;
@@ -102,6 +103,13 @@ const quickActions = [
         title="Ways to order"
         lede="Urban Tadka takes orders by phone, and is listed on third-party delivery platforms. Pick whichever suits you."
       />
+
+      <ConceptNote title="This demo takes no orders" icon="info">
+        This concept page takes no orders, reservations, payments or inquiries itself. The
+        telephone button dials the real restaurant, and the platform buttons leave this demo
+        for Grubhub or Uber Eats on their own terms. Platform pages and account ownership still
+        need owner confirmation before launch.
+      </ConceptNote>
 
       <div class="order-grid">
         <article class="order-card">

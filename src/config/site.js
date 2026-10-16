@@ -333,6 +333,43 @@ export const siteConfig = {
     ownerNote:
       'This is an unreleased design concept. Facts marked here need confirming by Urban Tadka before publication.',
   },
+
+  /* ------------------------------------------------------------------ */
+  /* Independent developer — provisional ownership                       */
+  /* ------------------------------------------------------------------ */
+  /**
+   * PROVISIONAL ONLY. Replace `name` with the developer's legal business
+   * name before showing this to the restaurant. The original code, layout,
+   * styles, icons, favicon and placeholder artwork in this project were
+   * prepared by the independent developer; the restaurant's name, menu text,
+   * tagline and any future logo/photographs remain the restaurant's (or
+   * their owners') property and are used here without permission for review
+   * only. Final ownership, licence and payment terms must be set out in a
+   * signed written agreement — nothing on this site transfers rights by
+   * itself. Have a qualified attorney review before sale or publication.
+   */
+  developer: {
+    name: '[Independent developer — replace with legal business name]',
+    role: 'Independent website developer (not affiliated with Urban Tadka)',
+    contactNote:
+      'Contact details for the developer are exchanged privately, not published on this demo.',
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* Demo disclosure                                                     */
+  /* ------------------------------------------------------------------ */
+  /**
+   * Rendered in the site-wide banner (DemoBanner) and the footer on every
+   * page. A disclaimer reduces confusion but does not by itself eliminate
+   * trademark, copyright or other legal risk — written permission and
+   * attorney review are still required before any sale or publication.
+   */
+  demo: {
+    shortNotice:
+      'Independent design concept — not the official Urban Tadka website.',
+    noOrdersNote:
+      'This demo takes no orders, reservations, payments or inquiries. Phone and ordering links leave this demo for the real restaurant or third-party platforms.',
+  },
 };
 
 /** Convenience helpers derived from the config above. */

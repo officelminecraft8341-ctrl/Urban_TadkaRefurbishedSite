@@ -17,14 +17,20 @@ import { siteConfig, telHref, directionsUrl } from '../config/site.js';
  * explicit click.
  */
 
+const lastUpdated = '16 October 2026';
+
 const collected = [
   {
-    what: 'Personal information',
-    detail: 'None collected. This site has no accounts, no newsletter and no checkout, and no form that sends anything anywhere: the menu search filters on the page, and anything entered on the review page stays in your own browser (see the next row).',
+    what: 'Hosting-provider logs',
+    detail: 'This demo is served as static files from Cloudflare Pages (currently at a *.pages.dev preview address). Cloudflare processes standard server data to deliver pages — such as IP address, user-agent and requested URLs — under its own privacy policy and retention schedule. This site adds no server of its own and stores nothing server-side; there is no account, database or inbox holding visitor data here.',
+  },
+  {
+    what: 'Personal information sent to us',
+    detail: 'None collected. This demo has no accounts, no newsletter, no checkout and no form that sends anything anywhere: the menu search filters on the page, and anything entered on the review page stays in your own browser (see the next row). Telephoning the restaurant or following an ordering/directions link contacts the restaurant or that platform directly — not through this demo.',
   },
   {
     what: 'Review answers, kept on your device',
-    detail: 'On the /review/ page only: the decisions you record and any notes you type are saved in your own browser\u2019s local storage so a refresh does not lose them. They are never transmitted to us or to anyone else. Clearing them, or switching browsers, removes them.',
+    detail: 'On the /review/ page only: the decisions you record and any notes you type are saved in your own browser\u2019s local storage under the key “urban-tadka-photo-review-v1” so a refresh does not lose them. They are never transmitted to us or to anyone else, are kept until you clear them (Clear-my-answers button, browser storage controls, or switching browsers removes them), and are not accessible to other visitors.',
   },
   {
     what: 'Analytics or advertising',
@@ -40,11 +46,23 @@ const collected = [
   },
   {
     what: 'Embedded map',
-    detail: 'Loaded only when you click “Load interactive map”. Until then, no request is made to Google. Once loaded, Google may set cookies on its own terms.',
+    detail: 'Loaded only when you click “Load interactive map”. Until then, no request is made to Google. Once loaded, Google serves the map on its own terms and may set cookies (such as NID); Google\u2019s Privacy Policy then applies to that use. See google.com/policies/privacy.',
   },
   {
     what: 'Links to other services',
-    detail: 'Ordering links and the directions link go to third-party sites (Grubhub, Uber Eats, Google Maps, Facebook). Those sites have their own privacy policies once you arrive.',
+    detail: 'Ordering links and the directions, map and social links leave this demo for third-party sites (Grubhub, Uber Eats, Google Maps, Facebook). Those sites have their own privacy policies and terms once you arrive; this notice cannot cover them.',
+  },
+  {
+    what: 'Children',
+    detail: 'This demo collects nothing and offers no accounts or messaging, so there is nothing for a child to submit here. Third-party ordering, map and social sites have their own age rules.',
+  },
+  {
+    what: 'Search indexing (not privacy)',
+    detail: 'Every page carries noindex, nofollow, robots.txt disallows crawling, and hosting sends an X-Robots-Tag: noindex header — because a demo must not compete with the restaurant\u2019s live site in search. That requests non-indexing; it does not make a publicly accessible preview address private. Anyone with the link can open it. Do not share sensitive information through it.',
+  },
+  {
+    what: 'Questions about this notice',
+    detail: 'The restaurant publishes no public email address, so none is listed here rather than invented. For the demo itself, contact the developer through the private channel that shared this preview link. For the restaurant, the verified telephone on the Visit page reaches a person.',
   },
 ];
 
@@ -66,9 +84,12 @@ const willChange = [
       <p class="eyebrow">Privacy, data &amp; licensing</p>
       <h1>What this site does with your data</h1>
       <p class="privacy-lede">
-        Short version: this website collects nothing about you. Here is the full inventory, so you
-        can check that claim rather than take our word for it.
+        Short version: this demo website itself collects nothing about you and stores nothing
+        server-side. The host still processes standard delivery logs, and the map and outbound
+        links belong to their owners once used. Here is the full inventory, so you can check
+        that claim rather than take our word for it.
       </p>
+      <p class="privacy-meta">Last updated: {lastUpdated}. This page describes actual behavior as built — not legal advice.</p>
 
       <div class="privacy-status">
         <span class="privacy-status__badge">
@@ -105,10 +126,13 @@ const willChange = [
 
       <div class="privacy-note">
         <ConceptNote title="Not legal advice" icon="alert">
-          This page describes what the website technically does. It is not a privacy policy, and
-          it is not legal advice. Before launch, a policy should be written for the features that
-          actually exist at that point — and reviewed by someone qualified to do so if the
-          restaurant collects anything at all.
+          This page describes what the website technically does. It is not a privacy policy, not a
+          claim of compliance with any law (including the Texas Data Privacy and Security Act or
+          federal requirements), and not legal advice — and a notice alone does not make a public
+          demo private or remove trademark, copyright or other legal risk. Before any sale or
+          launch, a policy matching the features that actually exist at that point must be written
+          and reviewed by a qualified attorney, especially if a form, analytics, accounts or
+          payments are added.
         </ConceptNote>
       </div>
     </div>
@@ -162,9 +186,15 @@ const willChange = [
         <div class="inventory__row">
           <dt class="inventory__term">This concept</dt>
           <dd class="inventory__detail">
-            Prepared for review. It is shared as a preview link only, is not indexed, and is not
-            presented as approved by Urban Tadka. A page-level <code>noindex, nofollow</code> tag
-            and a disallowing robots file are in place until the owner approves publication.
+            An independent, unapproved design concept — not the official Urban Tadka website. It is
+            shared as a preview link only, takes no orders, reservations, payments or inquiries,
+            and is not presented as approved or endorsed by Urban Tadka. A page-level <code>noindex,
+            nofollow</code> tag, a disallowing robots file and a hosting <code>X-Robots-Tag: noindex</code> header
+            are in place until the owner approves publication. Original code, layout and placeholder
+            artwork are provisionally the independent developer's ({siteConfig.developer.name}); the
+            restaurant's name, menu text and tagline remain its property, shown without permission for
+            review only. Final ownership, licence and payment terms must be set in a signed written
+            agreement. Full asset-by-asset record: docs/07-asset-inventory.md (owner file, not a public page).
           </dd>
         </div>
       </dl>
