@@ -26,6 +26,12 @@ audit/
 # but it records hostnames that differ per environment, so it is not committed.
 .freebuff/
 
+# --- alternate-host deploy workspace ---------------------------------------
+# deploy/ holds a different host's worker, payload copies and rollback
+# backups. Cloudflare Pages builds `dist/` from source itself, so none of
+# this belongs in git.
+deploy/
+
 # --- editors & OS ----------------------------------------------------------
 .vscode/
 .idea/
