@@ -46,7 +46,7 @@ const collected = [
   },
   {
     what: 'Embedded map',
-    detail: 'Loaded only when you click “Load interactive map”. Until then, no request is made to Google. Once loaded, Google serves the map on its own terms and may set cookies (such as NID); Google\u2019s Privacy Policy then applies to that use. See google.com/policies/privacy.',
+    detail: 'The maps on the home and visit pages load automatically from Google when the page opens, so Google receives a request and may set cookies (such as NID) on page load. Google serves the map on its own terms; Google\u2019s Privacy Policy then applies to that use. See google.com/policies/privacy. If tracking-free loading is wanted instead, the map can be switched back to load only when clicked.',
   },
   {
     what: 'Links to other services',
@@ -94,7 +94,7 @@ const willChange = [
       <div class="privacy-status">
         <span class="privacy-status__badge">
           <Icon name="shield" size={18} />
-          0 trackers · 0 cookies · 0 accounts
+          0 trackers · 0 site cookies · 0 accounts
         </span>
       </div>
 

@@ -1,40 +1,39 @@
 ---
 /**
- * MapEmbed — click-to-load
+ * MapEmbed — auto-loading
  *
- * A Google Maps iframe is a third-party request that can set cookies, and this
- * site carries no cookie banner because it carries no tracking. Rather than
- * either embedding unconditionally or dropping the map, the map is loaded only
- * when the visitor explicitly asks for it.
- *
- * Result: visitors who never open the map are never tracked, and the map still
- * works for the people who want it — including a no-JavaScript fallback link
- * straight to Google Maps.
+ * The Google Maps iframe loads with the page (deferred with loading="lazy"
+ * so it does not block first paint). This is a deliberate trade-off made at
+ * the developer's request: visitors see the map immediately, but Google
+ * receives a third-party request on page load and may set cookies. That is
+ * disclosed in plain language under the map and in full on /privacy/
+ * ("Embedded map"). A click-to-load variant would avoid the on-load request;
+ * it can be restored if the owner prefers.
  */
 
-import Icon from './Icon.astro';
 import { mapEmbedUrl, directionsUrl, siteConfig } from '../config/site.js';
 
 const { business } = siteConfig;
 ---
 
-<div class="map" data-map data-src={mapEmbedUrl}>
-  <div class="map__placeholder" data-map-placeholder>
-    <span class="map__pin" aria-hidden="true">
-      <Icon name="mapPin" size={26} />
-    </span>
+<div class="map">
+  <iframe
+    src={mapEmbedUrl}
+    title={`Map showing the location of ${business.legalName}`}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen
+  ></iframe>
+
+  <div class="map__meta">
     <p class="map__address">
       {business.streetAddress}
       <br />
       {business.addressLocality}, {business.addressRegion} {business.postalCode}
     </p>
-    <button type="button" class="map__load" data-map-load>
-      <Icon name="mapPin" size={18} />
-      Load interactive map
-    </button>
     <p class="map__privacy">
-      The map is provided by Google and loads only when you ask for it. Opening it
-      may set Google cookies.
+      The map loads automatically from Google, which may set cookies.
+      <a href="/privacy/">How this demo handles data</a>
     </p>
     <p class="map__fallback">
       <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
@@ -43,51 +42,7 @@ const { business } = siteConfig;
       </a>
     </p>
   </div>
-
-  <!--
-    A labelled region, focusable by script only. When the map loads, the button
-    that had focus disappears with the placeholder, which would drop keyboard
-    and screen-reader users at the top of the page with no announcement. Moving
-    focus here instead tells them where they are and what just appeared.
-  -->
-  <div
-    class="map__frame"
-    data-map-frame
-    hidden
-    role="region"
-    aria-label={`Map showing the location of ${business.legalName}`}
-    tabindex="-1"
-  ></div>
 </div>
-
-<script>
-  // Load the embed on demand, once. Re-entrant clicks are ignored.
-  document.querySelectorAll<HTMLElement>('[data-map]').forEach((map) => {
-    const button = map.querySelector<HTMLButtonElement>('[data-map-load]');
-    const placeholder = map.querySelector<HTMLElement>('[data-map-placeholder]');
-    const frame = map.querySelector<HTMLElement>('[data-map-frame]');
-    const src = map.dataset.src;
-
-    if (!button || !placeholder || !frame || !src) return;
-
-    button.addEventListener('click', () => {
-      if (frame.querySelector('iframe')) return;
-
-      const iframe = document.createElement('iframe');
-      iframe.src = src;
-      iframe.title = `Map showing the location of Urban Tadka`;
-      iframe.loading = 'lazy';
-      iframe.referrerPolicy = 'no-referrer-when-downgrade';
-      iframe.setAttribute('allowfullscreen', '');
-      frame.append(iframe);
-
-      frame.hidden = false;
-      placeholder.hidden = true;
-      // The control that had focus no longer exists; hand focus to the region.
-      frame.focus({ preventScroll: true });
-    });
-  });
-</script>
 
 <style>
   .map {
@@ -95,29 +50,29 @@ const { business } = siteConfig;
     border-radius: var(--r-md);
     background: var(--paper-warm);
     overflow: hidden;
-    min-height: 20rem;
   }
 
-  .map__placeholder {
+  .map iframe {
+    display: block;
+    width: 100%;
+    height: 20rem;
+    border: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .map iframe {
+      height: 26rem;
+    }
+  }
+
+  .map__meta {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: var(--sp-3);
-    padding: var(--sp-6) var(--sp-5);
-    min-height: 20rem;
+    gap: var(--sp-2);
+    padding: var(--sp-5);
     text-align: center;
-  }
-
-  .map__pin {
-    display: grid;
-    place-items: center;
-    width: 3.25rem;
-    height: 3.25rem;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    color: var(--cta);
+    border-top: 1px solid var(--line);
   }
 
   .map__address {
@@ -126,51 +81,18 @@ const { business } = siteConfig;
     line-height: 1.4;
   }
 
-  .map__load {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-2);
-    min-height: 2.75rem;
-    padding: 0.6rem 1.25rem;
-    border: 1.5px solid var(--cta);
-    border-radius: var(--r-sm);
-    color: var(--cta);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-  }
-
-  .map__load:hover {
-    background: rgba(191, 56, 62, 0.08);
-  }
-
   .map__privacy {
-    max-width: 42ch;
+    max-width: 52ch;
     font-size: var(--fs-xs);
     color: var(--ink-soft);
   }
 
+  .map__privacy a {
+    color: var(--cta);
+    font-weight: 600;
+  }
+
   .map__fallback {
     font-size: var(--fs-sm);
-  }
-
-  .map__frame {
-    min-height: 20rem;
-  }
-
-  .map__frame :global(iframe) {
-    display: block;
-    width: 100%;
-    height: 20rem;
-    border: 0;
-  }
-
-  @media (min-width: 48rem) {
-    .map,
-    .map__placeholder,
-    .map__frame,
-    .map__frame :global(iframe) {
-      min-height: 26rem;
-      height: 26rem;
-    }
   }
 </style>

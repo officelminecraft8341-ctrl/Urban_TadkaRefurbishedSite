@@ -99,14 +99,20 @@ export const siteConfig = {
   /* ------------------------------------------------------------------ */
   business: {
     legalName: 'Urban Tadka',
-    /** Verbatim from the restaurant's site; identical on every public listing. */
-    streetAddress: '1800 Market Place Blvd, Suite #190',
+    /**
+     * Display form, abbreviated at the developer's request. The restaurant's
+     * own canonical form is "1800 Market Place Blvd, Suite #190" (identical
+     * on every public listing — see docs/03-unverified-details.md); both
+     * forms resolve to the same location. Confirm the display form with the
+     * owner before launch.
+     */
+    streetAddress: '1800 Market Pl Blvd #190',
     addressLocality: 'Irving',
     addressRegion: 'TX',
     postalCode: '75063',
     addressCountry: 'US',
-    /** Display form used in copy. */
-    addressOneLine: '1800 Market Place Blvd, Suite #190, Irving, TX 75063',
+    /** Display form used in copy, with restaurant-name prefix. */
+    addressOneLine: 'Urban Tadka, 1800 Market Pl Blvd #190, Irving, TX 75063',
     status: 'confirmed',
 
     /** Verbatim from the restaurant's site; identical on every public listing. */
@@ -386,10 +392,10 @@ export const mapsPlaceUrl = `https://www.google.com/maps/search/?api=1&query=${e
 )}`;
 
 /**
- * Google Maps embed URL for the click-to-load map.
- * The embed is NOT loaded on page load: it is a third-party request that can
- * set cookies, so MapEmbed requires an explicit click first. That avoids a
- * cookie banner for visitors who never open the map.
+ * Google Maps embed URL. The embed loads automatically with the page: it is
+ * a third-party request that can set cookies, disclosed under the map and on
+ * /privacy/ ("Embedded map"). Flag for attorney review whether a consent
+ * banner is needed before launch.
  */
 export const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(
   `${siteConfig.business.legalName}, ${fullAddress}`,
