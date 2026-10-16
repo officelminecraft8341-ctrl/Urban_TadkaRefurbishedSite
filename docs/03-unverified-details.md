@@ -44,7 +44,7 @@ that is the most authoritative source available, and flags them.
 | Source | Lunch | Dinner | Closed |
 |---|---|---|---|
 | **The restaurant's own Contact page** (used on the site) | Mon, Wed–Fri 11:00–2:30 · Sat 11:30–3:00 · Sun 11:30–2:30 | Mon–Sun 5:30–9:45 | Tuesday |
-| **Google Business Profile** (listing screenshot, Oct 2026) | Mon, Wed–Fri 11:00–2:00 · Sat 11:30–2:30 · Sun 11:30–2:00 | Mon–Sun 5:30–9:30 | Tuesday |
+| **Google Business Profile** (two listing screenshots, Oct 2026 — identical) | Mon, Wed–Fri 11:00–2:00 · Sat 11:30–2:30 · Sun 11:30–2:00 | Mon–Sun 5:30–9:30 | Tuesday |
 | Yelp and Uber Eats listings | Mon 11:00–2:00 | 5:30–9:30 | — |
 | Commented-out HTML on the restaurant's own homepage | Mon–Fri 11:30–2:30 (labelled "Buffet") | — | Sat–Sun 11:30–5:30 |
 
@@ -73,6 +73,22 @@ another would only move the uncertainty around, and the rule in this project is 
 restaurant's own published hours until the owner says otherwise. What the screenshot gives the
 owner is a concrete question to answer — *are the Google times the real ones?* If they are, the
 fix is one edit to `hours.schedule`; Tuesday is already handled in both places.
+
+### Second listing screenshot (16 October 2026)
+
+A second hours screenshot supplied in chat corroborates the Google row exactly: Mon, Wed–Fri
+11 AM–2 PM; Sat 11:30 AM–2:30 PM; Sun 11:30 AM–2 PM; dinner 5:30–9:30 PM nightly; Tuesday
+Closed. Two details mark it as a Google Business Profile rendering rather than the restaurant's
+own page: Thursday is bolded (Google highlights the current day, so this was captured on a
+Thursday) and a blue link is cut off at the bottom edge (Google's listing chrome). The image
+itself is third-party evidence — reviewed, not committed, not published — per the screenshots
+rule in §4 below.
+
+Two independent captures now agree on the shorter hours, against the restaurant's own site. That
+strengthens the inference that the restaurant's frozen-since-2019 page is the stale one — but it
+is still inference, not owner confirmation, and Google listings can be edited by anyone. The site
+therefore still shows the restaurant's own published hours with the call-ahead note. The question
+for the owner is unchanged and now more pressing: *are the Google times the real ones?*
 
 ### A contradiction this review found, and fixed
 
